@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Stickley Method — Transform Your Looks</title>
+  <meta name="description" content="The exact system to fix your health, looks and life. 10,000+ members. Join The Stickley Method today.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       LOADER
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="loader">
+    <span id="loader-brand">THE STICKLEY METHOD</span>
+
+    <div id="loader-phoenix-wrap">
+      <canvas id="loader-canvas"></canvas>
+    </div>
+
+    <div id="loader-bar-wrap">
+      <div id="loader-bar"></div>
+    </div>
+    <span id="loader-percent">0%</span>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       FIXED HEADER
+  ═══════════════════════════════════════════════════════════ -->
+  <header class="site-header" id="site-header">
+    <a href="#" class="header-logo" id="header-logo" aria-label="The Stickley Method home">
+      <img src="image logo looksmaxxing copy.png" alt="TSM Phoenix" id="header-logo-img">
+      <span class="header-logo-text">TSM</span>
+    </a>
+
+    <nav class="header-nav" aria-label="Main navigation">
+      <a href="#" class="nav-link" data-scroll-to="curriculum">What You'll Learn</a>
+      <a href="#" class="nav-link" data-scroll-to="stats">Results</a>
+      <a href="#" class="nav-link" data-scroll-to="events">Events</a>
+      <a href="#" class="nav-link" data-scroll-to="reviews">Reviews</a>
+    </nav>
+
+    <a href="https://thestickleymethod.com" class="nav-cta" target="_blank" rel="noopener">
+      Join Now
+    </a>
+
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- Mobile Nav Drawer -->
+  <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+    <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Close menu">✕</button>
+    <nav>
+      <a href="#" class="mobile-nav-link" data-scroll-to="curriculum">What You'll Learn</a>
+      <a href="#" class="mobile-nav-link" data-scroll-to="stats">Results</a>
+      <a href="#" class="mobile-nav-link" data-scroll-to="events">Events</a>
+      <a href="#" class="mobile-nav-link" data-scroll-to="reviews">Reviews</a>
+      <a href="https://thestickleymethod.com" class="mobile-nav-cta" target="_blank" rel="noopener">
+        Join The Stickley Method →
+      </a>
+    </nav>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       HERO STANDALONE (100vh solid bg — circle-wipes away)
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="hero-standalone" id="hero-standalone">
+    <div class="hero-inner">
+      <span class="section-label hero-label">001 / The System</span>
+
+      <h1 class="hero-heading">
+        <span class="hero-word">Transform</span>
+        <span class="hero-word accent">Your Looks</span>
+      </h1>
+
+      <p class="hero-tagline">
+        The exact system to fix your health, looks, and life.<br>
+        No guessing. No wasted time.
+      </p>
+
+      <a href="https://thestickleymethod.com" class="cta-button cta-primary" target="_blank" rel="noopener">
+        Join The Stickley Method
+      </a>
+    </div>
+
+    <div class="hero-scroll-indicator" aria-hidden="true">
+      <span class="scroll-label">Scroll</span>
+      <div class="scroll-arrow">
+        <svg width="16" height="24" viewBox="0 0 16 24" fill="none">
+          <path d="M8 0v20M1 13l7 7 7-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       CANVAS (fixed, full viewport — phoenix animation)
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="canvas-wrap" id="canvas-wrap">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <!-- Dark overlay for stats section -->
+  <div id="dark-overlay" aria-hidden="true"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MARQUEE (fixed, scroll-driven)
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="marquee-wrap" id="marquee-wrap" aria-hidden="true">
+    <div class="marquee-text" id="marquee-text">
+      THE STICKLEY METHOD&nbsp;&nbsp;·&nbsp;&nbsp;TRANSFORM YOUR LOOKS&nbsp;&nbsp;·&nbsp;&nbsp;JOIN THE BROTHERHOOD&nbsp;&nbsp;·&nbsp;&nbsp;THE STICKLEY METHOD&nbsp;&nbsp;·&nbsp;&nbsp;TRANSFORM YOUR LOOKS&nbsp;&nbsp;·&nbsp;&nbsp;JOIN THE BROTHERHOOD&nbsp;&nbsp;·&nbsp;&nbsp;THE STICKLEY METHOD&nbsp;&nbsp;·&nbsp;&nbsp;TRANSFORM YOUR LOOKS&nbsp;&nbsp;·&nbsp;&nbsp;
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCROLL CONTAINER (900vh desktop / 550vh mobile)
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="scroll-container">
+
+    <!-- ── Section 1: Transform (fade-up, align-left, 0–20%) ── -->
+    <section class="scroll-section section-content align-left"
+             id="section-transform"
+             data-enter="0" data-leave="20" data-animation="fade-up">
+      <div class="section-inner">
+        <span class="section-label">001 / The System</span>
+        <h2 class="section-heading">Transform<br>Your Looks</h2>
+        <p class="section-body">
+          The exact system to fix your health, looks, and life —
+          no guessing, no wasted time. Built by men who've already made the transformation.
+        </p>
+        <a href="https://thestickleymethod.com" class="cta-button cta-primary" target="_blank" rel="noopener">
+          Join The Stickley Method
+        </a>
+        <p class="section-note">Access 70+ looksmaxxing modules</p>
+      </div>
+    </section>
+
+    <!-- ── Section 2: Stats (stagger-up, center, 22–38%) ── -->
+    <section class="scroll-section section-stats"
+             id="section-stats"
+             data-enter="22" data-leave="38" data-animation="stagger-up">
+      <div class="stats-grid">
+        <div class="stat">
+          <div class="stat-number-wrap">
+            <span class="stat-number" data-value="10000" data-decimals="0">0</span>
+            <span class="stat-suffix">+</span>
+          </div>
+          <span class="stat-label">Members Have Joined</span>
+        </div>
+        <div class="stat">
+          <div class="stat-number-wrap">
+            <span class="stat-number" data-value="70" data-decimals="0">0</span>
+            <span class="stat-suffix">+</span>
+          </div>
+          <span class="stat-label">Modules</span>
+        </div>
+        <div class="stat">
+          <div class="stat-number-wrap">
+            <span class="stat-prefix">$</span>
+            <span class="stat-number" data-value="43000" data-decimals="0">0</span>
+            <span class="stat-suffix">+</span>
+          </div>
+          <span class="stat-label">Worth of Prizes</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Section 3: What You'll Learn (slide-right, align-right, 38–54%) ── -->
+    <section class="scroll-section section-content align-right"
+             id="section-curriculum"
+             data-enter="38" data-leave="54" data-animation="slide-right">
+      <div class="section-inner">
+        <span class="section-label">002 / Curriculum</span>
+        <h2 class="section-heading">What You'll<br>Learn</h2>
+        <p class="section-body">Access 70+ transformation methods across three phases of mastery.</p>
+        <ul class="phase-list">
+          <li class="phase-item">
+            <span class="phase-num">Phase 1</span>
+            <span class="phase-name">Health Is Law</span>
+            <span class="phase-desc">Restore your body to its natural operating conditions</span>
+          </li>
+          <li class="phase-item">
+            <span class="phase-num">Phase 2</span>
+            <span class="phase-name">Lean Is Law</span>
+            <span class="phase-desc">Lose fat, build muscle, reach your ideal frame</span>
+          </li>
+          <li class="phase-item">
+            <span class="phase-num">Phase 3</span>
+            <span class="phase-name">Contrast &amp; Colouring</span>
+            <span class="phase-desc">Maximise your natural features, style, and appearance</span>
+          </li>
+        </ul>
+        <a href="https://thestickleymethod.com" class="cta-button cta-primary" target="_blank" rel="noopener">
+          Join The Stickley Method
+        </a>
+      </div>
+    </section>
+
+    <!-- ── Section 4: Brotherhood (slide-left, align-left, 52–67%) ── -->
+    <section class="scroll-section section-content align-left"
+             id="section-brotherhood"
+             data-enter="52" data-leave="67" data-animation="slide-left">
+      <div class="section-inner">
+        <span class="section-label">003 / Community</span>
+        <h2 class="section-heading">Join Thousands<br>of Men<br>Worldwide</h2>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <span class="feature-icon">◆</span>
+            <div>
+              <strong>Real Brotherhood</strong>
+              <p>Connect with driven men worldwide who hold you to a higher standard.</p>
+            </div>
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">◆</span>
+            <div>
+              <strong>Built-in Accountability</strong>
+              <p>Daily check-ins, progress posts, and systems that make slipping hard and momentum easy.</p>
+            </div>
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">◆</span>
+            <div>
+              <strong>Support on Every Move</strong>
+              <p>Get feedback on your looks, routines, and decisions so you're never guessing alone.</p>
+            </div>
+          </li>
+        </ul>
+        <a href="https://thestickleymethod.com" class="cta-button cta-secondary" target="_blank" rel="noopener">
+          Join The Brotherhood
+        </a>
+      </div>
+    </section>
+
+    <!-- ── Section 5: Events (clip-reveal, align-right, 65–79%) ── -->
+    <section class="scroll-section section-content align-right"
+             id="section-events"
+             data-enter="65" data-leave="79" data-animation="clip-reveal">
+      <div class="section-inner">
+        <span class="section-label">004 / Events</span>
+        <h2 class="section-heading">What's Going<br>On Inside</h2>
+        <p class="section-body">Cash prizes, XP rewards, one-on-one calls, and more. Don't miss out.</p>
+        <ul class="event-list">
+          <li class="event-item">
+            <span class="event-freq">Always On</span>
+            <strong class="event-name">Looksmaxxing Challenges</strong>
+            <span class="event-desc">Compete for cash prizes, 1-on-1 calls with Baby, and more</span>
+          </li>
+          <li class="event-item">
+            <span class="event-freq">Every Weekend</span>
+            <strong class="event-name">Fitness Competitions</strong>
+            <span class="event-desc">Win cash prizes and XP — released Fridays, winners announced Mondays</span>
+          </li>
+          <li class="event-item">
+            <span class="event-freq">4× a Month</span>
+            <strong class="event-name">Workshops With Baby</strong>
+            <span class="event-desc">Covers everything you need to understand looksmaxxing, on voice or video call</span>
+          </li>
+        </ul>
+        <a href="https://thestickleymethod.com" class="cta-button cta-primary" target="_blank" rel="noopener">
+          Access The Events
+        </a>
+      </div>
+    </section>
+
+    <!-- ── Section 6: Reviews (scale-up, center, 76–91%) ── -->
+    <section class="scroll-section section-reviews"
+             id="section-reviews"
+             data-enter="76" data-leave="91" data-animation="scale-up">
+      <div class="section-inner reviews-inner">
+        <span class="section-label">005 / Testimonials</span>
+        <h2 class="section-heading">Student<br>Reviews</h2>
+
+        <div class="reviews-carousel" id="reviews-carousel">
+          <div class="reviews-track" id="reviews-track">
+
+            <div class="review-card">
+              <div class="review-header">
+                <div class="review-avatar">MN</div>
+                <div class="review-meta">
+                  <strong>Mykhalo Nesterov</strong>
+                  <div class="review-stars" aria-label="5 stars">★★★★★</div>
+                </div>
+                <img src="image logo looksmaxxing copy.png" alt="TSM" class="review-logo">
+              </div>
+              <p class="review-text">
+                "Literally the biggest and most advanced community in looksmaxxing. Needless to say, every tip given in here is spot on, and could change your life entirely, yes 'life' because here lies knowledge not only on how to look better, but also how to BE better in every aspect of your life."
+              </p>
+            </div>
+
+            <div class="review-card">
+              <div class="review-header">
+                <div class="review-avatar">RS</div>
+                <div class="review-meta">
+                  <strong>RSB</strong>
+                  <div class="review-stars" aria-label="5 stars">★★★★★</div>
+                </div>
+                <img src="image logo looksmaxxing copy.png" alt="TSM" class="review-logo">
+              </div>
+              <p class="review-text">
+                "This community is one of the best decisions I've made in my life. The value inside is like nothing I've ever seen in any other community. There's so many valuable lessons in there discussing how to improve every single aspect of your looks and I'm glad to say that, they have been working on me!"
+              </p>
+            </div>
+
+            <div class="review-card">
+              <div class="review-header">
+                <div class="review-avatar">PR</div>
+                <div class="review-meta">
+                  <strong>_Pretzel._</strong>
+                  <div class="review-stars" aria-label="5 stars">★★★★★</div>
+                </div>
+                <img src="image logo looksmaxxing copy.png" alt="TSM" class="review-logo">
+              </div>
+              <p class="review-text">
+                "This community is great, whether for the information or the organisation of it all. It really helps me stay focused on my goals and lock into what I want to do. Baby and Adam Stickley are both always helping me out, reaching out and giving me great advice that has worked time and time again."
+              </p>
+            </div>
+
+            <div class="review-card">
+              <div class="review-header">
+                <div class="review-avatar">RP</div>
+                <div class="review-meta">
+                  <strong>Rhuben Pieterse</strong>
+                  <div class="review-stars" aria-label="4 stars">★★★★☆</div>
+                </div>
+                <img src="image logo looksmaxxing copy.png" alt="TSM" class="review-logo">
+              </div>
+              <p class="review-text">
+                "Amazing community. What Baby and Adam built is truly the holy grail of looksmaxxing and they've helped me so much to improve my looks. I had a bad experience connecting with the community, 4 stars purely for how well built this community is."
+              </p>
+            </div>
+
+          </div><!-- /reviews-track -->
+        </div><!-- /reviews-carousel -->
+
+        <div class="reviews-dots" id="reviews-dots" aria-label="Review navigation">
+          <button class="dot active" data-index="0" aria-label="Review 1"></button>
+          <button class="dot" data-index="1" aria-label="Review 2"></button>
+          <button class="dot" data-index="2" aria-label="Review 3"></button>
+          <button class="dot" data-index="3" aria-label="Review 4"></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Section 7: CTA (rotate-in, center, 89–100%, persist) ── -->
+    <section class="scroll-section section-cta"
+             id="section-cta"
+             data-enter="89" data-leave="100" data-animation="rotate-in"
+             data-persist="true">
+      <div class="section-inner cta-inner">
+        <span class="section-label">Ready?</span>
+        <h2 class="section-heading cta-heading">Start Your<br>Transformation</h2>
+        <p class="section-body cta-body">
+          Don't let 2026 be a year of no change.<br>
+          Get instant access to the best system on the planet.
+        </p>
+        <a href="https://thestickleymethod.com" class="cta-button cta-primary cta-large" target="_blank" rel="noopener">
+          Join The Stickley Method
+        </a>
+        <p class="section-note">Access 70+ transformation methods · No guesswork · Real results</p>
+      </div>
+    </section>
+
+  </div><!-- /scroll-container -->
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MOBILE STICKY CTA BAR
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="mobile-sticky-cta" id="mobile-sticky-cta" aria-hidden="true">
+    <a href="https://thestickleymethod.com" class="cta-button cta-primary" target="_blank" rel="noopener">
+      Join The Stickley Method
+    </a>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       CUSTOM CURSOR (desktop only)
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="custom-cursor" id="custom-cursor" aria-hidden="true">
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCRIPTS
+  ═══════════════════════════════════════════════════════════ -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

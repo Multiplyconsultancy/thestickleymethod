@@ -1,0 +1,25 @@
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V7
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Source assets (not needed for deployment)
+frames copy/
+animated logo looksmaxxing copy.mp4
+Desktop screenshots/
+Mobile screenshots/
+What you'll learn photos/
+full website screenshot.png
+
+# Design docs
+frontend design.md
+video to website.md
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
