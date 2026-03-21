@@ -140,8 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ── 4. GLOBE CANVAS (community section) ────────────────────── */
   var GLOBE_COUNT  = 120;
-  var GLOBE_SLOW   = 6;    // fps at rest
-  var GLOBE_FAST   = 22;   // fps while scrolling
+  var GLOBE_FPS    = 18;   // constant playback speed
 
   var globeCanvas  = document.getElementById('globe-canvas');
   var globeCtx     = globeCanvas ? globeCanvas.getContext('2d') : null;
@@ -149,9 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var globeLoaded  = 0;
   var globeIdx     = 0;
   var globeTimer   = null;
-  var globeFps     = GLOBE_SLOW;
   var globeVisible = false;
-  var globeScrollT = null;
 
   function padGlobe(n) { return ('000' + n).slice(-4); }
 
@@ -160,7 +157,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!globeCtx || !img) return;
     var cw = globeCanvas.width, ch = globeCanvas.height;
     var iw = img.naturalWidth, ih = img.naturalHeight;
-    // Centre-crop landscape frame to square (globe is centred in the 848×480 source)
     var crop = Math.min(iw, ih);
     var sx = (iw - crop) / 2;
     globeCtx.clearRect(0, 0, cw, ch);
@@ -173,11 +169,10 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!globeVisible || globeFrames.length === 0) return;
       globeIdx = (globeIdx + 1) % globeFrames.length;
       drawGlobeFrame(globeIdx);
-    }, 1000 / globeFps);
+    }, 1000 / GLOBE_FPS);
   }
 
   if (globeCanvas && globeCtx) {
-    // IntersectionObserver — animate only when on screen
     var globeObs = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         globeVisible = e.isIntersecting;
@@ -191,7 +186,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }, { threshold: 0.1 });
     globeObs.observe(globeCanvas);
 
-    // Load all 120 frames
     for (var gi = 0; gi < GLOBE_COUNT; gi++) {
       (function (gidx) {
         var img = new Image();
@@ -205,16 +199,6 @@ document.addEventListener('DOMContentLoaded', function () {
       })(gi);
     }
   }
-
-  // Speed boost while scrolling
-  window.addEventListener('scroll', function () {
-    if (!globeVisible) return;
-    if (globeFps !== GLOBE_FAST) { globeFps = GLOBE_FAST; startGlobeLoop(); }
-    clearTimeout(globeScrollT);
-    globeScrollT = setTimeout(function () {
-      globeFps = GLOBE_SLOW; startGlobeLoop();
-    }, 350);
-  }, { passive: true });
 
   /* ── 5. STATS COUNTER ──────────────────────────────────────── */
   var statNums = document.querySelectorAll('.stat-num[data-target]');

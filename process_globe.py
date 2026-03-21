@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 process_globe.py
-Extract frames from 'globe spinning.gif', strip black/near-black pixels,
+Extract frames from 'globe spinning.gif', remove pure-black pixels only,
 save as transparent PNGs in globe-frames/
 """
 import os
@@ -10,8 +10,7 @@ import numpy as np
 
 INPUT      = 'globe spinning.gif'
 OUTPUT_DIR = 'globe-frames'
-DARK_HARD  = 50   # pixels with brightness < 50  → fully transparent
-DARK_SOFT  = 90   # pixels with brightness 50–90 → linear fade-in
+THRESHOLD  = 18   # pixels where R,G,B all < 18 → transparent (pure black only)
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -26,15 +25,8 @@ try:
         r, g, b = arr[:, :, 0], arr[:, :, 1], arr[:, :, 2]
         brightness = (r + g + b) // 3
 
-        alpha = np.where(
-            brightness < DARK_HARD,
-            0,
-            np.where(
-                brightness < DARK_SOFT,
-                ((brightness - DARK_HARD) * 255 // (DARK_SOFT - DARK_HARD)),
-                255
-            )
-        ).astype(np.uint8)
+        # Hard cutoff: only pure black becomes transparent
+        alpha = np.where(brightness < THRESHOLD, 0, 255).astype(np.uint8)
 
         out = arr.copy().astype(np.uint8)
         out[:, :, 3] = alpha
