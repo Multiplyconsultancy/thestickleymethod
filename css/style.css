@@ -376,10 +376,10 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 ═══════════════════════════════════════════════════════════ */
 #hero {
   background: var(--white);
-  padding: 24px 24px 14px;
+  padding: 5vh 24px 14px;
   min-height: calc(100vh - var(--announce-h) - var(--header-h));
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 }
 .hero-inner {
@@ -401,7 +401,7 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   letter-spacing: -0.01em;
   text-transform: uppercase;
   color: var(--dark);
-  margin-top: 12px;
+  margin-top: 0;
   margin-bottom: 45px;
 }
 
