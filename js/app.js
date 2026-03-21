@@ -38,9 +38,6 @@ document.addEventListener('DOMContentLoaded', function () {
   function onScroll() {
     var y = window.scrollY;
     if (header) header.classList.toggle('scrolled', y > 60);
-    if (header && mobileNav && !mobileNav.classList.contains('open')) {
-      header.classList.toggle('hide', y > lastY && y > 180);
-    }
     lastY = y; ticking = false;
   }
   window.addEventListener('scroll', function () {
@@ -233,12 +230,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function goTo(n) {
       idx = opts.loop ? ((n % total) + total) % total : Math.max(0, Math.min(n, total - 1));
       track.style.transform = 'translateX(-' + (idx * cardWidth()) + 'px)';
-      // Animate entering card (fade-up)
-      if (cards[idx]) {
-        cards[idx].classList.remove('entering');
-        void cards[idx].offsetWidth;
-        cards[idx].classList.add('entering');
-      }
       if (dotsWrap) {
         dotsWrap.querySelectorAll('.dot').forEach(function (d, i) {
           d.classList.toggle('active', i === idx);
