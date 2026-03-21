@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var hamburger   = document.getElementById('hamburger');
   var mobileNav   = document.getElementById('mobile-nav');
   var mobileClose = document.getElementById('mobile-close');
+  var backdrop    = document.getElementById('nav-backdrop');
   var mnavLinks   = document.querySelectorAll('[data-close]');
 
   function openNav() {
@@ -13,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
     hamburger.setAttribute('aria-expanded', 'true');
     mobileNav.classList.add('open');
     mobileNav.setAttribute('aria-hidden', 'false');
+    if (backdrop) backdrop.classList.add('show');
     document.body.style.overflow = 'hidden';
   }
   function closeNav() {
@@ -20,10 +22,12 @@ document.addEventListener('DOMContentLoaded', function () {
     hamburger.setAttribute('aria-expanded', 'false');
     mobileNav.classList.remove('open');
     mobileNav.setAttribute('aria-hidden', 'true');
+    if (backdrop) backdrop.classList.remove('show');
     document.body.style.overflow = '';
   }
   if (hamburger)   hamburger.addEventListener('click', openNav);
   if (mobileClose) mobileClose.addEventListener('click', closeNav);
+  if (backdrop)    backdrop.addEventListener('click', closeNav);
   mnavLinks.forEach(function (l) { l.addEventListener('click', closeNav); });
 
   /* ── 2. HEADER HIDE/SHOW ────────────────────────────────────── */
@@ -33,8 +37,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function onScroll() {
     var y = window.scrollY;
-    header.classList.toggle('scrolled', y > 60);
-    if (!mobileNav.classList.contains('open')) {
+    if (header) header.classList.toggle('scrolled', y > 60);
+    if (header && mobileNav && !mobileNav.classList.contains('open')) {
       header.classList.toggle('hide', y > lastY && y > 180);
     }
     lastY = y; ticking = false;
@@ -43,67 +47,98 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
   }, { passive: true });
 
-  /* ── 3. PHOENIX CANVAS ANIMATION (hero) ─────────────────────── */
+  /* ── 3. PHOENIX CANVAS ANIMATION ────────────────────────────── */
   var FRAME_COUNT  = 121;
   var FPS          = 24;
   var FRAME_DELAY  = Math.round(1000 / FPS);   // ~41ms
   var REPEAT_AFTER = 17000;                     // ms pause before replay
 
-  var heroCanvas  = document.getElementById('hero-canvas');
-  var heroCtx     = heroCanvas ? heroCanvas.getContext('2d') : null;
   var phoenixFrames = [];
   var loadedCount   = 0;
-  var animTimer     = null;
-  var animPlaying   = false;
 
   function padNum(n) { return ('000' + n).slice(-4); }
 
-  function drawOnCanvas(img) {
-    if (!heroCtx || !img) return;
-    heroCtx.clearRect(0, 0, heroCanvas.width, heroCanvas.height);
+  /* Draw a single frame centred + cover-fitted onto a canvas */
+  function drawFrame(ctx, canvas, img) {
+    if (!ctx || !img) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     var iw = img.naturalWidth,  ih = img.naturalHeight;
-    var cw = heroCanvas.width,  ch = heroCanvas.height;
+    var cw = canvas.width,      ch = canvas.height;
     var scale = Math.min(cw / iw, ch / ih);
     var dw = iw * scale, dh = ih * scale;
-    heroCtx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+    ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
   }
 
-  function playPhoenix() {
-    if (!heroCtx || animPlaying) return;
-    animPlaying = true;
-    var frame = 0;
-    clearInterval(animTimer);
+  /*
+   * makeAnimator — returns a play() function for a given canvas.
+   * Plays all 121 frames once, then schedules a replay after REPEAT_AFTER ms.
+   */
+  function makeAnimator(ctx, canvas) {
+    var timer   = null;
+    var playing = false;
 
-    animTimer = setInterval(function () {
-      if (phoenixFrames[frame]) drawOnCanvas(phoenixFrames[frame]);
-      frame++;
-      if (frame >= FRAME_COUNT) {
-        clearInterval(animTimer);
-        animPlaying = false;
-        // Hold last frame, then replay after pause
-        setTimeout(function () {
-          if (!animPlaying) playPhoenix();
-        }, REPEAT_AFTER);
-      }
-    }, FRAME_DELAY);
-  }
+    function play() {
+      if (!ctx || playing) return;
+      playing = true;
+      var frame = 0;
+      clearInterval(timer);
 
-  if (heroCanvas && heroCtx) {
-    // Load all 121 frames; start playing when frame 1 arrives
-    for (var i = 0; i < FRAME_COUNT; i++) {
-      (function (idx) {
-        var img = new Image();
-        img.onload = function () {
-          phoenixFrames[idx] = img;
-          loadedCount++;
-          // Show first frame immediately as a still
-          if (idx === 0) drawOnCanvas(img);
-          // Start animation once first 15 frames are ready
-          if (loadedCount === 15 && !animPlaying) playPhoenix();
-        };
-        img.src = 'frames/frame_' + padNum(idx + 1) + '.png';
-      })(i);
+      timer = setInterval(function () {
+        if (phoenixFrames[frame]) drawFrame(ctx, canvas, phoenixFrames[frame]);
+        frame++;
+        if (frame >= FRAME_COUNT) {
+          clearInterval(timer);
+          playing = false;
+          setTimeout(function () { if (!playing) play(); }, REPEAT_AFTER);
+        }
+      }, FRAME_DELAY);
     }
+
+    return play;
+  }
+
+  /* ── Logo canvas (header) ────────────────────────────────── */
+  var logoCanvas = document.getElementById('logo-canvas');
+  var logoCtx    = logoCanvas ? logoCanvas.getContext('2d') : null;
+  var playLogo   = logoCtx ? makeAnimator(logoCtx, logoCanvas) : null;
+
+  /* ── Footer canvas ───────────────────────────────────────── */
+  var footerCanvas = document.getElementById('footer-canvas');
+  var footerCtx    = footerCanvas ? footerCanvas.getContext('2d') : null;
+  var playFooter   = footerCtx ? makeAnimator(footerCtx, footerCanvas) : null;
+  var footerTriggered = false;
+
+  /* Load all frames; kick off logo animation once enough are ready */
+  for (var i = 0; i < FRAME_COUNT; i++) {
+    (function (idx) {
+      var img = new Image();
+      img.onload = function () {
+        phoenixFrames[idx] = img;
+        loadedCount++;
+        // Show first frame as a still on both canvases
+        if (idx === 0) {
+          if (logoCtx)   drawFrame(logoCtx,   logoCanvas,   img);
+          if (footerCtx) drawFrame(footerCtx, footerCanvas, img);
+        }
+        // Start logo animation once first 15 frames are ready
+        if (loadedCount === 15 && playLogo) playLogo();
+      };
+      img.src = 'frames/frame_' + padNum(idx + 1) + '.png';
+    })(i);
+  }
+
+  /* Trigger footer animation when it scrolls into view */
+  if (footerCanvas && playFooter) {
+    var footerObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting && !footerTriggered) {
+          footerTriggered = true;
+          playFooter();
+          footerObs.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    footerObs.observe(footerCanvas);
   }
 
   /* ── 4. STATS COUNTER ───────────────────────────────────────── */
@@ -173,22 +208,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }, { threshold: 0.12 });
   document.querySelectorAll('.fade-up').forEach(function (el) { fadeObs.observe(el); });
 
-  /* ── 9. FOOTER LOGO ANIMATION ────────────────────────────────── */
-  var footerLogo = document.getElementById('footer-logo');
-  if (footerLogo) {
-    var footerObs = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          footerLogo.classList.remove('animate');
-          void footerLogo.offsetWidth;
-          footerLogo.classList.add('animate');
-          footerObs.disconnect();
-        }
-      });
-    }, { threshold: 0.5 });
-    footerObs.observe(footerLogo);
-  }
-
   /* ══════════════════════════════════════════════════════════
      HELPER — transform-based carousel with loop + dots
   ══════════════════════════════════════════════════════════ */
@@ -213,7 +232,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function goTo(n) {
       idx = opts.loop ? ((n % total) + total) % total : Math.max(0, Math.min(n, total - 1));
       track.style.transform = 'translateX(-' + (idx * cardWidth()) + 'px)';
-      // Update dots
       if (dotsWrap) {
         dotsWrap.querySelectorAll('.dot').forEach(function (d, i) {
           d.classList.toggle('active', i === idx);
