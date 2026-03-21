@@ -8,6 +8,7 @@ ehthumbs.db
 Thumbs.db
 
 # Source assets (not needed for deployment)
+frames/
 frames copy/
 animated logo looksmaxxing copy.mp4
 Desktop screenshots/
