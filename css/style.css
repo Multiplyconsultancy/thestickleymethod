@@ -254,8 +254,9 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   position: fixed;
   top: 0;
   right: 0;
-  bottom: 0;
   width: min(80vw, 290px);
+  max-height: 55vh;
+  height: auto;
   background: var(--white);
   z-index: 400;
   display: flex;
@@ -264,6 +265,7 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
   box-shadow: -4px 0 28px rgba(0,0,0,0.18);
   overflow-y: auto;
+  border-radius: 0 0 0 12px;
 }
 #mobile-nav.open { transform: translateX(0); }
 
@@ -310,8 +312,8 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 }
 .mnav-link:hover { color: var(--cyan); background: rgba(14,196,230,0.05); }
 
-.mnav-footer {
-  padding: 18px;
+.mnav-cta-wrap {
+  padding: 14px 18px 18px;
   border-top: 1px solid var(--border);
   flex-shrink: 0;
 }
@@ -370,18 +372,20 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   border-bottom: 1px solid #eaeaea;
 }
 
-/* Footer flash */
-.footer-flash { margin: 0 auto 20px; }
-
 /* ═══════════════════════════════════════════════════════════
    HERO
 ═══════════════════════════════════════════════════════════ */
 #hero {
   background: var(--white);
   padding: 24px 24px 52px;
+  min-height: calc(100vh - var(--announce-h) - var(--header-h));
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .hero-inner {
   max-width: 680px;
+  width: 100%;
   margin: 0 auto;
   text-align: center;
   display: flex;
@@ -398,7 +402,8 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   letter-spacing: -0.01em;
   text-transform: uppercase;
   color: var(--dark);
-  margin-bottom: 16px;
+  margin-top: 28px;
+  margin-bottom: 28px;
 }
 
 .hero-body {
@@ -536,6 +541,15 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   user-select: none;
 }
 .carousel-track:active { cursor: grabbing; }
+
+/* Card enter-from-below animation */
+@keyframes card-rise {
+  from { opacity: 0.4; transform: translateY(18px); }
+  to   { opacity: 1;   transform: translateY(0); }
+}
+.learn-card.entering {
+  animation: card-rise 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
 
 /* Learn cards — full image shown */
 .learn-card {
@@ -709,14 +723,14 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 #events .section-header h2 { color: var(--white); }
 #events .section-sub { color: rgba(255,255,255,0.45); }
 
-/* Big gold "UPCOMING EVENTS" label */
+/* Gold "UPCOMING EVENTS" label */
 .events-big-label {
   font-family: var(--font-head);
-  font-size: clamp(2.2rem, 9vw, 4.5rem);
-  font-weight: 800;
+  font-size: clamp(1.1rem, 4vw, 1.8rem);
+  font-weight: 700;
   color: var(--gold);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.1em;
   line-height: 1;
   margin-bottom: 10px;
 }
@@ -853,7 +867,7 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   background: var(--light);
   color: var(--dark);
   text-align: center;
-  padding: 52px 24px 36px;
+  padding: 32px 24px 24px;
   border-top: 1px solid var(--border);
 }
 .footer-canvas {

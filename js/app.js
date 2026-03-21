@@ -218,6 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var dotsWrap = document.getElementById(opts.dotsId);
     if (!track) return;
 
+    var viewport = track.parentElement;  // .carousel-viewport
     var cards = track.querySelectorAll(opts.cardSel);
     var total = cards.length;
     if (!total) return;
@@ -232,6 +233,12 @@ document.addEventListener('DOMContentLoaded', function () {
     function goTo(n) {
       idx = opts.loop ? ((n % total) + total) % total : Math.max(0, Math.min(n, total - 1));
       track.style.transform = 'translateX(-' + (idx * cardWidth()) + 'px)';
+      // Animate entering card (fade-up)
+      if (cards[idx]) {
+        cards[idx].classList.remove('entering');
+        void cards[idx].offsetWidth;
+        cards[idx].classList.add('entering');
+      }
       if (dotsWrap) {
         dotsWrap.querySelectorAll('.dot').forEach(function (d, i) {
           d.classList.toggle('active', i === idx);
@@ -252,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    // Drag / swipe
+    // Drag / swipe — listeners on viewport so touch works without prior tap
     var startX = 0, startIdx = 0, dragging = false;
 
     track.addEventListener('mousedown', function (e) {
@@ -271,10 +278,11 @@ document.addEventListener('DOMContentLoaded', function () {
       goTo(Math.abs(delta) > 55 ? (delta < 0 ? startIdx + 1 : startIdx - 1) : startIdx);
     });
 
-    track.addEventListener('touchstart', function (e) {
+    // Touch on viewport (not track) so swipe works without a prior tap
+    viewport.addEventListener('touchstart', function (e) {
       startX = e.touches[0].clientX; startIdx = idx;
     }, { passive: true });
-    track.addEventListener('touchend', function (e) {
+    viewport.addEventListener('touchend', function (e) {
       var delta = e.changedTouches[0].clientX - startX;
       goTo(Math.abs(delta) > 45 ? (delta < 0 ? startIdx + 1 : startIdx - 1) : startIdx);
     });
