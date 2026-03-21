@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<!-- ═══ ANNOUNCEMENT BAR (sticky, dark blue) ════════════════════════════ -->
+<!-- ═══ ANNOUNCEMENT BAR ═════════════════════════════════════════════════ -->
 <div id="announce-bar">
   <span>TSM 2.0 IS HERE!</span>
   <a href="https://thestickleymethod.com" target="_blank" rel="noopener" class="announce-btn">LEARN MORE</a>
@@ -21,8 +21,6 @@
 <!-- ═══ HEADER ═══════════════════════════════════════════════════════════ -->
 <header id="header">
   <div class="header-inner">
-
-    <!-- Logo (left-aligned: bird + brand name) -->
     <a href="#" class="logo" aria-label="The Stickley Method home">
       <img src="image logo looksmaxxing copy.png" alt="The Stickley Method phoenix" id="logo-img">
       <span class="logo-brand">
@@ -31,7 +29,6 @@
       </span>
     </a>
 
-    <!-- Desktop nav (centre-right) -->
     <nav class="desktop-nav" aria-label="Main navigation">
       <a href="#learn"   class="nav-link">What you'll learn</a>
       <a href="#results" class="nav-link">Results</a>
@@ -40,11 +37,9 @@
       <a href="https://thestickleymethod.com" target="_blank" rel="noopener" class="btn btn-primary nav-cta">JOIN THE BROTHERHOOD</a>
     </nav>
 
-    <!-- Hamburger (mobile) -->
     <button id="hamburger" aria-label="Open menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
-
   </div>
 </header>
 
@@ -65,16 +60,25 @@
 <!-- ═══ HERO ══════════════════════════════════════════════════════════════ -->
 <section id="hero">
   <div class="hero-inner">
+
+    <!-- Phoenix canvas animation -->
+    <div class="hero-phoenix-wrap">
+      <canvas id="hero-canvas" width="600" height="600"></canvas>
+    </div>
+
+    <h1 class="hero-heading">TRANSFORM <span class="cyan">YOUR LOOKS</span></h1>
+
     <p class="flash-sale">
       <span class="flash-dot"></span>
       FLASH SALE &nbsp;·&nbsp; USE CODE: <strong>CHAD</strong>
     </p>
-    <h1 class="hero-heading">TRANSFORM <span class="gold">YOUR LOOKS</span></h1>
+
     <p class="hero-body">
       Don't let 2026 be a year of <strong>no change.</strong><br>
       Get <strong>instant access</strong> to the best system on the planet
       to help guys fix their <strong>health, looks and lives.</strong>
     </p>
+
     <a href="https://thestickleymethod.com" target="_blank" rel="noopener" class="btn btn-primary btn-lg">
       JOIN THE STICKLEY METHOD
     </a>
@@ -82,6 +86,7 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       Access 70+ Looksmaxxing Modules
     </p>
+
   </div>
 </section>
 
@@ -110,7 +115,7 @@
     </div>
   </div>
   <div class="stats-cta">
-    <a href="https://thestickleymethod.com" target="_blank" rel="noopener" class="btn btn-gold">JOIN THE STICKLEY METHOD</a>
+    <a href="https://thestickleymethod.com" target="_blank" rel="noopener" class="btn btn-primary stats-btn">JOIN THE STICKLEY METHOD</a>
     <p class="access-note light">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       V8 Campuses
@@ -124,7 +129,7 @@
     <h2>WHAT YOU'LL LEARN</h2>
   </div>
 
-  <div class="carousel-wrap" id="learn-carousel">
+  <div class="carousel-wrap">
     <button class="carousel-arrow arrow-prev" id="learn-prev" aria-label="Previous">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
@@ -140,7 +145,7 @@
               <svg class="learn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
               <strong>HEALTH IS LAW</strong>
             </div>
-            <p>The exact principles you must live by to restore perfect health and return your body to the natural operating conditions it was designed for.</p>
+            <p>The exact principles to restore perfect health and return your body to its natural operating conditions.</p>
           </div>
         </div>
 
@@ -153,7 +158,7 @@
               <svg class="learn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
               <strong>LEAN IS LAW</strong>
             </div>
-            <p>The training and nutrition approach that helps you look more defined and build your ideal frame as fast as humanly possible.</p>
+            <p>The training and nutrition approach to look more defined and build your ideal frame as fast as possible.</p>
           </div>
         </div>
 
@@ -166,7 +171,7 @@
               <svg class="learn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20V2z" fill="currentColor"/></svg>
               <strong>CONTRAST &amp; COLOURING</strong>
             </div>
-            <p>Influencing how facial features are perceived by others through tone, colouring and deliberate styling choices to look more symmetrical.</p>
+            <p>Influence how facial features are perceived through tone, colouring and deliberate styling choices.</p>
           </div>
         </div>
 
@@ -179,7 +184,7 @@
               <svg class="learn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22V12M12 12C12 12 7 10 7 5a5 5 0 0 1 10 0c0 5-5 7-5 7z"/></svg>
               <strong>GROOMING + STYLE</strong>
             </div>
-            <p>Build a personalised grooming routine and style system that enhances your features and makes you look put-together every day.</p>
+            <p>A personalised grooming routine and style system that enhances your features every single day.</p>
           </div>
         </div>
 
@@ -205,7 +210,7 @@
               <svg class="learn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
               <strong>PHYSIQUE &amp; FRAME</strong>
             </div>
-            <p>Target the muscles that matter most for an aesthetic, powerful-looking physique and an attractive shoulder-to-waist ratio.</p>
+            <p>Target the muscles that matter most for an aesthetic, powerful-looking physique and an ideal shoulder-to-waist ratio.</p>
           </div>
         </div>
 
@@ -218,7 +223,7 @@
               <svg class="learn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 13s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9" stroke-width="3"/><line x1="15" y1="9" x2="15.01" y2="9" stroke-width="3"/></svg>
               <strong>EXPRESSION</strong>
             </div>
-            <p>Set theory and mewing techniques to improve facial expression, resting face attractiveness and social presence.</p>
+            <p>Set theory and mewing techniques to improve facial expression and resting face attractiveness.</p>
           </div>
         </div>
 
@@ -231,12 +236,12 @@
               <svg class="learn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><circle cx="12" cy="12" r="4"/></svg>
               <strong>HARMONY &amp; RATIOS</strong>
             </div>
-            <p>Understanding facial ratios and how to maximise facial harmony using proven looksmaxxing principles.</p>
+            <p>Understanding facial ratios and how to maximise harmony using proven looksmaxxing principles.</p>
           </div>
         </div>
 
-      </div><!-- /carousel-track -->
-    </div><!-- /carousel-viewport -->
+      </div>
+    </div>
     <button class="carousel-arrow arrow-next" id="learn-next" aria-label="Next">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
@@ -262,14 +267,15 @@
   </div>
 </section>
 
-<!-- ═══ FLASH SALE BANNER (mid-page) ══════════════════════════════════════ -->
-<div class="flash-banner">
-  <span class="flash-dot"></span>
-  FLASH SALE &nbsp;·&nbsp; USE CODE <strong>CHAD</strong> AT CHECKOUT &nbsp;·&nbsp;
-  <a href="https://thestickleymethod.com" target="_blank" rel="noopener" class="flash-banner-link">CLAIM OFFER →</a>
+<!-- ═══ FLASH SALE STRIP (mid-page, same graphic) ════════════════════════ -->
+<div class="flash-mid">
+  <p class="flash-sale">
+    <span class="flash-dot"></span>
+    FLASH SALE &nbsp;·&nbsp; USE CODE: <strong>CHAD</strong>
+  </p>
 </div>
 
-<!-- ═══ JOIN THOUSANDS ════════════════════════════════════════════════════ -->
+<!-- ═══ COMMUNITY ════════════════════════════════════════════════════════ -->
 <section id="community">
   <div class="community-inner">
     <div class="community-globe" aria-hidden="true">
@@ -294,7 +300,7 @@
         </li>
         <li>
           <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          <div><strong>Built-in accountability.</strong> Daily check-ins, progress posts, and systems that make slipping hard and momentum easy.</div>
+          <div><strong>Built-in accountability.</strong> Daily check-ins, progress posts, and systems that make slipping hard.</div>
         </li>
         <li>
           <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -349,7 +355,7 @@
 <!-- ═══ EVENTS ════════════════════════════════════════════════════════════ -->
 <section id="events">
   <div class="section-header fade-up">
-    <p class="section-tag red">UPCOMING EVENTS</p>
+    <p class="events-big-label">UPCOMING EVENTS</p>
     <h2>WHAT'S GOING ON INSIDE<br><span class="cyan">THE STICKLEY METHOD</span></h2>
     <p class="section-sub">Cash prizes, XP rewards, one-on-one calls, and more. Don't miss out.</p>
   </div>
@@ -419,74 +425,121 @@
 <!-- ═══ STUDENT REVIEWS ═══════════════════════════════════════════════════ -->
 <section id="reviews">
   <div class="section-header fade-up">
-    <p class="section-tag gold-tag">THE STICKLEY METHOD</p>
+    <p class="section-tag" style="color:var(--gold)">THE STICKLEY METHOD</p>
     <h2>STUDENT <span class="cyan">REVIEWS</span></h2>
   </div>
 
-  <div class="reviews-carousel-wrap">
-    <button class="carousel-arrow arrow-prev" id="rev-prev" aria-label="Previous reviews">
+  <div class="reviews-outer">
+    <button class="carousel-arrow arrow-prev" id="rev-prev" aria-label="Previous review">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
-    <div class="reviews-grid" id="reviews-grid">
+    <div class="carousel-viewport">
+      <div class="carousel-track" id="rev-track">
 
-      <div class="review-card">
-        <div class="rev-top">
-          <div class="rev-avatar" style="--av-a:#0EC4E6;--av-b:#c9a84c">MN</div>
-          <div class="rev-meta"><strong>Mykhalo Nesterov</strong><span class="rev-stars">★★★★★</span></div>
-          <img src="image logo looksmaxxing copy.png" alt="TSM" class="rev-logo">
+        <div class="review-card">
+          <div class="rev-avatar" style="--a:#0EC4E6;--b:#c9a84c">MN</div>
+          <p class="rev-name">Mykhalo Nesterov</p>
+          <div class="rev-stars">★★★★★</div>
+          <p>"Literally the biggest and most advanced community in looksmaxxing. Every tip given here is spot on and could change your life entirely — not only on how to look better, but how to BE better in every aspect of your life. 5/5, period."</p>
         </div>
-        <p>"Literally the biggest and most advanced community in looksmaxxing. Needless to say, every tip given in here is spot on, and could change your life entirely — not only on how to look better, but also how to BE better in every aspect of your life. 5/5, period."</p>
-      </div>
 
-      <div class="review-card">
-        <div class="rev-top">
-          <div class="rev-avatar" style="--av-a:#c9a84c;--av-b:#0EC4E6">RS</div>
-          <div class="rev-meta"><strong>RSB</strong><span class="rev-stars">★★★★★</span></div>
-          <img src="image logo looksmaxxing copy.png" alt="TSM" class="rev-logo">
+        <div class="review-card">
+          <div class="rev-avatar" style="--a:#c9a84c;--b:#0EC4E6">RS</div>
+          <p class="rev-name">RSB</p>
+          <div class="rev-stars">★★★★★</div>
+          <p>"This community is one of the best decisions I've made in my life. The value inside is like nothing I've seen in any other community. So many valuable lessons discussing how to improve every single aspect of your looks."</p>
         </div>
-        <p>"This community is one of the best decisions I've made in my life. The value inside is like nothing I've ever seen in any other community. There's so many valuable lessons in there discussing how to improve every single aspect of your looks."</p>
-      </div>
 
-      <div class="review-card">
-        <div class="rev-top">
-          <div class="rev-avatar" style="--av-a:#0EC4E6;--av-b:#0a2540">PR</div>
-          <div class="rev-meta"><strong>_Pretzel._</strong><span class="rev-stars">★★★★★</span></div>
-          <img src="image logo looksmaxxing copy.png" alt="TSM" class="rev-logo">
+        <div class="review-card">
+          <div class="rev-avatar" style="--a:#0EC4E6;--b:#0a2540">PR</div>
+          <p class="rev-name">_Pretzel._</p>
+          <div class="rev-stars">★★★★★</div>
+          <p>"This community is great whether for the information or the organisation. It keeps me focused and locked into what I want to do. Baby and Adam Stickley are both always helping me out and giving me great advice."</p>
         </div>
-        <p>"This community is great, whether for the information or the organisation of it all. It really helps me stay focused on my goals and lock into what I want to do. Baby and Adam Stickley are both always helping me out, reaching out and giving me great advice."</p>
-      </div>
 
-      <div class="review-card">
-        <div class="rev-top">
-          <div class="rev-avatar" style="--av-a:#c9a84c;--av-b:#111">RP</div>
-          <div class="rev-meta"><strong>Rhuben Pieterse</strong><span class="rev-stars">★★★★☆</span></div>
-          <img src="image logo looksmaxxing copy.png" alt="TSM" class="rev-logo">
+        <div class="review-card">
+          <div class="rev-avatar" style="--a:#c9a84c;--b:#111">RP</div>
+          <p class="rev-name">Rhuben Pieterse</p>
+          <div class="rev-stars">★★★★☆</div>
+          <p>"Amazing community. What Baby and Adam built is truly the holy grail of looksmaxxing. They've helped me improve my looks massively. 4 stars purely for how well built this community is — incredible structure."</p>
         </div>
-        <p>"Amazing community. What Baby and Adam built is truly the holy grail of looksmaxxing and they've helped me so much to improve my looks. I cannot give a 5 star, 4 stars purely for how well built this community is."</p>
-      </div>
 
-      <div class="review-card">
-        <div class="rev-top">
-          <div class="rev-avatar" style="--av-a:#0EC4E6;--av-b:#c9a84c">GV</div>
-          <div class="rev-meta"><strong>gamingVictor</strong><span class="rev-stars">★★★★★</span></div>
-          <img src="image logo looksmaxxing copy.png" alt="TSM" class="rev-logo">
+        <div class="review-card">
+          <div class="rev-avatar" style="--a:#0EC4E6;--b:#c9a84c">GV</div>
+          <p class="rev-name">gamingVictor</p>
+          <div class="rev-stars">★★★★★</div>
+          <p>"I highly recommend joining the community. The sense of humour and warmth is incredible. It helps me understand how to look better, which is the whole point. Truly the best looksmaxxing community. 10/10 value!"</p>
         </div>
-        <p>"I highly recommend joining the community. The sense of humour and warmth of it all is incredible. It really helps me understand how to look better, which is the whole point. Truly is the best looksmaxxing community. 10/10 value at least!"</p>
-      </div>
 
-      <div class="review-card">
-        <div class="rev-top">
-          <div class="rev-avatar" style="--av-a:#c9a84c;--av-b:#0EC4E6">BD</div>
-          <div class="rev-meta"><strong>Brandon Duran</strong><span class="rev-stars">★★★★★</span></div>
-          <img src="image logo looksmaxxing copy.png" alt="TSM" class="rev-logo">
+        <div class="review-card">
+          <div class="rev-avatar" style="--a:#c9a84c;--b:#0EC4E6">BD</div>
+          <p class="rev-name">Brandon Duran</p>
+          <div class="rev-stars">★★★★★</div>
+          <p>"Easy-to-understand and applicable methods, but the sense of community, accountability, and discipline here is top notch. 100% worth the value. Every young male trying to better their looks should be in this at least once."</p>
         </div>
-        <p>"This offers easy-to-understand and applicable methods, but the sense of community, accountability, and discipline encouraged here is top notch. Truly 100% worth the value. Every young male trying to better their looks and overall life should be in this."</p>
-      </div>
 
+        <div class="review-card">
+          <div class="rev-avatar" style="--a:#0EC4E6;--b:#c9a84c">SK</div>
+          <p class="rev-name">Sam K.</p>
+          <div class="rev-stars">★★★★★</div>
+          <p>"Joined TSM 6 months ago and the progress I've made is unreal. The modules are incredibly detailed and the community keeps you accountable every day. Best investment I've made in myself, hands down."</p>
+        </div>
+
+        <div class="review-card">
+          <div class="rev-avatar" style="--a:#c9a84c;--b:#0a2540">TM</div>
+          <p class="rev-name">Tyler M.</p>
+          <div class="rev-stars">★★★★★</div>
+          <p>"The structured approach is what separates this from everything else. You get a complete system, not random tips. I've improved my jawline, posture, skin — everything. The brotherhood aspect is a massive bonus."</p>
+        </div>
+
+        <div class="review-card">
+          <div class="rev-avatar" style="--a:#0EC4E6;--b:#111">AV</div>
+          <p class="rev-name">Alex V.</p>
+          <div class="rev-stars">★★★★★</div>
+          <p>"I was sceptical at first but the results speak for themselves. The looksmaxxing challenges push you to stay consistent, and the weekly workshops with Baby are worth the price of admission alone. Genuinely life-changing."</p>
+        </div>
+
+        <div class="review-card">
+          <div class="rev-avatar" style="--a:#c9a84c;--b:#0EC4E6">JW</div>
+          <p class="rev-name">Jack W.</p>
+          <div class="rev-stars">★★★★★</div>
+          <p>"The quality of information inside TSM is on another level. I've tried other communities and nothing comes close. The events, challenges, modules — everything works together. Cannot recommend it enough."</p>
+        </div>
+
+        <div class="review-card">
+          <div class="rev-avatar" style="--a:#0EC4E6;--b:#c9a84c">KH</div>
+          <p class="rev-name">Kieran H.</p>
+          <div class="rev-stars">★★★★★</div>
+          <p>"What I love most is how personalised the support feels. You get feedback on your actual situation, not generic advice. Three months in and people are noticing. My confidence has gone through the roof."</p>
+        </div>
+
+        <div class="review-card">
+          <div class="rev-avatar" style="--a:#c9a84c;--b:#111">MR</div>
+          <p class="rev-name">Max R.</p>
+          <div class="rev-stars">★★★★★</div>
+          <p>"If you're serious about improving your looks and overall lifestyle, this is the place. The Stickley Method gives you the roadmap and the community gives you the fuel to follow it. Don't wait, just join."</p>
+        </div>
+
+      </div>
     </div>
-    <button class="carousel-arrow arrow-next" id="rev-next" aria-label="Next reviews">
+    <button class="carousel-arrow arrow-next" id="rev-next" aria-label="Next review">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
+  </div>
+
+  <div class="carousel-dots" id="rev-dots">
+    <button class="dot active" data-idx="0"></button>
+    <button class="dot" data-idx="1"></button>
+    <button class="dot" data-idx="2"></button>
+    <button class="dot" data-idx="3"></button>
+    <button class="dot" data-idx="4"></button>
+    <button class="dot" data-idx="5"></button>
+    <button class="dot" data-idx="6"></button>
+    <button class="dot" data-idx="7"></button>
+    <button class="dot" data-idx="8"></button>
+    <button class="dot" data-idx="9"></button>
+    <button class="dot" data-idx="10"></button>
+    <button class="dot" data-idx="11"></button>
   </div>
 
   <div class="section-cta fade-up">

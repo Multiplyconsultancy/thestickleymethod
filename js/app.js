@@ -37,46 +37,85 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!mobileNav.classList.contains('open')) {
       header.classList.toggle('hide', y > lastY && y > 180);
     }
-    lastY   = y;
-    ticking = false;
+    lastY = y; ticking = false;
   }
   window.addEventListener('scroll', function () {
     if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
   }, { passive: true });
 
-  /* ── 3. PHOENIX LOGO ANIMATION ──────────────────────────────── */
-  var logoImg = document.getElementById('logo-img');
+  /* ── 3. PHOENIX CANVAS ANIMATION (hero) ─────────────────────── */
+  var FRAME_COUNT  = 121;
+  var FPS          = 24;
+  var FRAME_DELAY  = Math.round(1000 / FPS);   // ~41ms
+  var REPEAT_AFTER = 17000;                     // ms pause before replay
 
-  function triggerPhoenix() {
-    if (!logoImg) return;
-    logoImg.classList.remove('phoenix-awaken');
-    void logoImg.offsetWidth;           // force reflow to restart animation
-    logoImg.classList.add('phoenix-awaken');
+  var heroCanvas  = document.getElementById('hero-canvas');
+  var heroCtx     = heroCanvas ? heroCanvas.getContext('2d') : null;
+  var phoenixFrames = [];
+  var loadedCount   = 0;
+  var animTimer     = null;
+  var animPlaying   = false;
+
+  function padNum(n) { return ('000' + n).slice(-4); }
+
+  function drawOnCanvas(img) {
+    if (!heroCtx || !img) return;
+    heroCtx.clearRect(0, 0, heroCanvas.width, heroCanvas.height);
+    var iw = img.naturalWidth,  ih = img.naturalHeight;
+    var cw = heroCanvas.width,  ch = heroCanvas.height;
+    var scale = Math.min(cw / iw, ch / ih);
+    var dw = iw * scale, dh = ih * scale;
+    heroCtx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
   }
 
-  // On page load
-  triggerPhoenix();
+  function playPhoenix() {
+    if (!heroCtx || animPlaying) return;
+    animPlaying = true;
+    var frame = 0;
+    clearInterval(animTimer);
 
-  // Every 17 seconds
-  setInterval(triggerPhoenix, 17000);
-
-  // Remove class after animation ends so it can re-trigger cleanly
-  if (logoImg) {
-    logoImg.addEventListener('animationend', function () {
-      logoImg.classList.remove('phoenix-awaken');
-    });
+    animTimer = setInterval(function () {
+      if (phoenixFrames[frame]) drawOnCanvas(phoenixFrames[frame]);
+      frame++;
+      if (frame >= FRAME_COUNT) {
+        clearInterval(animTimer);
+        animPlaying = false;
+        // Hold last frame, then replay after pause
+        setTimeout(function () {
+          if (!animPlaying) playPhoenix();
+        }, REPEAT_AFTER);
+      }
+    }, FRAME_DELAY);
   }
 
-  /* ── 4. STATS COUNTER ANIMATION ─────────────────────────────── */
+  if (heroCanvas && heroCtx) {
+    // Load all 121 frames; start playing when frame 1 arrives
+    for (var i = 0; i < FRAME_COUNT; i++) {
+      (function (idx) {
+        var img = new Image();
+        img.onload = function () {
+          phoenixFrames[idx] = img;
+          loadedCount++;
+          // Show first frame immediately as a still
+          if (idx === 0) drawOnCanvas(img);
+          // Start animation once first 15 frames are ready
+          if (loadedCount === 15 && !animPlaying) playPhoenix();
+        };
+        img.src = 'frames/frame_' + padNum(idx + 1) + '.png';
+      })(i);
+    }
+  }
+
+  /* ── 4. STATS COUNTER ───────────────────────────────────────── */
   var statNums = document.querySelectorAll('.stat-num[data-target]');
 
   function animateCounter(el) {
-    var target   = parseInt(el.getAttribute('data-target'), 10);
-    var duration = 1600;
-    var start    = null;
+    var target = parseInt(el.getAttribute('data-target'), 10);
+    var dur    = 1600;
+    var start  = null;
     function step(ts) {
       if (!start) start = ts;
-      var p     = Math.min((ts - start) / duration, 1);
+      var p     = Math.min((ts - start) / dur, 1);
       var eased = 1 - Math.pow(1 - p, 3);
       el.textContent = Math.round(eased * target).toLocaleString();
       if (p < 1) requestAnimationFrame(step);
@@ -86,28 +125,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var statsObs = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
-      if (e.isIntersecting) {
-        statNums.forEach(animateCounter);
-        statsObs.disconnect();
-      }
+      if (e.isIntersecting) { statNums.forEach(animateCounter); statsObs.disconnect(); }
     });
   }, { threshold: 0.5 });
-
   var statsEl = document.getElementById('stats');
   if (statsEl) statsObs.observe(statsEl);
 
   /* ── 5. LEARN CAROUSEL (infinite loop) ──────────────────────── */
   buildCarousel({
-    trackId:   'learn-track',
-    prevId:    'learn-prev',
-    nextId:    'learn-next',
-    dotsId:    'learn-dots',
-    cardSel:   '.learn-card',
-    loop:      true
+    trackId:  'learn-track',
+    prevId:   'learn-prev',
+    nextId:   'learn-next',
+    dotsId:   'learn-dots',
+    cardSel:  '.learn-card',
+    loop:     true
   });
 
-  /* ── 6. REVIEWS DRAG-SCROLL ─────────────────────────────────── */
-  buildDragScroll('reviews-grid', 'rev-prev', 'rev-next');
+  /* ── 6. REVIEWS CAROUSEL (transform-based, dots) ────────────── */
+  buildCarousel({
+    trackId:  'rev-track',
+    prevId:   'rev-prev',
+    nextId:   'rev-next',
+    dotsId:   'rev-dots',
+    cardSel:  '.review-card',
+    loop:     true
+  });
 
   /* ── 7. RESULTS TABS ─────────────────────────────────────────── */
   var rtabs    = document.querySelectorAll('.rtab');
@@ -126,18 +168,12 @@ document.addEventListener('DOMContentLoaded', function () {
   /* ── 8. SCROLL FADE-UP ───────────────────────────────────────── */
   var fadeObs = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        fadeObs.unobserve(e.target);
-      }
+      if (e.isIntersecting) { e.target.classList.add('visible'); fadeObs.unobserve(e.target); }
     });
   }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-up').forEach(function (el) { fadeObs.observe(el); });
 
-  document.querySelectorAll('.fade-up').forEach(function (el) {
-    fadeObs.observe(el);
-  });
-
-  /* ── 9. FOOTER LOGO ANIMATION ON SCROLL ─────────────────────── */
+  /* ── 9. FOOTER LOGO ANIMATION ────────────────────────────────── */
   var footerLogo = document.getElementById('footer-logo');
   if (footerLogo) {
     var footerObs = new IntersectionObserver(function (entries) {
@@ -149,17 +185,17 @@ document.addEventListener('DOMContentLoaded', function () {
           footerObs.disconnect();
         }
       });
-    }, { threshold: 0.4 });
+    }, { threshold: 0.5 });
     footerObs.observe(footerLogo);
   }
 
   /* ══════════════════════════════════════════════════════════
-     HELPER — transform-based carousel (with optional loop)
+     HELPER — transform-based carousel with loop + dots
   ══════════════════════════════════════════════════════════ */
   function buildCarousel(opts) {
-    var track   = document.getElementById(opts.trackId);
-    var prevBtn = document.getElementById(opts.prevId);
-    var nextBtn = document.getElementById(opts.nextId);
+    var track    = document.getElementById(opts.trackId);
+    var prevBtn  = document.getElementById(opts.prevId);
+    var nextBtn  = document.getElementById(opts.nextId);
     var dotsWrap = document.getElementById(opts.dotsId);
     if (!track) return;
 
@@ -167,32 +203,26 @@ document.addEventListener('DOMContentLoaded', function () {
     var total = cards.length;
     if (!total) return;
 
-    var idx = 0;
-    var gap = 14;  // matches CSS gap
+    var idx  = 0;
+    var GAP  = 14;
 
     function cardWidth() {
-      return (cards[0] ? cards[0].offsetWidth : 260) + gap;
+      return (cards[0] ? cards[0].offsetWidth : 260) + GAP;
     }
 
     function goTo(n) {
-      if (opts.loop) {
-        idx = ((n % total) + total) % total;  // wrap around
-      } else {
-        idx = Math.max(0, Math.min(n, total - 1));
-      }
+      idx = opts.loop ? ((n % total) + total) % total : Math.max(0, Math.min(n, total - 1));
       track.style.transform = 'translateX(-' + (idx * cardWidth()) + 'px)';
-      updateDots();
+      // Update dots
+      if (dotsWrap) {
+        dotsWrap.querySelectorAll('.dot').forEach(function (d, i) {
+          d.classList.toggle('active', i === idx);
+        });
+      }
       if (!opts.loop) {
         if (prevBtn) prevBtn.disabled = idx === 0;
         if (nextBtn) nextBtn.disabled = idx >= total - 1;
       }
-    }
-
-    function updateDots() {
-      if (!dotsWrap) return;
-      dotsWrap.querySelectorAll('.dot').forEach(function (d, i) {
-        d.classList.toggle('active', i === idx);
-      });
     }
 
     if (prevBtn) prevBtn.addEventListener('click', function () { goTo(idx - 1); });
@@ -204,19 +234,16 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    // Touch + mouse drag
-    var startX   = 0;
-    var startIdx = 0;
-    var dragging = false;
+    // Drag / swipe
+    var startX = 0, startIdx = 0, dragging = false;
 
     track.addEventListener('mousedown', function (e) {
       startX = e.clientX; startIdx = idx; dragging = true;
     });
     document.addEventListener('mousemove', function (e) {
       if (!dragging) return;
-      var delta = e.clientX - startX;
       track.style.transition = 'none';
-      track.style.transform  = 'translateX(-' + (startIdx * cardWidth() - delta) + 'px)';
+      track.style.transform  = 'translateX(-' + (startIdx * cardWidth() - (e.clientX - startX)) + 'px)';
     });
     document.addEventListener('mouseup', function (e) {
       if (!dragging) return;
@@ -236,36 +263,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     goTo(0);
     window.addEventListener('resize', function () { goTo(idx); });
-  }
-
-  /* ══════════════════════════════════════════════════════════
-     HELPER — native overflow drag-scroll (reviews)
-  ══════════════════════════════════════════════════════════ */
-  function buildDragScroll(gridId, prevId, nextId) {
-    var grid    = document.getElementById(gridId);
-    var prevBtn = document.getElementById(prevId);
-    var nextBtn = document.getElementById(nextId);
-    if (!grid) return;
-
-    var isDown = false, startX = 0, scrollLeft = 0;
-
-    grid.addEventListener('mousedown', function (e) {
-      isDown = true; startX = e.pageX - grid.offsetLeft; scrollLeft = grid.scrollLeft;
-    });
-    document.addEventListener('mouseup',    function () { isDown = false; });
-    grid.addEventListener('mouseleave', function () { isDown = false; });
-    grid.addEventListener('mousemove',  function (e) {
-      if (!isDown) return;
-      e.preventDefault();
-      grid.scrollLeft = scrollLeft - (e.pageX - grid.offsetLeft - startX) * 1.4;
-    });
-
-    function cardW() {
-      var c = grid.querySelector('.review-card');
-      return c ? c.offsetWidth + 14 : 290;
-    }
-    if (prevBtn) prevBtn.addEventListener('click', function () { grid.scrollBy({ left: -cardW(), behavior: 'smooth' }); });
-    if (nextBtn) nextBtn.addEventListener('click', function () { grid.scrollBy({ left:  cardW(), behavior: 'smooth' }); });
   }
 
 });
