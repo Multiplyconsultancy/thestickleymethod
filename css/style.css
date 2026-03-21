@@ -376,8 +376,7 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 ═══════════════════════════════════════════════════════════ */
 #hero {
   background: var(--white);
-  padding: 5vh 24px 14px;
-  min-height: calc(100vh - var(--announce-h) - var(--header-h));
+  padding: 9vh 24px 4vh;
   display: flex;
   align-items: flex-start;
   justify-content: center;
