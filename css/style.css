@@ -531,15 +531,18 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 .carousel-viewport { overflow: hidden; width: 100%; }
 .carousel-track {
   display: flex;
-  gap: 0;                /* default: no gap — added per-carousel below */
-  padding: 8px 20px;
+  gap: 0;
+  padding: 0;            /* no padding by default — added per-carousel below */
   transition: transform 0.42s cubic-bezier(0.4,0,0.2,1);
   will-change: transform;
   cursor: grab;
   user-select: none;
 }
-/* Only the multi-card carousels need a gap between cards */
-#learn-track, #rev-track { gap: 14px; }
+/* Multi-card carousels: gap + padding for card breathing room / shadow space */
+#learn-track, #rev-track {
+  gap: 14px;
+  padding: 8px 20px;
+}
 .carousel-track:active { cursor: grabbing; }
 
 /* Learn cards — full image shown */
