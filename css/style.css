@@ -734,32 +734,27 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   margin-bottom: 6px;
 }
 
-/* Consistent fixed height — object-fit:cover fills without distortion */
+/* Show full image — no cropping in CSS */
 .transform-img-wrap img {
   width: 100%;
-  height: clamp(170px, 42vw, 300px);
-  object-fit: cover;
-  object-position: center;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
   border-radius: 6px;
   display: block;
 }
 
-/* Physique is naturally taller */
-.results-content[data-content="physique"] .transform-img-wrap img {
-  height: clamp(220px, 56vw, 400px);
-}
-
 /* Eyes — single centred photo */
 .transform-single {
-  max-width: 420px;
+  max-width: 480px;
   margin: 0 auto;
   padding: 0 10px;
 }
 .transform-single img {
   width: 100%;
-  height: clamp(170px, 42vw, 300px);
-  object-fit: cover;
-  object-position: center;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
   border-radius: 6px;
   display: block;
 }
