@@ -687,16 +687,68 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   transition: all var(--tr);
 }
 .rtab:hover, .rtab.active { background: var(--gold); color: var(--white); border-color: var(--gold); }
-.results-display { max-width: 660px; margin: 0 auto; }
+.results-display { max-width: 800px; margin: 0 auto; }
 .results-content { display: none; }
 .results-content.active { display: block; }
-.results-img-wrap {
-  border-radius: var(--radius);
-  overflow: hidden;
-  aspect-ratio: 16/9;
-  background: var(--card-dark);
+
+/* Transformation carousels */
+.results-carousel-outer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 44px;
 }
-.results-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.results-carousel-outer .arrow-prev { left: 0; }
+.results-carousel-outer .arrow-next { right: 0; }
+.results-carousel-outer .carousel-track { gap: 0; }
+
+.transform-slide {
+  flex-shrink: 0;
+  padding: 0 6px;
+  box-sizing: border-box;
+}
+.transform-pair {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.transform-img-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.transform-label {
+  display: block;
+  font-family: var(--font-head);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.transform-img-wrap img {
+  width: 100%;
+  height: auto;
+  max-height: 65vh;
+  object-fit: contain;
+  border-radius: 6px;
+  display: block;
+}
+.transform-single {
+  max-width: 420px;
+  margin: 0 auto;
+}
+.transform-single img {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: 6px;
+  display: block;
+}
 
 /* ═══════════════════════════════════════════════════════════
    EVENTS — "UPCOMING EVENTS" big gold label, headers cyan

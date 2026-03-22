@@ -245,9 +245,24 @@ document.addEventListener('DOMContentLoaded', function () {
     loop:     true
   });
 
-  /* ── 7. RESULTS TABS ─────────────────────────────────────────── */
+  /* ── 7. RESULTS TABS + CAROUSELS ─────────────────────────────── */
   var rtabs    = document.querySelectorAll('.rtab');
   var rContent = document.querySelectorAll('.results-content');
+
+  // Build one full-width carousel per results tab
+  var rCarousels = {};
+  ['overall','jawline','eyes','skin','physique'].forEach(function(key) {
+    rCarousels[key] = buildCarousel({
+      trackId:   key + '-track',
+      prevId:    key + '-prev',
+      nextId:    key + '-next',
+      dotsId:    key + '-dots',
+      cardSel:   '.transform-slide',
+      loop:      true,
+      fullWidth: true
+    });
+  });
+
   rtabs.forEach(function (tab) {
     tab.addEventListener('click', function () {
       var key = tab.getAttribute('data-tab');
@@ -256,6 +271,8 @@ document.addEventListener('DOMContentLoaded', function () {
       tab.classList.add('active');
       var c = document.querySelector('[data-content="' + key + '"]');
       if (c) c.classList.add('active');
+      // Refresh carousel widths now that the panel is visible
+      if (rCarousels[key]) rCarousels[key].refresh();
     });
   });
 
@@ -275,23 +292,29 @@ document.addEventListener('DOMContentLoaded', function () {
     var prevBtn  = document.getElementById(opts.prevId);
     var nextBtn  = document.getElementById(opts.nextId);
     var dotsWrap = document.getElementById(opts.dotsId);
-    if (!track) return;
+    if (!track) return null;
 
     var viewport = track.parentElement;  // .carousel-viewport
     var cards = track.querySelectorAll(opts.cardSel);
     var total = cards.length;
-    if (!total) return;
+    if (!total) return null;
 
-    var idx  = 0;
-    var GAP  = 14;
+    var idx = 0;
+    var GAP = opts.gap !== undefined ? opts.gap : 14;
 
     function cardWidth() {
+      if (opts.fullWidth) return viewport.offsetWidth || 0;
       return (cards[0] ? cards[0].offsetWidth : 260) + GAP;
     }
 
     function goTo(n) {
       idx = opts.loop ? ((n % total) + total) % total : Math.max(0, Math.min(n, total - 1));
-      track.style.transform = 'translateX(-' + (idx * cardWidth()) + 'px)';
+      var cw = cardWidth();
+      // For full-width carousels, set each slide's width once we know it
+      if (opts.fullWidth && cw > 0) {
+        cards.forEach(function(c) { c.style.width = cw + 'px'; });
+      }
+      track.style.transform = 'translateX(-' + (idx * cw) + 'px)';
       if (dotsWrap) {
         dotsWrap.querySelectorAll('.dot').forEach(function (d, i) {
           d.classList.toggle('active', i === idx);
@@ -342,6 +365,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     goTo(0);
     window.addEventListener('resize', function () { goTo(idx); });
+
+    return { refresh: function() { goTo(idx); } };
   }
 
 });
