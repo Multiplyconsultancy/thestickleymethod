@@ -953,6 +953,17 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 /* ═══════════════════════════════════════════════════════════
    TABLET — 600px+
 ═══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════
+   MOBILE — results carousel full-width
+═══════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  .results-carousel-outer {
+    /* cancel the section's 24px padding so carousel reaches near screen edges */
+    margin: 0 -20px;
+    padding: 0 6px;   /* arrows sit 6px from screen edge */
+  }
+}
+
 @media (min-width: 600px) {
   .events-grid { grid-template-columns: repeat(3,1fr); }
   .community-inner { flex-direction: row; text-align: left; }
