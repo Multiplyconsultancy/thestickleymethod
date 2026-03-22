@@ -531,13 +531,15 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 .carousel-viewport { overflow: hidden; width: 100%; }
 .carousel-track {
   display: flex;
-  gap: 14px;
+  gap: 0;                /* default: no gap — added per-carousel below */
   padding: 8px 20px;
   transition: transform 0.42s cubic-bezier(0.4,0,0.2,1);
   will-change: transform;
   cursor: grab;
   user-select: none;
 }
+/* Only the multi-card carousels need a gap between cards */
+#learn-track, #rev-track { gap: 14px; }
 .carousel-track:active { cursor: grabbing; }
 
 /* Learn cards — full image shown */
@@ -697,10 +699,10 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   display: flex;
   align-items: center;
   padding: 0 44px;
+  overflow: hidden;     /* belt-and-braces: clip any sub-pixel bleed */
 }
 .results-carousel-outer .arrow-prev { left: 0; }
 .results-carousel-outer .arrow-next { right: 0; }
-.results-carousel-outer .carousel-track { gap: 0; }
 
 /* Each slide is exactly the viewport width — no padding so no peek-through */
 .transform-slide {

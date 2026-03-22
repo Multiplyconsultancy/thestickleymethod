@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var GAP = opts.gap !== undefined ? opts.gap : 14;
 
     function cardWidth() {
-      if (opts.fullWidth) return viewport.offsetWidth || 0;
+      if (opts.fullWidth) return Math.floor(viewport.offsetWidth) || 0;
       return (cards[0] ? cards[0].offsetWidth : 260) + GAP;
     }
 
