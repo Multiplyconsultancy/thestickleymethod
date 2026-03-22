@@ -702,15 +702,19 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 .results-carousel-outer .arrow-next { right: 0; }
 .results-carousel-outer .carousel-track { gap: 0; }
 
+/* Each slide is exactly the viewport width — no padding so no peek-through */
 .transform-slide {
   flex-shrink: 0;
-  padding: 0 6px;
   box-sizing: border-box;
+  /* width set by JS to viewport.offsetWidth */
 }
+
+/* Inner breathing room lives inside the pair, not the slide */
 .transform-pair {
   display: flex;
   gap: 10px;
   align-items: flex-start;
+  padding: 0 10px;
 }
 .transform-img-wrap {
   flex: 1;
@@ -729,23 +733,33 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   text-transform: uppercase;
   margin-bottom: 6px;
 }
+
+/* Consistent fixed height — object-fit:cover fills without distortion */
 .transform-img-wrap img {
   width: 100%;
-  height: auto;
-  max-height: 65vh;
-  object-fit: contain;
+  height: clamp(170px, 42vw, 300px);
+  object-fit: cover;
+  object-position: center;
   border-radius: 6px;
   display: block;
 }
+
+/* Physique is naturally taller */
+.results-content[data-content="physique"] .transform-img-wrap img {
+  height: clamp(220px, 56vw, 400px);
+}
+
+/* Eyes — single centred photo */
 .transform-single {
   max-width: 420px;
   margin: 0 auto;
+  padding: 0 10px;
 }
 .transform-single img {
   width: 100%;
-  height: auto;
-  max-height: 70vh;
-  object-fit: contain;
+  height: clamp(170px, 42vw, 300px);
+  object-fit: cover;
+  object-position: center;
   border-radius: 6px;
   display: block;
 }
