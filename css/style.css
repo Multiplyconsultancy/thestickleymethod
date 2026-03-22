@@ -749,9 +749,10 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   display: block;
 }
 
-/* Eyes — single centred photo */
+/* Eyes — single centred photo, smaller than full-width pairs */
 .transform-single {
-  max-width: 480px;
+  width: 65%;
+  max-width: 320px;
   margin: 0 auto;
   padding: 0 10px;
 }
