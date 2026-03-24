@@ -192,7 +192,6 @@
     .scroll-arrow {
       width: 20px;
       height: 20px;
-      color: var(--gold);
       animation: scrollBounce 1.6s ease-in-out infinite;
     }
     .scroll-label {
@@ -201,7 +200,10 @@
       font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--gold);
+      background: linear-gradient(180deg, #fdf0b0 0%, #d4a83a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     @keyframes scrollBounce {
       0%, 100% { transform: translateY(0); opacity: 0.6; }
@@ -328,7 +330,7 @@
       <div class="step-num">2</div>
       <div class="step-body">
         <strong>Send in your photos</strong>
-        <p>Drop clear, front and side-facing photos in the <span style="white-space:nowrap;"><strong>#ratings</strong> channel</span>. Baby will use them to build your personalised looksmaxxing plan.</p>
+        <p>In the <strong>#ratings</strong> channel, drop clear front and side-facing photos. Baby will use them to build your personalised looksmaxxing plan.</p>
       </div>
     </div>
 
@@ -353,7 +355,15 @@
 
 <div id="gradient-bridge">
   <div id="scroll-hint">
-    <svg class="scroll-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    <svg class="scroll-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2.5">
+      <defs>
+        <linearGradient id="scrollGold" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#fdf0b0"/>
+          <stop offset="100%" stop-color="#d4a83a"/>
+        </linearGradient>
+      </defs>
+      <polyline points="6 9 12 15 18 9" stroke="url(#scrollGold)"/>
+    </svg>
     <span class="scroll-label">Scroll</span>
   </div>
 </div>
