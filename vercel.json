@@ -3,7 +3,6 @@
   "buildCommand": null,
   "installCommand": null,
   "framework": null,
-  "routes": [
-    { "src": "/(.*)", "dest": "/$1" }
-  ]
+  "cleanUrls": true,
+  "trailingSlash": false
 }
