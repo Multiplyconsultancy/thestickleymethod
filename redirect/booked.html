@@ -64,6 +64,10 @@
       text-align: center;
       background: var(--white);
     }
+    .hero-inner {
+      max-width: 560px;
+      margin: 0 auto;
+    }
     .booked-badge {
       display: inline-flex;
       align-items: center;
@@ -101,25 +105,23 @@
     .page-sub {
       font-size: clamp(0.95rem, 2.5vw, 1.05rem);
       color: var(--mid);
-      max-width: 480px;
-      margin: 0 auto;
       line-height: 1.7;
     }
 
     /* ── Steps ──────────────────────────────────────────── */
     #steps {
-      padding: 40px 24px 48px;
+      padding: 40px 24px 0;
       max-width: 560px;
       margin: 0 auto;
     }
     .steps-heading {
       font-family: var(--font-head);
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.18em;
+      font-size: clamp(1.8rem, 7vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 20px;
+      color: var(--dark);
+      margin-bottom: 24px;
       text-align: center;
     }
     .step-list {
@@ -173,43 +175,51 @@
       text-underline-offset: 3px;
     }
 
+    /* ── Gradient bridge ────────────────────────────────── */
+    #gradient-bridge {
+      height: 120px;
+      background: linear-gradient(to bottom, #ffffff, #000000);
+    }
+
     /* ── Nightfall CTA ──────────────────────────────────── */
     #nightfall {
-      margin: 0 24px 56px;
-      max-width: 560px;
-      margin-left: auto;
-      margin-right: auto;
-      background: var(--navy);
-      border-radius: 16px;
-      padding: 36px 28px;
+      background: #000000;
+      margin-top: -1px;
+      padding: 56px 24px 72px;
       text-align: center;
       color: var(--white);
     }
     .nightfall-label {
       font-family: var(--font-head);
-      font-size: 0.72rem;
+      font-size: 0.85rem;
       font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--gold);
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
     .nightfall-heading {
       font-family: var(--font-head);
       font-weight: 800;
-      font-size: clamp(1.8rem, 7vw, 2.8rem);
+      font-size: clamp(2rem, 8vw, 3.4rem);
       line-height: 1;
       text-transform: uppercase;
       letter-spacing: -0.01em;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
+      color: var(--white);
     }
-    .nightfall-heading span { color: var(--cyan); }
+    .nightfall-heading .gold-gradient {
+      background: linear-gradient(135deg, #f5d680 0%, #c9a84c 40%, #e8c35a 70%, #a87c2a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
     .nightfall-body {
-      font-size: 0.9rem;
-      color: rgba(255,255,255,0.7);
-      line-height: 1.65;
-      margin-bottom: 24px;
-      max-width: 380px;
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.7;
+      margin-bottom: 32px;
+      max-width: 400px;
       margin-left: auto;
       margin-right: auto;
     }
@@ -248,13 +258,15 @@
 </header>
 
 <section id="hero">
-  <div class="booked-badge">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-    Call booked
+  <div class="hero-inner">
+    <div class="booked-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      Call booked
+    </div>
+    <h1 class="page-heading">YOU'RE ALL SET.<br><span class="accent">LET'S GET TO WORK.</span></h1>
+    <div class="hero-divider"></div>
+    <p class="page-sub">Your onboarding call is confirmed. In the meantime, here's exactly what to do right now to hit the ground running before your call.</p>
   </div>
-  <h1 class="page-heading">YOU'RE ALL SET.<br><span class="accent">LET'S GET TO WORK.</span></h1>
-  <div class="hero-divider"></div>
-  <p class="page-sub">Your onboarding call is confirmed. In the meantime, here's exactly what to do right now to hit the ground running before your call.</p>
 </section>
 
 <section id="steps">
@@ -265,15 +277,15 @@
       <div class="step-num">1</div>
       <div class="step-body">
         <strong>Join the TSM Discord</strong>
-        <p>This is where the brotherhood lives. Introduce yourself, meet the members, and start absorbing the culture. <a href="#">Join Discord →</a></p>
+        <p>This is where the brotherhood lives. Introduce yourself, meet the members, and start absorbing the culture.</p>
       </div>
     </div>
 
     <div class="step">
       <div class="step-num">2</div>
       <div class="step-body">
-        <strong>Send in your photo</strong>
-        <p>Drop a clear front-facing photo in the dedicated channel. Our team will use it to build your personalised looksmaxxing plan.</p>
+        <strong>Send in your photos</strong>
+        <p>Drop clear, front and side-facing photos in the <strong>#ratings</strong> channel. Baby will use them to build your personalised looksmaxxing plan.</p>
       </div>
     </div>
 
@@ -296,10 +308,12 @@
   </div>
 </section>
 
+<div id="gradient-bridge"></div>
+
 <div id="nightfall">
   <p class="nightfall-label">Ready for the full transformation?</p>
-  <h2 class="nightfall-heading">BECOME THE MAN<br>WITH <span>NIGHTFALL</span></h2>
-  <p class="nightfall-body">The next level of The Stickley Method. Elite mentorship, advanced protocols, and a direct line to the top coaches.</p>
+  <h2 class="nightfall-heading">BECOME THE MAN<br>WITH <span class="gold-gradient">NIGHTFALL</span></h2>
+  <p class="nightfall-body">The next level of The Stickley Method. Elite mentorship, advanced protocols, and a direct line to Baby and Adam.</p>
   <a href="#" class="btn-nightfall">
     Unlock Nightfall
   </a>
