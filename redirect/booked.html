@@ -187,15 +187,16 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px;
-    }
-    #scroll-hint .scroll-label {
-      margin-top: 6px;
+      gap: 0;
     }
     .scroll-arrow {
       width: 20px;
       height: 20px;
+      margin: -5px 0;
       animation: scrollBounce 1.6s ease-in-out infinite;
+    }
+    #scroll-hint .scroll-label {
+      margin-top: 8px;
     }
     .scroll-label {
       font-family: var(--font-head);
@@ -215,13 +216,13 @@
 
     /* ── Gradient bridge ────────────────────────────────── */
     #gradient-bridge {
-      height: 140px;
+      height: 120px;
       background: linear-gradient(to bottom, #ffffff, #000000);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding-top: 6px;
+      padding-top: 14px;
     }
 
     /* ── Nightfall CTA ──────────────────────────────────── */
