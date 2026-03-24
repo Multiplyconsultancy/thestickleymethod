@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Welcome — The Stickley Method</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cyan:      #0EC4E6;
+      --gold:      #c9a84c;
+      --navy:      #0a2540;
+      --dark:      #111111;
+      --mid:       #444444;
+      --muted:     #888888;
+      --light:     #f5f5f5;
+      --white:     #ffffff;
+      --border:    #e0e0e0;
+      --font-head: 'Barlow Condensed', sans-serif;
+      --font-body: 'Barlow', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--white);
+      color: var(--dark);
+      line-height: 1.55;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── Header ─────────────────────────────────────────── */
+    #header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    #logo-canvas { width: 46px; height: 46px; display: block; flex-shrink: 0; }
+    .logo-brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+    .logo-brand-top {
+      font-family: var(--font-head);
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: var(--dark);
+      text-transform: uppercase;
+    }
+    .logo-brand-bot {
+      font-family: var(--font-head);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ── Hero ───────────────────────────────────────────── */
+    #hero {
+      min-height: calc(100vh - 60px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px 56px;
+      background: var(--white);
+    }
+    .hero-inner {
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Congrats badge */
+    .congrats-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #f0fdf8;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+      font-family: var(--font-head);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+    .congrats-badge svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+    /* Heading */
+    .welcome-heading {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: clamp(2.6rem, 11vw, 5.2rem);
+      line-height: 0.95;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      color: var(--dark);
+      margin-bottom: 20px;
+    }
+    .welcome-heading .accent { color: var(--cyan); }
+
+    /* Divider */
+    .hero-divider {
+      width: 48px;
+      height: 3px;
+      background: var(--gold);
+      border-radius: 2px;
+      margin: 0 auto 24px;
+    }
+
+    /* Body text */
+    .welcome-body {
+      font-size: clamp(1rem, 2.6vw, 1.1rem);
+      color: var(--mid);
+      line-height: 1.7;
+      max-width: 460px;
+      margin: 0 auto 36px;
+    }
+    .welcome-body strong { color: var(--dark); }
+
+    /* CTA button */
+    .btn-book {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--cyan);
+      color: var(--white);
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 18px 36px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      box-shadow: 0 4px 20px rgba(14,196,230,0.35);
+      width: 100%;
+      max-width: 380px;
+    }
+    .btn-book:hover { background: #0aaac9; transform: translateY(-2px); }
+    .btn-book svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .btn-note {
+      margin-top: 12px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* Info cards */
+    .info-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 40px auto 0;
+      max-width: 420px;
+      text-align: left;
+    }
+    .info-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: var(--light);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .info-card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .info-card-icon svg { width: 16px; height: 16px; color: var(--white); }
+    .info-card-text strong {
+      display: block;
+      font-family: var(--font-head);
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--dark);
+      margin-bottom: 2px;
+    }
+    .info-card-text span {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+<header id="header">
+  <a href="#" class="logo" aria-label="The Stickley Method">
+    <canvas id="logo-canvas" width="200" height="200"></canvas>
+    <span class="logo-brand">
+      <span class="logo-brand-top">THE STICKLEY</span>
+      <span class="logo-brand-bot">METHOD</span>
+    </span>
+  </a>
+</header>
+
+<section id="hero">
+  <div class="hero-inner">
+
+    <div class="congrats-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      Purchase confirmed
+    </div>
+
+    <h1 class="welcome-heading">
+      YOU'VE MADE<br>
+      <span class="accent">THE FIRST STEP.</span>
+    </h1>
+
+    <div class="hero-divider"></div>
+
+    <p class="welcome-body">
+      Congratulations — you're now part of The Stickley Method.<br><br>
+      Before you dive in, <strong>book your onboarding call</strong> with our team. We'll go through your situation, map out exactly what your transformation is going to look like, and make sure you hit the ground running.
+    </p>
+
+    <a href="#calendar" class="btn-book" id="book-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Book Your Onboarding Call
+    </a>
+    <p class="btn-note">Takes less than 2 minutes · Free with your membership</p>
+
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="info-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        </div>
+        <div class="info-card-text">
+          <strong>Meet the team</strong>
+          <span>One of our coaches will walk you through everything personally.</span>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <div class="info-card-text">
+          <strong>Your personalised plan</strong>
+          <span>We'll map out your transformation based on your specific situation.</span>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="info-card-text">
+          <strong>Hit the ground running</strong>
+          <span>Leave the call knowing exactly what to focus on from day one.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Calendar embed goes here -->
+<div id="calendar"></div>
+
+<script>
+"use strict";
+(function() {
+  var FRAME_COUNT = 121;
+  var FPS = 24;
+  var FRAME_DELAY = Math.round(1000 / FPS);
+  var REPEAT_AFTER = 17000;
+
+  var logoCanvas = document.getElementById('logo-canvas');
+  var logoCtx = logoCanvas ? logoCanvas.getContext('2d') : null;
+  var frames = [];
+  var loadedCount = 0;
+  var timer = null;
+  var playing = false;
+
+  function padNum(n) { return ('000' + n).slice(-4); }
+
+  function drawFrame(img) {
+    if (!logoCtx || !img) return;
+    logoCtx.clearRect(0, 0, logoCanvas.width, logoCanvas.height);
+    var iw = img.naturalWidth, ih = img.naturalHeight;
+    var cw = logoCanvas.width, ch = logoCanvas.height;
+    var scale = Math.min(cw / iw, ch / ih);
+    logoCtx.drawImage(img, (cw - iw*scale)/2, (ch - ih*scale)/2, iw*scale, ih*scale);
+  }
+
+  function play() {
+    if (!logoCtx || playing) return;
+    playing = true;
+    var frame = 0;
+    clearInterval(timer);
+    timer = setInterval(function() {
+      if (frames[frame]) drawFrame(frames[frame]);
+      frame++;
+      if (frame >= FRAME_COUNT) {
+        clearInterval(timer);
+        playing = false;
+        setTimeout(function() { if (!playing) play(); }, REPEAT_AFTER);
+      }
+    }, FRAME_DELAY);
+  }
+
+  for (var i = 0; i < FRAME_COUNT; i++) {
+    (function(idx) {
+      var img = new Image();
+      img.onload = function() {
+        frames[idx] = img;
+        loadedCount++;
+        if (idx === 0) drawFrame(img);
+        if (loadedCount === 15 && !playing) play();
+      };
+      img.src = '../frames/frame_' + padNum(idx + 1) + '.png';
+    })(i);
+  }
+})();
+</script>
+</body>
+</html>

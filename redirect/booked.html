@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>You're In — The Stickley Method</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cyan:      #0EC4E6;
+      --gold:      #c9a84c;
+      --navy:      #0a2540;
+      --dark:      #111111;
+      --mid:       #444444;
+      --muted:     #888888;
+      --light:     #f5f5f5;
+      --white:     #ffffff;
+      --border:    #e0e0e0;
+      --font-head: 'Barlow Condensed', sans-serif;
+      --font-body: 'Barlow', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--white);
+      color: var(--dark);
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── Header ─────────────────────────────────────────── */
+    #header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    #logo-canvas { width: 46px; height: 46px; display: block; flex-shrink: 0; }
+    .logo-brand { display: flex; flex-direction: column; line-height: 1; }
+    .logo-brand-top {
+      font-family: var(--font-head); font-size: 0.85rem; font-weight: 800;
+      letter-spacing: 0.12em; color: var(--dark); text-transform: uppercase;
+    }
+    .logo-brand-bot {
+      font-family: var(--font-head); font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.16em; color: var(--muted); text-transform: uppercase;
+    }
+
+    /* ── Hero ───────────────────────────────────────────── */
+    #hero {
+      padding: 52px 24px 40px;
+      text-align: center;
+      background: var(--white);
+    }
+    .booked-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #f0fdf8;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+      font-family: var(--font-head);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+    .booked-badge svg { width: 13px; height: 13px; }
+    .page-heading {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: clamp(2.4rem, 10vw, 4.8rem);
+      line-height: 0.95;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      color: var(--dark);
+      margin-bottom: 20px;
+    }
+    .page-heading .accent { color: var(--cyan); }
+    .hero-divider {
+      width: 48px; height: 3px;
+      background: var(--gold);
+      border-radius: 2px;
+      margin: 0 auto 24px;
+    }
+    .page-sub {
+      font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+      color: var(--mid);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── Steps ──────────────────────────────────────────── */
+    #steps {
+      padding: 40px 24px 48px;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .steps-heading {
+      font-family: var(--font-head);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: var(--light);
+      border-radius: 12px;
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s;
+    }
+    .step:hover { border-color: var(--cyan); }
+    .step-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: var(--white);
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-body strong {
+      display: block;
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+    .step-body p {
+      font-size: 0.85rem;
+      color: var(--mid);
+      line-height: 1.55;
+    }
+    .step-body a {
+      color: var(--cyan);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* ── Nightfall CTA ──────────────────────────────────── */
+    #nightfall {
+      margin: 0 24px 56px;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+      background: var(--navy);
+      border-radius: 16px;
+      padding: 36px 28px;
+      text-align: center;
+      color: var(--white);
+    }
+    .nightfall-label {
+      font-family: var(--font-head);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .nightfall-heading {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: clamp(1.8rem, 7vw, 2.8rem);
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      margin-bottom: 14px;
+    }
+    .nightfall-heading span { color: var(--cyan); }
+    .nightfall-body {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.65;
+      margin-bottom: 24px;
+      max-width: 380px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .btn-nightfall {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--gold);
+      color: var(--white);
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 16px 32px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      width: 100%;
+      max-width: 340px;
+    }
+    .btn-nightfall:hover { background: #b8933b; transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+
+<header id="header">
+  <a href="#" class="logo" aria-label="The Stickley Method">
+    <canvas id="logo-canvas" width="200" height="200"></canvas>
+    <span class="logo-brand">
+      <span class="logo-brand-top">THE STICKLEY</span>
+      <span class="logo-brand-bot">METHOD</span>
+    </span>
+  </a>
+</header>
+
+<section id="hero">
+  <div class="booked-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    Call booked
+  </div>
+  <h1 class="page-heading">YOU'RE ALL SET.<br><span class="accent">LET'S GET TO WORK.</span></h1>
+  <div class="hero-divider"></div>
+  <p class="page-sub">Your onboarding call is confirmed. In the meantime, here's exactly what to do right now to hit the ground running before your call.</p>
+</section>
+
+<section id="steps">
+  <p class="steps-heading">Your next steps</p>
+  <div class="step-list">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Join the TSM Discord</strong>
+        <p>This is where the brotherhood lives. Introduce yourself, meet the members, and start absorbing the culture. <a href="#">Join Discord →</a></p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Send in your photo</strong>
+        <p>Drop a clear front-facing photo in the dedicated channel. Our team will use it to build your personalised looksmaxxing plan.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Explore the content on Whop</strong>
+        <p>You now have full access to 70+ modules. Start with Phase 1 — Health Is Law — and work through in order.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <strong>Show up to your onboarding call</strong>
+        <p>Check your email for the confirmation and calendar invite. We'll take it from there.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div id="nightfall">
+  <p class="nightfall-label">Ready for the full transformation?</p>
+  <h2 class="nightfall-heading">BECOME THE MAN<br>WITH <span>NIGHTFALL</span></h2>
+  <p class="nightfall-body">The next level of The Stickley Method. Elite mentorship, advanced protocols, and a direct line to the top coaches.</p>
+  <a href="#" class="btn-nightfall">
+    Unlock Nightfall
+  </a>
+</div>
+
+<script>
+"use strict";
+(function() {
+  var FRAME_COUNT = 121;
+  var FPS = 24;
+  var FRAME_DELAY = Math.round(1000 / FPS);
+  var REPEAT_AFTER = 17000;
+
+  var logoCanvas = document.getElementById('logo-canvas');
+  var logoCtx = logoCanvas ? logoCanvas.getContext('2d') : null;
+  var frames = [];
+  var loadedCount = 0;
+  var timer = null;
+  var playing = false;
+
+  function padNum(n) { return ('000' + n).slice(-4); }
+
+  function drawFrame(img) {
+    if (!logoCtx || !img) return;
+    logoCtx.clearRect(0, 0, logoCanvas.width, logoCanvas.height);
+    var iw = img.naturalWidth, ih = img.naturalHeight;
+    var cw = logoCanvas.width, ch = logoCanvas.height;
+    var scale = Math.min(cw / iw, ch / ih);
+    logoCtx.drawImage(img, (cw - iw*scale)/2, (ch - ih*scale)/2, iw*scale, ih*scale);
+  }
+
+  function play() {
+    if (!logoCtx || playing) return;
+    playing = true;
+    var frame = 0;
+    clearInterval(timer);
+    timer = setInterval(function() {
+      if (frames[frame]) drawFrame(frames[frame]);
+      frame++;
+      if (frame >= FRAME_COUNT) {
+        clearInterval(timer);
+        playing = false;
+        setTimeout(function() { if (!playing) play(); }, REPEAT_AFTER);
+      }
+    }, FRAME_DELAY);
+  }
+
+  for (var i = 0; i < FRAME_COUNT; i++) {
+    (function(idx) {
+      var img = new Image();
+      img.onload = function() {
+        frames[idx] = img;
+        loadedCount++;
+        if (idx === 0) drawFrame(img);
+        if (loadedCount === 15 && !playing) play();
+      };
+      img.src = '../frames/frame_' + padNum(idx + 1) + '.png';
+    })(i);
+  }
+})();
+</script>
+</body>
+</html>
