@@ -60,7 +60,7 @@
 
     /* ── Hero ───────────────────────────────────────────── */
     #hero {
-      padding: 52px 24px 40px;
+      padding: 52px 24px 20px;
       text-align: center;
       background: var(--white);
     }
@@ -188,7 +188,6 @@
       flex-direction: column;
       align-items: center;
       gap: 6px;
-      padding: 28px 0 20px;
     }
     .scroll-arrow {
       width: 20px;
@@ -213,6 +212,11 @@
     #gradient-bridge {
       height: 120px;
       background: linear-gradient(to bottom, #ffffff, #000000);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 14px;
     }
 
     /* ── Nightfall CTA ──────────────────────────────────── */
@@ -324,7 +328,7 @@
       <div class="step-num">2</div>
       <div class="step-body">
         <strong>Send in your photos</strong>
-        <p>Drop clear, front and side-facing photos in the <strong style="white-space:nowrap;">#ratings</strong> channel. Baby will use them to build your personalised looksmaxxing plan.</p>
+        <p>Drop clear, front and side-facing photos in the <span style="white-space:nowrap;"><strong>#ratings</strong> channel</span>. Baby will use them to build your personalised looksmaxxing plan.</p>
       </div>
     </div>
 
@@ -347,12 +351,12 @@
   </div>
 </section>
 
-<div id="scroll-hint">
-  <svg class="scroll-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-  <span class="scroll-label">Scroll</span>
+<div id="gradient-bridge">
+  <div id="scroll-hint">
+    <svg class="scroll-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    <span class="scroll-label">Scroll</span>
+  </div>
 </div>
-
-<div id="gradient-bridge"></div>
 
 <div id="nightfall">
   <p class="nightfall-label">Ready for the full transformation?</p>
