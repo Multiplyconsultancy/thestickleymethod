@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<base href="/free-quiz/" />
+<title>The Stickley Method — Free Aesthetic Audit</title>
+<meta name="description" content="A 2-minute audit that benchmarks your current aesthetic across jawline, eyes, physique, skin and presence — and shows you the exact protocol to fix it." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800&family=Archivo+Narrow:wght@500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="topbar__brand">
+    <canvas class="topbar__logo" id="topbarLogo" width="120" height="100" aria-label="The Stickley Method"></canvas>
+    <span class="topbar__name">The Stickley Method</span>
+  </div>
+  <div class="topbar__progress" id="progress" aria-hidden="true">
+    <div class="topbar__progress-track"><div class="topbar__progress-fill" id="progressFill"></div></div>
+    <div class="topbar__progress-meta" id="progressMeta">00 / 08</div>
+  </div>
+</header>
+
+<main id="quizApp" class="quiz" aria-live="polite"></main>
+
+<footer class="footer">
+  <span>© The Stickley Method</span>
+  <span class="footer__sep">/</span>
+  <span>Free Aesthetic Audit</span>
+</footer>
+
+<script src="quiz.js" defer></script>
+</body>
+</html>
