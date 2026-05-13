@@ -176,6 +176,18 @@
       text-decoration: underline;
       text-underline-offset: 3px;
     }
+    .form-embed-wrap {
+      margin-top: 14px;
+      background: var(--white);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .form-embed-wrap iframe {
+      width: 100%;
+      min-height: 620px;
+      border: none;
+      display: block;
+    }
 
     /* ── Scroll indicator ───────────────────────────────── */
     #scroll-hint {
@@ -320,13 +332,39 @@
     <div class="step">
       <div class="step-num">1</div>
       <div class="step-body">
+        <strong>Fill out this form</strong>
+        <p>Help Baby get to know you so he can build your personalised plan.</p>
+        <div class="form-embed-wrap">
+          <iframe
+            src="https://api.leadconnectorhq.com/widget/form/YU0APDmVOuO6TPFh1hsj"
+            id="inline-YU0APDmVOuO6TPFh1hsj"
+            data-layout="{'id':'INLINE'}"
+            data-trigger-type="alwaysShow"
+            data-trigger-value=""
+            data-activation-type="alwaysActivated"
+            data-activation-value=""
+            data-deactivation-type="neverDeactivate"
+            data-deactivation-value=""
+            data-form-name="TSM post purchase form "
+            data-height="undefined"
+            data-layout-iframe-id="inline-YU0APDmVOuO6TPFh1hsj"
+            data-form-id="YU0APDmVOuO6TPFh1hsj"
+            title="TSM post purchase form "
+          ></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
         <strong>Join the TSM Discord</strong>
         <p>This is where the brotherhood lives. Introduce yourself, meet the members, and start absorbing the culture.</p>
       </div>
     </div>
 
     <div class="step">
-      <div class="step-num">2</div>
+      <div class="step-num">3</div>
       <div class="step-body">
         <strong>Send in your photos</strong>
         <p>In the <strong>#ratings</strong> channel, drop clear front and side-facing photos. Baby will use them to build your personalised looksmaxxing plan.</p>
@@ -334,7 +372,7 @@
     </div>
 
     <div class="step">
-      <div class="step-num">3</div>
+      <div class="step-num">4</div>
       <div class="step-body">
         <strong>Explore the content on Whop</strong>
         <p>You now have full access to 110+ modules. Start with Phase 1 — Health Is Law — and work through in order.</p>
@@ -343,6 +381,8 @@
 
   </div>
 </section>
+
+<script src="https://link.msgsndr.com/js/form_embed.js"></script>
 
 <div id="gradient-bridge">
   <div id="scroll-hint">
