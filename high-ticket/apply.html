@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Apply — The Stickley Method</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold:      #c9a84c;
+      --gold-grad: linear-gradient(135deg, #f5d680 0%, #c9a84c 40%, #e8c35a 70%, #a87c2a 100%);
+      --black:     #070707;
+      --panel:     #0e0e0e;
+      --border:    rgba(255,255,255,0.08);
+      --white:     #ffffff;
+      --muted:     rgba(255,255,255,0.6);
+      --font-head: 'Barlow Condensed', sans-serif;
+      --font-body: 'Barlow', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--black);
+      color: var(--white);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { text-decoration: none; color: inherit; }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(900px 500px at 50% -10%, rgba(201,168,76,0.16), transparent 70%),
+        radial-gradient(700px 600px at 100% 100%, rgba(14,40,64,0.4), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #header {
+      position: relative;
+      z-index: 10;
+      padding: 22px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-canvas { width: 50px; height: 50px; display: block; flex-shrink: 0; }
+    .logo-brand { display: flex; flex-direction: column; line-height: 1; }
+    .logo-brand-top {
+      font-family: var(--font-head); font-size: 0.9rem; font-weight: 800;
+      letter-spacing: 0.14em; text-transform: uppercase;
+    }
+    .logo-brand-bot {
+      font-family: var(--font-head); font-size: 0.74rem; font-weight: 600;
+      letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase;
+    }
+    .header-tag {
+      font-family: var(--font-head);
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      padding: 7px 15px;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      background: var(--gold-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    main {
+      position: relative;
+      z-index: 5;
+      flex: 1;
+      padding: 56px 24px 80px;
+    }
+    .apply-inner {
+      max-width: 640px;
+      width: 100%;
+      margin: 0 auto;
+      animation: rise 0.9s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .apply-head { text-align: center; margin-bottom: 40px; }
+    .eyebrow {
+      font-family: var(--font-head);
+      font-size: 0.82rem; font-weight: 700;
+      letter-spacing: 0.28em; text-transform: uppercase;
+      background: var(--gold-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 18px;
+    }
+    h1 {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: clamp(2.2rem, 7vw, 4rem);
+      line-height: 0.98;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    h1 .gold {
+      background: var(--gold-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .sub {
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .steps-row {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .mini-step {
+      flex: 1;
+      min-width: 160px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 18px;
+      text-align: center;
+    }
+    .mini-step .n {
+      font-family: var(--font-head);
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: var(--gold-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 6px;
+    }
+    .mini-step p {
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+    .form-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px -30px rgba(0,0,0,0.9);
+    }
+    .form-card iframe {
+      width: 100%;
+      min-height: 720px;
+      border: none;
+      display: block;
+    }
+    .form-placeholder {
+      min-height: 360px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      color: rgba(255,255,255,0.35);
+      padding: 40px;
+      text-align: center;
+    }
+    .form-placeholder svg { width: 52px; height: 52px; stroke: var(--gold); opacity: 0.7; }
+    .form-placeholder span {
+      font-family: var(--font-head);
+      font-size: 0.85rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+    .form-placeholder small {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      letter-spacing: 0;
+      color: rgba(255,255,255,0.28);
+    }
+
+    #footer-banner {
+      position: relative;
+      z-index: 10;
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: rgba(0,0,0,0.4);
+    }
+    .footer-canvas { width: 34px; height: 34px; display: block; }
+    .footer-word {
+      font-family: var(--font-head);
+      font-size: 0.95rem; font-weight: 800;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      background: var(--gold-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    @media (max-width: 600px) {
+      #header { padding: 18px 18px; }
+      .header-tag { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header id="header">
+  <a href="#" class="logo" aria-label="The Stickley Method">
+    <canvas class="logo-canvas phoenix" width="200" height="200"></canvas>
+    <span class="logo-brand">
+      <span class="logo-brand-top">THE STICKLEY</span>
+      <span class="logo-brand-bot">METHOD</span>
+    </span>
+  </a>
+  <span class="header-tag">Private Client</span>
+</header>
+
+<main>
+  <div class="apply-inner">
+    <div class="apply-head">
+      <p class="eyebrow">Selective Intake</p>
+      <h1>APPLY FOR <span class="gold">PRIVATE CLIENT</span></h1>
+      <p class="sub">This isn't for everyone. Fill out the application below — if you're a fit, we'll be in touch to arrange a call.</p>
+    </div>
+
+    <div class="steps-row">
+      <div class="mini-step">
+        <div class="n">1</div>
+        <p>Submit your application</p>
+      </div>
+      <div class="mini-step">
+        <div class="n">2</div>
+        <p>We review it manually</p>
+      </div>
+      <div class="mini-step">
+        <div class="n">3</div>
+        <p>Qualified applicants get a call</p>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <!-- ▼ PASTE APPLICATION FORM EMBED HERE (e.g. LeadConnector iframe) ▼ -->
+      <!--
+      <iframe src="YOUR_FORM_EMBED_URL" data-layout="{'id':'INLINE'}" title="Application form"></iframe>
+      -->
+      <div class="form-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span>Application form goes here</span>
+        <small>Paste your LeadConnector (or other) form embed in this card</small>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer id="footer-banner">
+  <canvas class="footer-canvas phoenix-footer" width="200" height="200"></canvas>
+  <span class="footer-word">The Stickley Method</span>
+</footer>
+
+<!-- Uncomment when a LeadConnector form is embedded above -->
+<!-- <script src="https://link.msgsndr.com/js/form_embed.js"></script> -->
+<script src="phoenix.js"></script>
+</body>
+</html>

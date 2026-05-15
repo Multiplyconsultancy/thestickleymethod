@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Private Client Programme — The Stickley Method</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold:      #c9a84c;
+      --gold-grad: linear-gradient(135deg, #f5d680 0%, #c9a84c 40%, #e8c35a 70%, #a87c2a 100%);
+      --black:     #070707;
+      --panel:     #0e0e0e;
+      --border:    rgba(255,255,255,0.08);
+      --white:     #ffffff;
+      --muted:     rgba(255,255,255,0.6);
+      --font-head: 'Barlow Condensed', sans-serif;
+      --font-body: 'Barlow', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--black);
+      color: var(--white);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { text-decoration: none; color: inherit; }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(900px 500px at 50% -10%, rgba(201,168,76,0.16), transparent 70%),
+        radial-gradient(700px 600px at 100% 100%, rgba(14,40,64,0.4), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Header ─────────────────────────────────────────── */
+    #header {
+      position: relative;
+      z-index: 10;
+      padding: 22px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-canvas { width: 50px; height: 50px; display: block; flex-shrink: 0; }
+    .logo-brand { display: flex; flex-direction: column; line-height: 1; }
+    .logo-brand-top {
+      font-family: var(--font-head); font-size: 0.9rem; font-weight: 800;
+      letter-spacing: 0.14em; text-transform: uppercase;
+    }
+    .logo-brand-bot {
+      font-family: var(--font-head); font-size: 0.74rem; font-weight: 600;
+      letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase;
+    }
+    .header-tag {
+      font-family: var(--font-head);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      padding: 7px 15px;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      background: var(--gold-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Hero / Opt-in ──────────────────────────────────── */
+    main {
+      position: relative;
+      z-index: 5;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 64px 24px 80px;
+    }
+    .opt-inner {
+      max-width: 680px;
+      width: 100%;
+      text-align: center;
+      animation: rise 0.9s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .eyebrow {
+      font-family: var(--font-head);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      background: var(--gold-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 22px;
+    }
+    h1 {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: clamp(2.6rem, 8vw, 5rem);
+      line-height: 0.98;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    h1 .gold {
+      background: var(--gold-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .divider {
+      width: 54px; height: 3px;
+      background: var(--gold-grad);
+      border-radius: 2px;
+      margin: 0 auto 26px;
+    }
+    .lede {
+      font-size: clamp(1rem, 2.4vw, 1.2rem);
+      color: var(--muted);
+      max-width: 540px;
+      margin: 0 auto 36px;
+    }
+    .bullets {
+      list-style: none;
+      display: inline-flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+      margin: 0 auto 40px;
+    }
+    .bullets li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.85);
+    }
+    .bullets svg {
+      width: 20px; height: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      stroke: var(--gold);
+    }
+    .opt-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+    .opt-form input {
+      width: 100%;
+      padding: 16px 18px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+    .opt-form input::placeholder { color: rgba(255,255,255,0.4); }
+    .opt-form input:focus { outline: none; border-color: var(--gold); }
+    .btn-gold {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--gold-grad);
+      color: #1a1206;
+      font-family: var(--font-head);
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 17px 32px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 12px 40px -12px rgba(201,168,76,0.5);
+    }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 18px 48px -12px rgba(201,168,76,0.65); }
+    .fine {
+      margin-top: 18px;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Footer banner ──────────────────────────────────── */
+    #footer-banner {
+      position: relative;
+      z-index: 10;
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: rgba(0,0,0,0.4);
+    }
+    .footer-canvas { width: 34px; height: 34px; display: block; }
+    .footer-word {
+      font-family: var(--font-head);
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      background: var(--gold-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    @media (max-width: 600px) {
+      #header { padding: 18px 18px; }
+      .header-tag { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header id="header">
+  <a href="#" class="logo" aria-label="The Stickley Method">
+    <canvas class="logo-canvas phoenix" width="200" height="200"></canvas>
+    <span class="logo-brand">
+      <span class="logo-brand-top">THE STICKLEY</span>
+      <span class="logo-brand-bot">METHOD</span>
+    </span>
+  </a>
+  <span class="header-tag">Private Client</span>
+</header>
+
+<main>
+  <div class="opt-inner">
+    <p class="eyebrow">By Application Only</p>
+    <h1>THE 1% <span class="gold">LOOK</span><br>IS BUILT, NOT BORN</h1>
+    <div class="divider"></div>
+    <p class="lede">A private, high-level transformation programme for men who are done playing small. Watch the training to see exactly how it works.</p>
+
+    <ul class="bullets">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Fully bespoke looksmaxxing protocol built around you</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Direct access to the people who actually get results</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> A small room. Selective intake. No passengers.</li>
+    </ul>
+
+    <form class="opt-form" onsubmit="event.preventDefault(); window.location.href='vsl';">
+      <input type="text" name="name" placeholder="First name" required>
+      <input type="email" name="email" placeholder="Email address" required>
+      <button type="submit" class="btn-gold">Watch The Training →</button>
+    </form>
+    <p class="fine">Your details stay private. No spam, ever.</p>
+  </div>
+</main>
+
+<footer id="footer-banner">
+  <canvas class="footer-canvas phoenix-footer" width="200" height="200"></canvas>
+  <span class="footer-word">The Stickley Method</span>
+</footer>
+
+<script src="phoenix.js"></script>
+</body>
+</html>

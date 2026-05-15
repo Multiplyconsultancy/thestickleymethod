@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>The Training — The Stickley Method</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold:      #c9a84c;
+      --gold-grad: linear-gradient(135deg, #f5d680 0%, #c9a84c 40%, #e8c35a 70%, #a87c2a 100%);
+      --black:     #070707;
+      --panel:     #0e0e0e;
+      --border:    rgba(255,255,255,0.08);
+      --white:     #ffffff;
+      --muted:     rgba(255,255,255,0.6);
+      --font-head: 'Barlow Condensed', sans-serif;
+      --font-body: 'Barlow', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--black);
+      color: var(--white);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { text-decoration: none; color: inherit; }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(900px 500px at 50% -10%, rgba(201,168,76,0.16), transparent 70%),
+        radial-gradient(700px 600px at 100% 100%, rgba(14,40,64,0.4), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #header {
+      position: relative;
+      z-index: 10;
+      padding: 22px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-canvas { width: 50px; height: 50px; display: block; flex-shrink: 0; }
+    .logo-brand { display: flex; flex-direction: column; line-height: 1; }
+    .logo-brand-top {
+      font-family: var(--font-head); font-size: 0.9rem; font-weight: 800;
+      letter-spacing: 0.14em; text-transform: uppercase;
+    }
+    .logo-brand-bot {
+      font-family: var(--font-head); font-size: 0.74rem; font-weight: 600;
+      letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase;
+    }
+    .header-tag {
+      font-family: var(--font-head);
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      padding: 7px 15px;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      background: var(--gold-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    main {
+      position: relative;
+      z-index: 5;
+      flex: 1;
+      padding: 56px 24px 80px;
+    }
+    .vsl-inner {
+      max-width: 920px;
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+      animation: rise 0.9s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .eyebrow {
+      font-family: var(--font-head);
+      font-size: 0.82rem; font-weight: 700;
+      letter-spacing: 0.28em; text-transform: uppercase;
+      background: var(--gold-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 18px;
+    }
+    h1 {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: clamp(2rem, 6vw, 3.6rem);
+      line-height: 1;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    h1 .gold {
+      background: var(--gold-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .sub {
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      color: var(--muted);
+      margin-bottom: 36px;
+    }
+    .video-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px -30px rgba(0,0,0,0.9), 0 0 0 1px rgba(201,168,76,0.08);
+    }
+    .video-frame iframe,
+    .video-frame video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    /* Placeholder shown until a real embed is pasted in */
+    .video-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      color: rgba(255,255,255,0.35);
+    }
+    .video-placeholder svg {
+      width: 64px; height: 64px;
+      stroke: var(--gold);
+      opacity: 0.7;
+    }
+    .video-placeholder span {
+      font-family: var(--font-head);
+      font-size: 0.85rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+    }
+    .cta-wrap {
+      margin-top: 42px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .btn-gold {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--gold-grad);
+      color: #1a1206;
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 18px 40px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 12px 40px -12px rgba(201,168,76,0.5);
+    }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 18px 48px -12px rgba(201,168,76,0.65); }
+    .cta-note {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.04em;
+    }
+
+    #footer-banner {
+      position: relative;
+      z-index: 10;
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: rgba(0,0,0,0.4);
+    }
+    .footer-canvas { width: 34px; height: 34px; display: block; }
+    .footer-word {
+      font-family: var(--font-head);
+      font-size: 0.95rem; font-weight: 800;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      background: var(--gold-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    @media (max-width: 600px) {
+      #header { padding: 18px 18px; }
+      .header-tag { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header id="header">
+  <a href="#" class="logo" aria-label="The Stickley Method">
+    <canvas class="logo-canvas phoenix" width="200" height="200"></canvas>
+    <span class="logo-brand">
+      <span class="logo-brand-top">THE STICKLEY</span>
+      <span class="logo-brand-bot">METHOD</span>
+    </span>
+  </a>
+  <span class="header-tag">Private Client</span>
+</header>
+
+<main>
+  <div class="vsl-inner">
+    <p class="eyebrow">Watch Before You Apply</p>
+    <h1>HOW THE TOP 1% <span class="gold">ASCEND</span></h1>
+    <p class="sub">Watch the full training below. Then, if it's for you, apply at the bottom.</p>
+
+    <div class="video-frame">
+      <!-- ▼ PASTE VSL EMBED HERE (YouTube / Vimeo / Wistia iframe or <video>) ▼ -->
+      <!--
+      <iframe src="YOUR_VIDEO_EMBED_URL" allow="autoplay; fullscreen" allowfullscreen></iframe>
+      -->
+      <div class="video-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span>VSL goes here</span>
+      </div>
+    </div>
+
+    <div class="cta-wrap">
+      <a href="apply" class="btn-gold">Apply Now →</a>
+      <p class="cta-note">Limited spots. Applications are reviewed manually.</p>
+    </div>
+  </div>
+</main>
+
+<footer id="footer-banner">
+  <canvas class="footer-canvas phoenix-footer" width="200" height="200"></canvas>
+  <span class="footer-word">The Stickley Method</span>
+</footer>
+
+<script src="phoenix.js"></script>
+</body>
+</html>
