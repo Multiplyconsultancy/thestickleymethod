@@ -40,15 +40,15 @@ const QUESTIONS = [
   {
     id: "eyes",
     type: "photo",
-    title: "Which eye area is most like yours?",
-    sub: "Look in the mirror — eye shape, hood, under-eye area.",
+    title: "What best describes your eye area?",
+    sub: "Pick the closest match — eye shape, hood, under-eye area.",
     options: [
-      // Drop files into assets/images/eyes/ then list them here.
-      { value: "tired",    label: "Tired / hollow",  src: "assets/images/eyes/eyes-1.jpg" },
-      { value: "neutral",  label: "Neutral",         src: "assets/images/eyes/eyes-2.jpg" },
-      { value: "hooded",   label: "Hooded / hunter", src: "assets/images/eyes/eyes-3.jpg" },
-      { value: "bright",   label: "Bright / open",   src: "assets/images/eyes/eyes-4.jpg" },
-      { value: "elite",    label: "Cinematic",       src: "assets/images/eyes/eyes-5.jpg" },
+      // Order: worst → best, left to right.
+      { value: "nct",     label: "Negative tilt (NCT)",   src: "assets/images/eye-area/1.jpeg" },
+      { value: "uee",     label: "Upper eyelid exposure", src: "assets/images/eye-area/2.jpeg" },
+      { value: "bags",    label: "Eye bags",              src: "assets/images/eye-area/3.jpeg" },
+      { value: "average", label: "Average",               src: "assets/images/eye-area/4.jpeg" },
+      { value: "ideal",   label: "Ideal",                 src: "assets/images/eye-area/5.jpeg" },
     ],
   },
   {
@@ -78,16 +78,28 @@ const QUESTIONS = [
     ],
   },
   {
-    id: "hair",
+    id: "hairline",
     type: "photo",
-    title: "Which hair situation is yours?",
-    sub: "Density, hairline, cut.",
+    title: "What best describes your hairline?",
+    sub: "Density, frontal hairline, crown.",
     options: [
-      { value: "thinning", label: "Thinning",        src: "assets/images/hair/hair-1.jpg" },
-      { value: "receding", label: "Receding",        src: "assets/images/hair/hair-2.jpg" },
-      { value: "average",  label: "Average density", src: "assets/images/hair/hair-3.jpg" },
-      { value: "good",     label: "Thick & styled",  src: "assets/images/hair/hair-4.jpg" },
-      { value: "elite",    label: "Editorial",       src: "assets/images/hair/hair-5.jpg" },
+      // Order: worst → best, left to right.
+      { value: "heavy",   label: "Heavy loss",       src: "assets/images/hairline/1.jpeg" },
+      { value: "diffuse", label: "Diffuse thinning", src: "assets/images/hairline/2.jpeg" },
+      { value: "mild",    label: "Mild thinning",    src: "assets/images/hairline/3.jpeg" },
+      { value: "full",    label: "Full hairline",    src: "assets/images/hairline/4.jpeg" },
+    ],
+  },
+  {
+    id: "posture",
+    type: "photo",
+    title: "Which best matches your posture?",
+    sub: "Side profile — head, shoulders, hip stack.",
+    options: [
+      // Order: worst → best, left to right.
+      { value: "weak",   label: "I need help",         src: "assets/images/posture/1.jpeg" },
+      { value: "ok",     label: "It could be better",  src: "assets/images/posture/2.jpeg" },
+      { value: "strong", label: "My posture is great", src: "assets/images/posture/3.jpeg" },
     ],
   },
   {
@@ -189,7 +201,7 @@ function renderWelcome() {
         <button class="btn btn--lg" data-start>
           Start the audit <span class="arrow">→</span>
         </button>
-        <span class="welcome__meta">8 questions · ~2 min · free guide on completion</span>
+        <span class="welcome__meta">9 questions · ~2 min · free guide on completion</span>
       </div>
     </div>
   `;
@@ -475,11 +487,11 @@ function readBack(qid, val) {
       elite:   "Elite jaw line. This is the standard the Method is benchmarked to.",
     },
     eyes: {
-      tired:    "Tired / hollow under-eyes. Sleep, sodium, hydration, light protocol.",
-      neutral:  "Neutral eye area. Big upside in canthal tilt + brow training.",
-      hooded:   "Hunter-style hooded eyes — high-status look, lean into it.",
-      bright:   "Bright, open eyes. Strong feature — frame the rest around them.",
-      elite:    "Cinematic eye area. Already doing the work eyes do for status.",
+      nct:     "Negative canthal tilt — the eye area's biggest single status lever. Treatable with structured work.",
+      uee:     "Upper eyelid exposure. Small change, massive perceived shift toward 'hunter' eyes.",
+      bags:    "Eye bags. Sleep, sodium, hydration and a structured periorbital protocol fix this.",
+      average: "Average eye area. Big upside in canthal tilt and brow training.",
+      ideal:   "Ideal eye area. Already doing the work eyes do for status.",
     },
     physique: {
       skinny:       "Skinny frame. Lean bulk + structured lifting transforms this fastest.",
@@ -495,12 +507,16 @@ function readBack(qid, val) {
       clear:   "Clear skin. Dial in glow + grade — the elite-tier polish.",
       glass:   "Glass-skin tier. Already past where most men finish.",
     },
-    hair: {
-      thinning: "Thinning. Treatable — earlier we start, more we keep.",
-      receding: "Receding hairline. Protocol stack now, before another cm.",
-      average:  "Average density. The right cut adds 20% perceived hair.",
-      good:     "Thick & well-styled. Strong asset — keep the cut sharp.",
-      elite:    "Editorial-tier hair. Already a pillar of your look.",
+    hairline: {
+      heavy:   "Heavy loss. Still treatable — restoration + the right cut close the gap fast.",
+      diffuse: "Diffuse thinning. Lock in what's left now — finasteride, minox, micro-needling stack.",
+      mild:    "Mild thinning. The window is open — prevention beats restoration.",
+      full:    "Full hairline. Strong asset — protect with the right cut.",
+    },
+    posture: {
+      weak:   "Posture needs work. Highest-leverage non-surgical change to your presence.",
+      ok:     "Decent posture. Small daily corrections compound into a different silhouette.",
+      strong: "Strong posture. Already doing the work most men ignore.",
     },
   };
   return (map[qid] && map[qid][val]) || "—";
@@ -509,13 +525,14 @@ function readBack(qid, val) {
 /* ────── Tier (used to choose verdict copy — never shown as a number) ────── */
 function deriveTier(answers) {
   const grade = (id, m) => m[answers[id]] ?? 3;
-  const J = grade("jawline",  { soft:1, average:2, defined:3, sharp:4, elite:5 });
-  const E = grade("eyes",     { tired:1, neutral:2, hooded:4, bright:4, elite:5 });
-  const P = grade("physique", { skinny:2, "skinny-fat":1, average:2, lean:4, elite:5 });
-  const S = grade("skin",     { problem:1, uneven:2, ok:3, clear:4, glass:5 });
-  const H = grade("hair",     { thinning:1, receding:1, average:3, good:4, elite:5 });
+  const J  = grade("jawline",  { soft:1, average:2, defined:3, sharp:4, elite:5 });
+  const E  = grade("eyes",     { nct:1, uee:2, bags:2, average:3, ideal:5 });
+  const P  = grade("physique", { skinny:2, "skinny-fat":1, average:2, lean:4, elite:5 });
+  const S  = grade("skin",     { problem:1, uneven:2, ok:3, clear:4, glass:5 });
+  const H  = grade("hairline", { heavy:1, diffuse:2, mild:4, full:5 });
+  const Po = grade("posture",  { weak:1, ok:3, strong:5 });
   const conf = Math.max(1, Math.min(5, Math.round((Number(answers.confidence) || 5) / 2)));
-  const avg = (J + E + P + S + H + conf) / 6;
+  const avg = (J + E + P + S + H + Po + conf) / 7;
   if (avg >= 4)   return "elite";
   if (avg >= 3.2) return "sharp";
   if (avg >= 2.2) return "foundations";
@@ -570,10 +587,12 @@ function renderResults() {
   const code = "AUDIT15";
 
   const cells = [
-    ["Face",        "jawline",  a.jawline],
-    ["Eyes",        "eyes",     a.eyes],
-    ["Physique",    "physique", a.physique],
-    ["Skin & hair", "skin",     a.skin],
+    ["Face",     "jawline",  a.jawline],
+    ["Eyes",     "eyes",     a.eyes],
+    ["Physique", "physique", a.physique],
+    ["Skin",     "skin",     a.skin],
+    ["Hairline", "hairline", a.hairline],
+    ["Posture",  "posture",  a.posture],
   ];
 
   const html = `
