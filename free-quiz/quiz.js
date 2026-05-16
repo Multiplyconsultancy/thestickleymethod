@@ -260,10 +260,22 @@ function renderQuestion(idx) {
   if (back) back.addEventListener("click", () => goPrev());
 }
 
+/* Per-question cell aspect — chosen to match the natural shape of each
+   photo set so `object-fit: contain` shows the full image with minimal padding. */
+const PHOTO_ASPECT = {
+  jawline:  "5 / 4",   // landscape head shots
+  eyes:     "16 / 9",  // wide eye crops
+  physique: "3 / 4",   // portrait (placeholder)
+  skin:     "3 / 4",   // portrait (placeholder)
+  hairline: "4 / 5",   // top-down crown shots
+  posture:  "2 / 3",   // tall side-profile shots
+};
+
 function renderPhotoGrid(q) {
   const cols = q.options.length;
+  const aspect = PHOTO_ASPECT[q.id] || "3 / 4";
   return `
-    <div class="photos" data-count="${cols}" style="--cols:${cols};">
+    <div class="photos" data-count="${cols}" style="--cols:${cols}; --photo-aspect:${aspect};">
       ${q.options.map((o, i) => `
         <button class="photo" data-option="${o.value}" aria-pressed="false" aria-label="${o.label}"
                 data-fallback-label="${escapeAttr(o.label)}"
