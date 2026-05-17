@@ -23,3 +23,8 @@ video to website.md
 __pycache__/
 *.pyc
 *.pyo
+
+# Secrets — NEVER commit
+.env
+.env.*
+!.env.example
