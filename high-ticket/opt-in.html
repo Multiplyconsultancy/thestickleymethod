@@ -3,20 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Private Client Programme — The Stickley Method</title>
+  <title>The Training — The Stickley Method</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --gold:      #c9a84c;
-      --gold-grad: linear-gradient(135deg, #f5d680 0%, #c9a84c 40%, #e8c35a 70%, #a87c2a 100%);
-      --black:     #070707;
-      --panel:     #0e0e0e;
-      --border:    rgba(255,255,255,0.08);
-      --white:     #ffffff;
-      --muted:     rgba(255,255,255,0.6);
+      --bg:        #fbfaf8;
+      --panel:     #ffffff;
+      --ink:       #111111;
+      --navy:      #0a2540;
+      --muted:     #6b6b6b;
+      --border:    rgba(10,37,64,0.12);
+      --gold:      #b8933b;
+      --gold-grad: linear-gradient(135deg, #caa14a 0%, #9c7a2c 100%);
       --font-head: 'Barlow Condensed', sans-serif;
       --font-body: 'Barlow', sans-serif;
     }
@@ -24,8 +25,8 @@
     html { scroll-behavior: smooth; }
     body {
       font-family: var(--font-body);
-      background: var(--black);
-      color: var(--white);
+      background: var(--bg);
+      color: var(--ink);
       line-height: 1.6;
       overflow-x: hidden;
       min-height: 100vh;
@@ -38,8 +39,7 @@
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(900px 500px at 50% -10%, rgba(201,168,76,0.16), transparent 70%),
-        radial-gradient(700px 600px at 100% 100%, rgba(14,40,64,0.4), transparent 70%);
+        radial-gradient(900px 480px at 50% -8%, rgba(184,147,59,0.10), transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
@@ -51,75 +51,59 @@
       padding: 22px 28px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       border-bottom: 1px solid var(--border);
+      background: rgba(251,250,248,0.85);
     }
     .logo { display: flex; align-items: center; gap: 12px; }
     .logo-canvas { width: 50px; height: 50px; display: block; flex-shrink: 0; }
     .logo-brand { display: flex; flex-direction: column; line-height: 1; }
     .logo-brand-top {
       font-family: var(--font-head); font-size: 0.9rem; font-weight: 800;
-      letter-spacing: 0.14em; text-transform: uppercase;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink);
     }
     .logo-brand-bot {
       font-family: var(--font-head); font-size: 0.74rem; font-weight: 600;
       letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase;
     }
-    .header-tag {
-      font-family: var(--font-head);
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      padding: 7px 15px;
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      background: var(--gold-grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
 
-    /* ── Hero / Opt-in ──────────────────────────────────── */
+    /* ── Hero ───────────────────────────────────────────── */
     main {
       position: relative;
       z-index: 5;
       flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 64px 24px 80px;
+      padding: 60px 24px 80px;
     }
     .opt-inner {
-      max-width: 680px;
+      max-width: 760px;
       width: 100%;
+      margin: 0 auto;
       text-align: center;
       animation: rise 0.9s cubic-bezier(0.16,1,0.3,1) both;
     }
     @keyframes rise {
-      from { opacity: 0; transform: translateY(28px); }
+      from { opacity: 0; transform: translateY(26px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     .eyebrow {
       font-family: var(--font-head);
-      font-size: 0.82rem;
-      font-weight: 700;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
+      font-size: 0.82rem; font-weight: 700;
+      letter-spacing: 0.28em; text-transform: uppercase;
       background: var(--gold-grad);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
     }
     h1 {
       font-family: var(--font-head);
       font-weight: 800;
-      font-size: clamp(2.6rem, 8vw, 5rem);
+      font-size: clamp(2.5rem, 7vw, 4.6rem);
       line-height: 0.98;
       letter-spacing: -0.01em;
       text-transform: uppercase;
-      margin-bottom: 24px;
+      color: var(--ink);
+      margin-bottom: 22px;
     }
     h1 .gold {
       background: var(--gold-grad);
@@ -134,38 +118,85 @@
       margin: 0 auto 26px;
     }
     .lede {
-      font-size: clamp(1rem, 2.4vw, 1.2rem);
+      font-size: clamp(1rem, 2.2vw, 1.18rem);
       color: var(--muted);
-      max-width: 540px;
-      margin: 0 auto 36px;
+      max-width: 600px;
+      margin: 0 auto 44px;
     }
-    .bullets {
-      list-style: none;
-      display: inline-flex;
-      flex-direction: column;
-      gap: 12px;
-      text-align: left;
-      margin: 0 auto 40px;
+
+    /* ── Fake VSL (click play → scroll to form) ─────────── */
+    .video-frame {
+      position: relative;
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(160deg, #11203a, #060d18);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 36px 80px -34px rgba(10,37,64,0.45);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .bullets li {
+    .video-frame:hover { transform: translateY(-3px); box-shadow: 0 44px 90px -34px rgba(10,37,64,0.55); }
+    .video-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 45%, rgba(184,147,59,0.22), transparent 60%);
+    }
+    .play-btn {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.96);
       display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      font-size: 1rem;
-      color: rgba(255,255,255,0.85);
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 16px 40px -10px rgba(0,0,0,0.5);
+      transition: transform 0.18s;
+      z-index: 2;
     }
-    .bullets svg {
-      width: 20px; height: 20px;
-      flex-shrink: 0;
-      margin-top: 2px;
-      stroke: var(--gold);
+    .video-frame:hover .play-btn { transform: translate(-50%, -50%) scale(1.07); }
+    .play-btn svg { width: 30px; height: 30px; margin-left: 4px; fill: var(--navy); }
+    .video-cap {
+      position: absolute;
+      bottom: 22px; left: 0; right: 0;
+      text-align: center;
+      z-index: 2;
+      font-family: var(--font-head);
+      font-size: 0.8rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ── Opt-in form ────────────────────────────────────── */
+    #opt-form {
+      max-width: 440px;
+      margin: 64px auto 0;
+      scroll-margin-top: 90px;
+    }
+    .form-title {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      margin-bottom: 8px;
+    }
+    .form-note {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 24px;
     }
     .opt-form {
       display: flex;
       flex-direction: column;
       gap: 12px;
-      max-width: 420px;
-      margin: 0 auto;
     }
     .opt-form input {
       width: 100%;
@@ -173,20 +204,24 @@
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 8px;
-      color: var(--white);
+      color: var(--ink);
       font-family: var(--font-body);
       font-size: 1rem;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .opt-form input::placeholder { color: rgba(255,255,255,0.4); }
-    .opt-form input:focus { outline: none; border-color: var(--gold); }
-    .btn-gold {
+    .opt-form input::placeholder { color: rgba(0,0,0,0.38); }
+    .opt-form input:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(184,147,59,0.15);
+    }
+    .btn-primary {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      background: var(--gold-grad);
-      color: #1a1206;
+      background: var(--navy);
+      color: #ffffff;
       font-family: var(--font-head);
       font-size: 1.05rem;
       font-weight: 800;
@@ -196,16 +231,10 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.2s;
-      box-shadow: 0 12px 40px -12px rgba(201,168,76,0.5);
+      transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+      box-shadow: 0 14px 36px -14px rgba(10,37,64,0.6);
     }
-    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 18px 48px -12px rgba(201,168,76,0.65); }
-    .fine {
-      margin-top: 18px;
-      font-size: 0.82rem;
-      color: rgba(255,255,255,0.4);
-      letter-spacing: 0.04em;
-    }
+    .btn-primary:hover { transform: translateY(-2px); background: #0d2e4f; }
 
     /* ── Footer banner ──────────────────────────────────── */
     #footer-banner {
@@ -217,15 +246,13 @@
       align-items: center;
       justify-content: center;
       gap: 12px;
-      background: rgba(0,0,0,0.4);
+      background: var(--panel);
     }
     .footer-canvas { width: 34px; height: 34px; display: block; }
     .footer-word {
       font-family: var(--font-head);
-      font-size: 0.95rem;
-      font-weight: 800;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
+      font-size: 0.95rem; font-weight: 800;
+      letter-spacing: 0.3em; text-transform: uppercase;
       background: var(--gold-grad);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -233,7 +260,8 @@
     }
     @media (max-width: 600px) {
       #header { padding: 18px 18px; }
-      .header-tag { display: none; }
+      .play-btn { width: 70px; height: 70px; }
+      .play-btn svg { width: 24px; height: 24px; }
     }
   </style>
 </head>
@@ -247,28 +275,31 @@
       <span class="logo-brand-bot">METHOD</span>
     </span>
   </a>
-  <span class="header-tag">Private Client</span>
 </header>
 
 <main>
   <div class="opt-inner">
-    <p class="eyebrow">By Application Only</p>
-    <h1>THE 1% <span class="gold">LOOK</span><br>IS BUILT, NOT BORN</h1>
+    <p class="eyebrow">By Application</p>
+    <h1>INVEST IN THE WAY<br><span class="gold">YOU'RE SEEN</span></h1>
     <div class="divider"></div>
-    <p class="lede">A private, high-level transformation programme for men who are done playing small. Watch the training to see exactly how it works.</p>
+    <p class="lede">You've already built success. The way you look hasn't kept pace with it — and at your level, that gap is expensive. This is a private programme for professionals and public figures who treat their appearance like the asset it is. Watch the short training to see exactly how it works.</p>
 
-    <ul class="bullets">
-      <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Fully bespoke looksmaxxing protocol built around you</li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Direct access to the people who actually get results</li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> A small room. Selective intake. No passengers.</li>
-    </ul>
+    <div class="video-frame" onclick="goToForm()">
+      <div class="play-btn">
+        <svg viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+      </div>
+      <div class="video-cap">Press play to watch</div>
+    </div>
 
-    <form class="opt-form" onsubmit="event.preventDefault(); window.location.href='vsl';">
-      <input type="text" name="name" placeholder="First name" required>
-      <input type="email" name="email" placeholder="Email address" required>
-      <button type="submit" class="btn-gold">Watch The Training →</button>
-    </form>
-    <p class="fine">Your details stay private. No spam, ever.</p>
+    <div id="opt-form">
+      <p class="form-title">Watch The Training</p>
+      <p class="form-note">Enter your details and the full training opens on the next page.</p>
+      <form class="opt-form" onsubmit="event.preventDefault(); window.location.href='vsl';">
+        <input type="text" name="name" placeholder="First name" required>
+        <input type="email" name="email" placeholder="Email address" required>
+        <button type="submit" class="btn-primary">Continue →</button>
+      </form>
+    </div>
   </div>
 </main>
 
@@ -277,6 +308,16 @@
   <span class="footer-word">The Stickley Method</span>
 </footer>
 
+<script>
+  function goToForm() {
+    var el = document.getElementById('opt-form');
+    el.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(function() {
+      var input = el.querySelector('input');
+      if (input) input.focus();
+    }, 600);
+  }
+</script>
 <script src="phoenix.js"></script>
 </body>
 </html>
