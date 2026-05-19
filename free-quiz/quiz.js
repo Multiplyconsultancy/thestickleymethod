@@ -57,24 +57,25 @@ const QUESTIONS = [
     title: "Which physique is closest to yours right now?",
     sub: "Be honest — this calibrates the protocol.",
     options: [
-      { value: "skinny",     label: "Skinny",       src: "assets/images/physique/physique-1.jpg" },
-      { value: "skinny-fat", label: "Skinny-fat",   src: "assets/images/physique/physique-2.jpg" },
-      { value: "average",    label: "Average",      src: "assets/images/physique/physique-3.jpg" },
-      { value: "lean",       label: "Lean",         src: "assets/images/physique/physique-4.jpg" },
-      { value: "elite",      label: "Lean & built", src: "assets/images/physique/physique-5.jpg" },
+      // Order: worst → best, left to right.
+      { value: "obese",      label: "Obese",      src: "assets/images/physique/obese.jpeg" },
+      { value: "overweight", label: "Overweight", src: "assets/images/physique/overweight.jpeg" },
+      { value: "skinny",     label: "Skinny",     src: "assets/images/physique/skinny.jpeg" },
+      { value: "athletic",   label: "Athletic",   src: "assets/images/physique/athletic.jpeg" },
     ],
   },
   {
     id: "skin",
     type: "photo",
-    title: "Which skin description is yours?",
+    title: "What best describes your skin?",
     sub: "Texture, clarity, tone.",
     options: [
-      { value: "problem", label: "Active breakouts", src: "assets/images/skin/skin-1.jpg" },
-      { value: "uneven",  label: "Uneven / dull",    src: "assets/images/skin/skin-2.jpg" },
-      { value: "ok",      label: "Decent",           src: "assets/images/skin/skin-3.jpg" },
-      { value: "clear",   label: "Clear",            src: "assets/images/skin/skin-4.jpg" },
-      { value: "glass",   label: "Glass skin",       src: "assets/images/skin/skin-5.jpg" },
+      // Order: worst → best, left to right.
+      { value: "active-acne", label: "Active acne",          src: "assets/images/skin/active acne.jpeg" },
+      { value: "scars",       label: "Acne scars",           src: "assets/images/skin/acne scars.jpeg" },
+      { value: "oily",        label: "Oily with blackheads", src: "assets/images/skin/oily with blackheads.jpeg" },
+      { value: "dry",         label: "Dry and flaky",        src: "assets/images/skin/dry and flaky.jpeg" },
+      { value: "clear",       label: "Clear",                src: "assets/images/skin/clear.jpeg" },
     ],
   },
   {
@@ -265,8 +266,8 @@ function renderQuestion(idx) {
 const PHOTO_ASPECT = {
   jawline:  "5 / 4",   // landscape head shots
   eyes:     "16 / 9",  // wide eye crops
-  physique: "3 / 4",   // portrait (placeholder)
-  skin:     "3 / 4",   // portrait (placeholder)
+  physique: "5 / 4",   // landscape body shots
+  skin:     "5 / 4",   // landscape face crops
   hairline: "4 / 5",   // top-down crown shots
   posture:  "2 / 3",   // tall side-profile shots
 };
@@ -506,18 +507,17 @@ function readBack(qid, val) {
       ideal:   "Ideal eye area. Already doing the work eyes do for status.",
     },
     physique: {
-      skinny:       "Skinny frame. Lean bulk + structured lifting transforms this fastest.",
-      "skinny-fat": "Skinny-fat. Recomp protocol — strength + cut at the same time.",
-      average:      "Average build. A 12-week cut + lift is the obvious move.",
-      lean:         "Lean. The hardest part is done — now we sculpt the V.",
-      elite:        "Lean and built. Maintenance + finishing details from here.",
+      obese:      "Obese tier. Biggest physique upside on the programme — structured cut + lift changes everything.",
+      overweight: "Overweight. Recomp protocol — cut bf% while building muscle. 12 weeks creates a different person.",
+      skinny:     "Skinny frame. Lean bulk + structured lifting builds the V fastest.",
+      athletic:   "Athletic build. The hardest part is done — now we sculpt finishing details.",
     },
     skin: {
-      problem: "Active breakouts. Topical + diet + hormone audit is the priority.",
-      uneven:  "Uneven texture / tone. Routine sequencing fixes most of this.",
-      ok:      "Decent skin. Layer in retinoid + SPF for the leap.",
-      clear:   "Clear skin. Dial in glow + grade — the elite-tier polish.",
-      glass:   "Glass-skin tier. Already past where most men finish.",
+      "active-acne": "Active acne. Hormonal + topical protocol + diet audit is the priority — fast wins available.",
+      scars:         "Acne scars. Treatable — retinoid, microneedling, selective laser. We sequence what works.",
+      oily:          "Oily with blackheads. Routine sequencing — cleanser, BHA, retinoid — flips this in weeks.",
+      dry:           "Dry and flaky. Mild and reversible — barrier-first routine sorts it.",
+      clear:         "Clear skin. Dial in glow and grade — the elite-tier polish.",
     },
     hairline: {
       heavy:   "Heavy loss. Still treatable — restoration + the right cut close the gap fast.",
@@ -539,8 +539,8 @@ function deriveTier(answers) {
   const grade = (id, m) => m[answers[id]] ?? 3;
   const J  = grade("jawline",  { soft:1, average:2, defined:3, sharp:4, elite:5 });
   const E  = grade("eyes",     { nct:1, uee:2, bags:2, average:3, ideal:5 });
-  const P  = grade("physique", { skinny:2, "skinny-fat":1, average:2, lean:4, elite:5 });
-  const S  = grade("skin",     { problem:1, uneven:2, ok:3, clear:4, glass:5 });
+  const P  = grade("physique", { obese:1, overweight:2, skinny:2, athletic:5 });
+  const S  = grade("skin",     { "active-acne":1, scars:1, oily:2, dry:3, clear:5 });
   const H  = grade("hairline", { heavy:1, diffuse:2, mild:4, full:5 });
   const Po = grade("posture",  { weak:1, ok:3, strong:5 });
   const conf = Math.max(1, Math.min(5, Math.round((Number(answers.confidence) || 5) / 2)));
