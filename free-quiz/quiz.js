@@ -104,6 +104,123 @@ const QUESTIONS = [
     ],
   },
   {
+    id: "jawline-goals",
+    type: "choice",
+    multi: true,
+    title: "What are your main goals for your jawline?",
+    sub: "Pick as many as apply.",
+    options: [
+      { value: "hyoid",      label: "Lift my hyoid bone" },
+      { value: "masseters",  label: "Grow my masseters" },
+      { value: "definition", label: "Sharpen overall definition" },
+      { value: "mewing",     label: "Improve mewing posture" },
+      { value: "asymmetry",  label: "Fix asymmetry" },
+    ],
+  },
+  {
+    id: "physique-goal",
+    type: "choice",
+    title: "What's your biggest goal with your physique?",
+    sub: "One answer.",
+    options: [
+      { value: "fat",      label: "Lose fat" },
+      { value: "muscle",   label: "Build muscle" },
+      { value: "recomp",   label: "Both at once" },
+      { value: "maintain", label: "Maintain — I'm happy where I am" },
+    ],
+  },
+  {
+    id: "fitness-goals",
+    type: "choice",
+    multi: true,
+    title: "What are your main fitness goals?",
+    sub: "Pick as many as apply.",
+    options: [
+      { value: "athletic",      label: "Look athletic without getting bulky" },
+      { value: "strength",      label: "Get strong (powerlifting style)" },
+      { value: "calisthenics",  label: "Get good at calisthenics" },
+      { value: "endurance",     label: "Build endurance and cardio" },
+      { value: "explosiveness", label: "Improve explosiveness and athleticism" },
+      { value: "combat",        label: "Combat sports / fighting" },
+      { value: "functional",    label: "Functional / everyday capability" },
+    ],
+  },
+  {
+    id: "looksmaxxing-level",
+    type: "choice",
+    title: "How well do you understand looksmaxxing?",
+    sub: "We calibrate the plan to where you are.",
+    options: [
+      { value: "expert", label: "I'm an expert — I just want a structured system" },
+      { value: "bits",   label: "I've picked up bits and pieces, want it consolidated" },
+      { value: "heard",  label: "I've heard the term but haven't really started" },
+      { value: "new",    label: "Completely new to this" },
+    ],
+  },
+  {
+    id: "time-commit",
+    type: "choice",
+    title: "How much time can you realistically commit per week?",
+    sub: "Be honest. The protocol scales to your reality.",
+    options: [
+      { value: "u3",   label: "Under 3 hours" },
+      { value: "3-6",  label: "3-6 hours" },
+      { value: "6-10", label: "6-10 hours" },
+      { value: "10+",  label: "10+ hours" },
+    ],
+  },
+  {
+    id: "sleep",
+    type: "choice",
+    title: "How many hours do you sleep on an average night?",
+    sub: "Sleep underpins every other lever.",
+    options: [
+      { value: "u5",  label: "Under 5" },
+      { value: "5-6", label: "5-6" },
+      { value: "6-7", label: "6-7" },
+      { value: "7-8", label: "7-8" },
+      { value: "8+",  label: "8+" },
+    ],
+  },
+  {
+    id: "style",
+    type: "choice",
+    title: "Which best describes your style direction?",
+    sub: "Pick the closest fit.",
+    options: [
+      { value: "minimal", label: "Minimal and sharp" },
+      { value: "utility", label: "Utility" },
+      { value: "fashion", label: "Fashion-forward" },
+      { value: "classic", label: "Classic" },
+      { value: "none",    label: "No real style yet" },
+    ],
+  },
+  {
+    id: "hold-back",
+    type: "choice",
+    title: "Where does your appearance hold you back most?",
+    sub: "Most honest answer wins.",
+    options: [
+      { value: "dating",       label: "Dating" },
+      { value: "work",         label: "Work and status" },
+      { value: "friends",      label: "Friend group" },
+      { value: "social-media", label: "Social media" },
+      { value: "nowhere",      label: "Nowhere specific" },
+    ],
+  },
+  {
+    id: "age",
+    type: "choice",
+    title: "Your age range?",
+    sub: "Calibration only.",
+    options: [
+      { value: "18-21", label: "18-21" },
+      { value: "22-25", label: "22-25" },
+      { value: "26-30", label: "26-30" },
+      { value: "31+",   label: "31 or older" },
+    ],
+  },
+  {
     id: "confidence",
     type: "scale",
     title: "How confident do you feel walking into a room?",
@@ -202,7 +319,7 @@ function renderWelcome() {
         <button class="btn btn--lg" data-start>
           Start the audit <span class="arrow">→</span>
         </button>
-        <span class="welcome__meta">9 questions · ~2 min · free guide on completion</span>
+        <span class="welcome__meta">18 questions · ~3 min · free guide on completion</span>
       </div>
     </div>
   `;
@@ -223,6 +340,9 @@ function renderQuestion(idx) {
   if (q.type === "scale")  body = renderScale(q);
 
   const isLast = idx === QUESTIONS.length - 1;
+  const hint = q.multi
+    ? "Pick as many as apply · tap continue"
+    : (isLast ? "Last one" : "Tap to select · auto-advances");
 
   const html = `
     <div class="q-screen">
@@ -233,32 +353,75 @@ function renderQuestion(idx) {
       <h2 class="q-title">${q.title}</h2>
       <p class="q-sub">${q.sub}</p>
       ${body}
+      ${q.multi ? `
+        <div class="multi-cta">
+          <button class="btn btn--lg" data-continue disabled>Continue <span class="arrow">→</span></button>
+          <span class="multi-cta__hint" data-multi-hint>Pick at least one</span>
+        </div>
+      ` : ""}
       <div class="q-foot">
         <button class="btn btn--ghost" data-back ${idx === 0 ? "style='visibility:hidden'" : ""}>
           ← Back
         </button>
-        <span class="q-foot__hint">${isLast ? "Last one" : "Tap to select · auto-advances"}</span>
+        <span class="q-foot__hint">${hint}</span>
       </div>
     </div>
   `;
   const node = swap(html);
   if (q.type === "photo") bindPhotoFallbacks(node);
 
+  // Restore previous selection state (so Back button works cleanly)
+  const existing = state.answers[q.id];
+  if (q.multi && Array.isArray(existing)) {
+    existing.forEach((v) => {
+      const el = node.querySelector(`[data-option="${CSS.escape(v)}"]`);
+      if (el) el.setAttribute("aria-pressed", "true");
+    });
+    updateMultiCta(node, existing.length);
+  } else if (!q.multi && existing != null) {
+    const el = node.querySelector(`[data-option="${CSS.escape(String(existing))}"]`);
+    if (el) el.setAttribute("aria-pressed", "true");
+  }
+
   // Bind option clicks
   node.querySelectorAll("[data-option]").forEach((el) => {
     el.addEventListener("click", () => {
       const value = el.dataset.option;
-      // Visual selection
+
+      if (q.multi) {
+        const wasPressed = el.getAttribute("aria-pressed") === "true";
+        el.setAttribute("aria-pressed", wasPressed ? "false" : "true");
+        const current = Array.isArray(state.answers[q.id]) ? state.answers[q.id] : [];
+        state.answers[q.id] = wasPressed
+          ? current.filter((v) => v !== value)
+          : [...current, value];
+        updateMultiCta(node, state.answers[q.id].length);
+        return;
+      }
+
+      // Single-select — auto-advance
       node.querySelectorAll("[data-option]").forEach((e) => e.setAttribute("aria-pressed", "false"));
       el.setAttribute("aria-pressed", "true");
       state.answers[q.id] = value;
-      // Brief pause so the user sees the selection, then advance
       setTimeout(() => goNext(), 320);
     });
   });
 
+  const continueBtn = node.querySelector("[data-continue]");
+  if (continueBtn) continueBtn.addEventListener("click", () => goNext());
+
   const back = node.querySelector("[data-back]");
   if (back) back.addEventListener("click", () => goPrev());
+}
+
+function updateMultiCta(scope, count) {
+  const btn = scope.querySelector("[data-continue]");
+  const hint = scope.querySelector("[data-multi-hint]");
+  if (!btn) return;
+  btn.disabled = count === 0;
+  if (hint) hint.textContent = count === 0
+    ? "Pick at least one"
+    : `${count} selected`;
 }
 
 /* Per-question cell aspect — chosen to match the natural shape of each

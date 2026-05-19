@@ -221,13 +221,13 @@ body::before {
 
 /* ───────── Welcome screen ─────────
    Single column, fits in viewport without scrolling.
-   Topbar (~73px) + footer (~74px) + .quiz top padding (~64px) ≈ 210px,
-   so welcome content sits inside the remaining space. */
+   Topbar (~76px) + footer (~74px) + .quiz vertical padding ≈ 220px desktop,
+   ~120px mobile (footer hidden), so welcome sits inside the remaining space. */
 .welcome {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: calc(100dvh - 220px);
+  min-height: calc(100dvh - 280px);
   max-width: 1100px;
 }
 .welcome .h-display {
@@ -251,9 +251,9 @@ body::before {
   color: var(--muted-2);
 }
 @media (max-width: 720px) {
-  .welcome { min-height: calc(100dvh - 200px); justify-content: flex-start; padding-top: 24px; }
-  .welcome .h-display { font-size: clamp(2.6rem, 11vw, 4rem); }
-  .welcome .lede { font-size: 0.98rem; margin-bottom: 32px; }
+  .welcome { min-height: calc(100dvh - 130px); justify-content: center; padding-top: 0; }
+  .welcome .h-display { font-size: clamp(2.4rem, 10vw, 3.6rem); margin-bottom: 22px; }
+  .welcome .lede { font-size: 0.94rem; margin-bottom: 26px; }
 }
 
 /* ───────── Question screens ───────── */
@@ -376,6 +376,37 @@ body::before {
   gap: 12px;
 }
 @media (max-width: 700px) { .choices { grid-template-columns: 1fr; } }
+
+/* Multi-select continue area (only renders when q.multi is true) */
+.multi-cta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 22px;
+  margin-top: 28px;
+}
+.multi-cta .btn[disabled] {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.multi-cta__hint {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+
+/* On mobile the photo grid collapses to 2 columns. If a question has an
+   odd number of options (3, 5, 7) the last item ends up alone in the
+   left column — centre it under the row above instead. */
+@media (max-width: 700px) {
+  .photo:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc(50% - 5px); /* matches column width with the 10px gap */
+  }
+}
 
 .choice {
   display: flex; align-items: center; gap: 16px;
@@ -669,6 +700,14 @@ body::before {
   color: var(--muted);
 }
 .footer__sep { opacity: 0.5; }
+
+/* Mobile: hide the brand footer (it's redundant with the topbar) and
+   trim the quiz container's bottom padding so non-question screens
+   like welcome, email and loading fit the viewport without scroll. */
+@media (max-width: 720px) {
+  .footer { display: none; }
+  .quiz   { padding-bottom: 32px; min-height: calc(100dvh - 76px); }
+}
 
 /* Form / email capture (used before results) */
 .capture { max-width: 560px; }
