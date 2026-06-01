@@ -145,6 +145,15 @@
       position: absolute;
       inset: 0;
       background: radial-gradient(circle at 50% 45%, rgba(184,147,59,0.22), transparent 60%);
+      pointer-events: none;
+    }
+    .video-thumb {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
     }
     .play-btn {
       position: absolute;
@@ -377,6 +386,9 @@
     <p class="lede">You've already built success. The way you look hasn't kept pace with it — and at your level, that gap is expensive. This is a private programme for professionals and public figures who treat their appearance like the asset it is. Watch the short training to see exactly how it works.</p>
 
     <div class="video-frame" onclick="goToForm()">
+      <video class="video-thumb" preload="metadata" muted playsinline>
+        <source src="ht%20looksmaxxing%20vsl.mp4#t=0.5" type="video/mp4">
+      </video>
       <div class="play-btn">
         <svg viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></svg>
       </div>
