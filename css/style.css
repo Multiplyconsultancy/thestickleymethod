@@ -846,6 +846,33 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 .event-body li svg { width: 14px; height: 14px; color: var(--cyan); flex-shrink: 0; margin-top: 2px; }
 #events .section-cta .btn-primary { background: var(--cyan); }
 
+/* Coaching-only event card — gold theme */
+.event-card.coaching-only {
+  background: linear-gradient(180deg, rgba(201,168,76,0.12), rgba(201,168,76,0.04));
+  border-color: rgba(201,168,76,0.4);
+  box-shadow: 0 8px 28px -16px rgba(201,168,76,0.45);
+}
+.event-card.coaching-only .event-header {
+  background: rgba(201,168,76,0.18);
+  border-bottom: 1px solid rgba(201,168,76,0.35);
+  color: var(--gold);
+}
+.event-card.coaching-only .event-freq { color: rgba(201,168,76,0.7); }
+.event-card.coaching-only .event-body li svg { color: var(--gold); }
+.event-tag {
+  margin-left: auto;
+  font-family: var(--font-head);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: var(--gold);
+  color: #1a1206;
+  white-space: nowrap;
+}
+
 /* ═══════════════════════════════════════════════════════════
    STUDENT REVIEWS — white bg, transform carousel, dots
 ═══════════════════════════════════════════════════════════ */
