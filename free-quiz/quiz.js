@@ -651,25 +651,41 @@ function renderLoading() {
 }
 
 /* ────── Lead capture — fire and forget ──────
-   Both endpoints use mode:"no-cors" because Apps Script + GHL don't return
-   CORS headers; we don't read the responses, so opaque success is fine.
-   Skipped silently if the placeholder URLs haven't been substituted at deploy. */
+   Both endpoints use mode:"no-cors". no-cors silently rewrites
+   Content-Type to a CORS-safelisted value (text/plain or
+   application/x-www-form-urlencoded), so we can't send JSON to GHL —
+   their parser rejects text/plain bodies. URLSearchParams body keeps
+   the Content-Type as form-encoded, which GHL parses correctly.
+   Apps Script doesn't care about Content-Type — it reads raw body. */
 function sendLead() {
-  const payload = {
-    name: state.name,
-    email: state.email,
-    source: "Free Quiz Funnel",
-    answers: state.answers,
-  };
-  const post = (url) => fetch(url, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  }).catch(() => {});
+  // Sheet — JSON string body. Apps Script reads `e.postData.contents`
+  // and JSON.parse works on the raw text regardless of Content-Type.
+  if (SHEET_WEBHOOK_URL && !SHEET_WEBHOOK_URL.startsWith("__")) {
+    fetch(SHEET_WEBHOOK_URL, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify({
+        name: state.name,
+        email: state.email,
+        source: "Free Quiz Funnel",
+        answers: state.answers,
+      }),
+    }).catch(() => {});
+  }
 
-  if (SHEET_WEBHOOK_URL && !SHEET_WEBHOOK_URL.startsWith("__")) post(SHEET_WEBHOOK_URL);
-  if (GHL_WEBHOOK_URL   && !GHL_WEBHOOK_URL.startsWith("__"))   post(GHL_WEBHOOK_URL);
+  // GHL — form-encoded body so the payload survives no-cors stripping.
+  if (GHL_WEBHOOK_URL && !GHL_WEBHOOK_URL.startsWith("__")) {
+    const ghlBody = new URLSearchParams({
+      name:   state.name,
+      email:  state.email,
+      source: "Free Quiz Funnel",
+    });
+    fetch(GHL_WEBHOOK_URL, {
+      method: "POST",
+      mode: "no-cors",
+      body: ghlBody,
+    }).catch(() => {});
+  }
 }
 
 /* ────── Build the Manus results URL with the user's answers ──────
