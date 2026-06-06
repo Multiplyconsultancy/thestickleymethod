@@ -689,39 +689,62 @@ function sendLead() {
 }
 
 /* ────── Build the Manus results URL with the user's answers ──────
-   Manus expects:
-     name  — any text
-     jaw   — "1" (show jaw section) | "0" (hide)
-     eye   — "1" | "0"
-     skin  — "active_acne" | "scars" | "oily" | "dry" | "0" (hide)
-   Note the UNDERSCORE in active_acne — our internal value is "active-acne". */
+   Per the integration spec, Manus uses INVERTED flag polarity:
+     "1" = the user is already perfect in that area → HIDE the module
+     "0" (or a subtype string) = needs work → SHOW the module
+   Params:
+     name        — any text
+     jaw         — "1" (perfect/hide) | "0" (show)
+     eye         — "1" | "0"
+     skin        — "1" (clear/hide) | "active_acne" | "scars" | "oily" | "dry"
+     physique    — "1" (athletic/hide) | "overweight" | "skinny"
+     confidence  — "1" (high, hide) | "0" (low, show)
+   Manus then auto-calculates a compatibility score from the number of
+   active (showing) modules — we don't compute that. */
 function buildManusUrl() {
   const a = state.answers;
 
-  // Skin: map our value → Manus value. "clear" → "0" hides the section.
+  // Skin: clear → "1" (hide). Others → subtype string. Note hyphen → underscore.
   const skinMap = {
     "active-acne": "active_acne",
     "scars":       "scars",
     "oily":        "oily",
     "dry":         "dry",
-    "clear":       "0",
+    "clear":       "1",   // perfect → hide
   };
   const skin = skinMap[a.skin] || "0";
 
-  // Jaw flag: show the section if their jawline is weaker tiers OR they
-  // selected any jawline goals — both signal they want jaw work.
-  const jawGoals = Array.isArray(a["jawline-goals"]) ? a["jawline-goals"] : [];
-  const jawNeedsWork = ["soft", "average"].includes(a.jawline);
-  const jaw = (jawNeedsWork || jawGoals.length > 0) ? "1" : "0";
+  // Physique: athletic → "1" (hide). Manus only has overweight/skinny as
+  // active subtypes, so we collapse "obese" → "overweight" (closest match).
+  const physiqueMap = {
+    "athletic":   "1",            // perfect → hide
+    "skinny":     "skinny",
+    "overweight": "overweight",
+    "obese":      "overweight",   // Manus has no "obese" subtype
+  };
+  const physique = physiqueMap[a.physique] || "0";
 
-  // Eye flag: show only if there's a specific issue (NCT, UEE, bags).
-  const eye = ["nct", "uee", "bags"].includes(a.eyes) ? "1" : "0";
+  // Jaw: needs work if their jawline is a weaker tier OR they selected any
+  // jawline goals — either signals the module should show.
+  const jawGoals = Array.isArray(a["jawline-goals"]) ? a["jawline-goals"] : [];
+  const jawNeedsWork = ["soft", "average"].includes(a.jawline) || jawGoals.length > 0;
+  const jaw = jawNeedsWork ? "0" : "1";
+
+  // Eye: needs work for the three problem states.
+  const eyeNeedsWork = ["nct", "uee", "bags"].includes(a.eyes);
+  const eye = eyeNeedsWork ? "0" : "1";
+
+  // Confidence: collected as a 1-10 scale. Treat 7+ as "high → hide".
+  const confNum = Number(a.confidence) || 5;
+  const confidence = confNum >= 7 ? "1" : "0";
 
   const params = new URLSearchParams({
     name: state.name || "Friend",
     jaw,
     skin,
     eye,
+    physique,
+    confidence,
   });
   return `${MANUS_RESULTS_URL}?${params.toString()}`;
 }
