@@ -282,34 +282,40 @@
       overflow: hidden;
       box-shadow: 0 20px 50px -34px rgba(10,37,64,0.4);
     }
-    .tf-imgs { display: grid; grid-template-columns: 1fr 1fr; }
+    .tf-imgs {
+      display: grid;
+      grid-template-columns: 1fr;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    .tf-imgs.split { grid-template-columns: 1fr 1fr; }
     .tf-ph {
       position: relative;
-      aspect-ratio: 3 / 4;
-      background: repeating-linear-gradient(45deg, #f1eee7 0 12px, #f6f4ee 12px 24px);
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding-bottom: 12px;
+      overflow: hidden;
+      background: var(--panel);
     }
     .tf-ph + .tf-ph { border-left: 1px solid var(--border); }
-    .tf-ph span {
+    .tf-ph img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .tf-ph .tag {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
       font-family: var(--font-head);
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--muted);
-      background: rgba(255,255,255,0.85);
+      color: var(--ink);
+      background: rgba(255,255,255,0.92);
       padding: 4px 10px;
       border-radius: 100px;
     }
-    .tf-cap {
-      padding: 14px 16px;
-      font-size: 0.85rem;
-      color: var(--muted);
-      text-align: center;
-    }
-    .tf-cap strong { color: var(--ink); font-weight: 700; }
     .qt-card {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -413,24 +419,19 @@
       <div class="proof-grid">
         <div class="tf-card">
           <div class="tf-imgs">
-            <div class="tf-ph"><span>Before</span></div>
-            <div class="tf-ph"><span>After</span></div>
+            <div class="tf-ph"><img src="transformation%201.png" alt="Client transformation 1"></div>
           </div>
-          <p class="tf-cap"><strong>Client name</strong> — one-line result</p>
         </div>
         <div class="tf-card">
           <div class="tf-imgs">
-            <div class="tf-ph"><span>Before</span></div>
-            <div class="tf-ph"><span>After</span></div>
+            <div class="tf-ph"><img src="transformation%202.png" alt="Client transformation 2"></div>
           </div>
-          <p class="tf-cap"><strong>Client name</strong> — one-line result</p>
         </div>
         <div class="tf-card">
-          <div class="tf-imgs">
-            <div class="tf-ph"><span>Before</span></div>
-            <div class="tf-ph"><span>After</span></div>
+          <div class="tf-imgs split">
+            <div class="tf-ph"><img src="transformation%203%20before.png" alt="Before"><span class="tag">Before</span></div>
+            <div class="tf-ph"><img src="transformation%203%20after.png" alt="After"><span class="tag">After</span></div>
           </div>
-          <p class="tf-cap"><strong>Client name</strong> — one-line result</p>
         </div>
       </div>
     </section>
