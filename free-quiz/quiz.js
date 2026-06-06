@@ -254,6 +254,13 @@ const QUESTIONS = [
   },
 ];
 
+/* ────── Integration config ──────
+   Webhook URLs are baked in at deploy time from .env (search/replaced by
+   the push script). The placeholders below are used during local preview. */
+const SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyXv837NpIFD8eZpsiga5QU0pP3fDnIvmqamdWuBGC6aYozBe02eJjThiTtqwbTUoKi/exec";
+const GHL_WEBHOOK_URL   = "https://services.leadconnectorhq.com/hooks/HUJNtr90tiYaJR29lbmP/webhook-trigger/b4693d25-e4fe-45c8-aa15-c656f1b27b99";
+const MANUS_RESULTS_URL = "https://tsmquizresults2635.manus.space/";
+
 /* ────── State ────── */
 const state = {
   step: -1,                  // -1 = welcome, 0..n = question index, "loading", "results"
@@ -596,10 +603,9 @@ function renderEmail() {
     state.email = v;
     err.textContent = "";
 
-    // TODO: send to backend / GoHighLevel / Google Sheet / ConvertKit / etc.
-    // fetch("/api/lead", { method: "POST", body: JSON.stringify({ name: n, email: v, answers: state.answers }) });
+    sendLead();   // fire-and-forget: GHL + Google Sheet in parallel
 
-    goNext();
+    goNext();     // advance to loading screen, which then redirects to Manus
   });
 
   node.querySelector("[data-back]").addEventListener("click", () => goPrev());
@@ -641,7 +647,67 @@ function renderLoading() {
     }, i * stepMs * 0.4 + stepMs);
   });
 
-  setTimeout(() => { state.step = "results"; render(); }, totalMs);
+  setTimeout(() => { window.location.href = buildManusUrl(); }, totalMs);
+}
+
+/* ────── Lead capture — fire and forget ──────
+   Both endpoints use mode:"no-cors" because Apps Script + GHL don't return
+   CORS headers; we don't read the responses, so opaque success is fine.
+   Skipped silently if the placeholder URLs haven't been substituted at deploy. */
+function sendLead() {
+  const payload = {
+    name: state.name,
+    email: state.email,
+    source: "Free Quiz Funnel",
+    answers: state.answers,
+  };
+  const post = (url) => fetch(url, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  }).catch(() => {});
+
+  if (SHEET_WEBHOOK_URL && !SHEET_WEBHOOK_URL.startsWith("__")) post(SHEET_WEBHOOK_URL);
+  if (GHL_WEBHOOK_URL   && !GHL_WEBHOOK_URL.startsWith("__"))   post(GHL_WEBHOOK_URL);
+}
+
+/* ────── Build the Manus results URL with the user's answers ──────
+   Manus expects:
+     name  — any text
+     jaw   — "1" (show jaw section) | "0" (hide)
+     eye   — "1" | "0"
+     skin  — "active_acne" | "scars" | "oily" | "dry" | "0" (hide)
+   Note the UNDERSCORE in active_acne — our internal value is "active-acne". */
+function buildManusUrl() {
+  const a = state.answers;
+
+  // Skin: map our value → Manus value. "clear" → "0" hides the section.
+  const skinMap = {
+    "active-acne": "active_acne",
+    "scars":       "scars",
+    "oily":        "oily",
+    "dry":         "dry",
+    "clear":       "0",
+  };
+  const skin = skinMap[a.skin] || "0";
+
+  // Jaw flag: show the section if their jawline is weaker tiers OR they
+  // selected any jawline goals — both signal they want jaw work.
+  const jawGoals = Array.isArray(a["jawline-goals"]) ? a["jawline-goals"] : [];
+  const jawNeedsWork = ["soft", "average"].includes(a.jawline);
+  const jaw = (jawNeedsWork || jawGoals.length > 0) ? "1" : "0";
+
+  // Eye flag: show only if there's a specific issue (NCT, UEE, bags).
+  const eye = ["nct", "uee", "bags"].includes(a.eyes) ? "1" : "0";
+
+  const params = new URLSearchParams({
+    name: state.name || "Friend",
+    jaw,
+    skin,
+    eye,
+  });
+  return `${MANUS_RESULTS_URL}?${params.toString()}`;
 }
 
 /* ────── Helpers — answer → human label / interpretation ────── */
@@ -715,26 +781,26 @@ function deriveTier(answers) {
 }
 
 function verdict(tier, name) {
-  const who = name ? `${name}, ` : "";
+  const greet = name ? `Hey ${name} —` : "Hey —";
   if (tier === "elite") return {
     tag: "Top tier",
-    title: `${who}you're already operating in the top decile.`,
-    body:  "Your audit reads at the level the Method is designed to push past — finishing details, presence, status. The full programme is about taking 'great' to 'unforgettable'.",
+    title: `${greet} here's your audit.`,
+    body:  "You're already operating in the top decile. Your protocol below is about taking 'great' to 'unforgettable' — finishing details, presence, status.",
   };
   if (tier === "sharp") return {
     tag: "Sharp",
-    title: `${who}you're sharper than most men your age.`,
-    body:  "You have the foundation. The work now is precision: jaw, eye area, physique fine-tuning, and presence. The Method is built for exactly this jump.",
+    title: `${greet} here's your audit.`,
+    body:  "You're sharper than most men your age. You have the foundation; the work now is precision. The full protocol is below.",
   };
   if (tier === "foundations") return {
     tag: "Foundations",
-    title: `${who}there's real, visible upside in front of you.`,
-    body:  "Men in your starting position consistently see the most dramatic 12-week transformations. The free guide gives you the foundations — the Method gives you the full path.",
+    title: `${greet} here's your audit.`,
+    body:  "There's real, visible upside in front of you. Men starting where you are consistently see the most dramatic 12-week transformations. Your protocol is below.",
   };
   return {
     tag: "Reset",
-    title: `${who}it's time for a full reset.`,
-    body:  "You've been operating on scraps of forum advice. Structured, protocol-driven men starting from this point produce the most dramatic transformations the Method has on tape.",
+    title: `${greet} here's your audit.`,
+    body:  "It's time for a full reset. You've been operating on scraps. Structured, protocol-driven men starting from this point produce the most dramatic transformations on tape. Your protocol is below.",
   };
 }
 
