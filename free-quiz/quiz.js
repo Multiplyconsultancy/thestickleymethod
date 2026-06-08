@@ -183,19 +183,6 @@ const QUESTIONS = [
     ],
   },
   {
-    id: "style",
-    type: "choice",
-    title: "Which best describes your style direction?",
-    sub: "Pick the closest fit.",
-    options: [
-      { value: "minimal", label: "Minimal and sharp" },
-      { value: "utility", label: "Utility" },
-      { value: "fashion", label: "Fashion-forward" },
-      { value: "classic", label: "Classic" },
-      { value: "none",    label: "No real style yet" },
-    ],
-  },
-  {
     id: "hold-back",
     type: "choice",
     title: "Where does your appearance hold you back most?",
@@ -326,7 +313,7 @@ function renderWelcome() {
         <button class="btn btn--lg" data-start>
           Start the audit <span class="arrow">→</span>
         </button>
-        <span class="welcome__meta">18 questions · ~3 min · free guide on completion</span>
+        <span class="welcome__meta">17 questions · ~3 min · free guide on completion</span>
       </div>
     </div>
   `;
