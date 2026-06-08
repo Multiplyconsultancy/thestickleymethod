@@ -724,15 +724,13 @@ function buildManusUrl() {
   };
   const physique = physiqueMap[a.physique] || "0";
 
-  // Jaw: use the user's photo answer as the source of truth.
-  // Defined/sharp = perfect (hide module). Soft/average = needs work (show).
-  // jawline-goals (multi) is still captured to the Sheet for personalisation
-  // but does NOT override the user's own assessment.
-  const jaw = ["defined", "sharp"].includes(a.jawline) ? "1" : "0";
+  // Jaw: strict equality on the rightmost/"perfect" option, matching the
+  // skin (clear) and physique (athletic) pattern from the spec example.
+  // Only `sharp` → "1" (hide). Everything else → "0" (show).
+  const jaw = a.jawline === "sharp" ? "1" : "0";
 
-  // Eye: needs work for the three problem states.
-  const eyeNeedsWork = ["nct", "uee", "bags"].includes(a.eyes);
-  const eye = eyeNeedsWork ? "0" : "1";
+  // Eye: same strict pattern — only the rightmost "perfect" option.
+  const eye = a.eyes === "ideal" ? "1" : "0";
 
   // Confidence: collected as a 1-10 scale. Treat 7+ as "high → hide".
   const confNum = Number(a.confidence) || 5;
