@@ -724,11 +724,11 @@ function buildManusUrl() {
   };
   const physique = physiqueMap[a.physique] || "0";
 
-  // Jaw: needs work if their jawline is a weaker tier OR they selected any
-  // jawline goals — either signals the module should show.
-  const jawGoals = Array.isArray(a["jawline-goals"]) ? a["jawline-goals"] : [];
-  const jawNeedsWork = ["soft", "average"].includes(a.jawline) || jawGoals.length > 0;
-  const jaw = jawNeedsWork ? "0" : "1";
+  // Jaw: use the user's photo answer as the source of truth.
+  // Defined/sharp = perfect (hide module). Soft/average = needs work (show).
+  // jawline-goals (multi) is still captured to the Sheet for personalisation
+  // but does NOT override the user's own assessment.
+  const jaw = ["defined", "sharp"].includes(a.jawline) ? "1" : "0";
 
   // Eye: needs work for the three problem states.
   const eyeNeedsWork = ["nct", "uee", "bags"].includes(a.eyes);
