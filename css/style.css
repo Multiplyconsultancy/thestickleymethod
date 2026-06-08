@@ -1314,3 +1314,77 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   .guide-grid,
   .tier-callout-grid { grid-template-columns: 1fr; }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   COACHING PROMO — under What You'll Learn
+═══════════════════════════════════════════════════════════ */
+#coaching-promo {
+  padding: 48px 20px 40px;
+  background: var(--white);
+}
+.cp-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 28px;
+  align-items: center;
+  background: linear-gradient(180deg, #fffbef 0%, #ffffff 60%);
+  border: 1.5px solid var(--gold);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 14px 40px -22px rgba(184,147,59,0.45);
+}
+.cp-img {
+  aspect-ratio: 16 / 10;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.cp-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.cp-text {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 6px 8px;
+}
+.cp-eyebrow {
+  font-family: var(--font-head);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+}
+.cp-title {
+  font-family: var(--font-head);
+  font-size: clamp(1.35rem, 3.6vw, 1.95rem);
+  font-weight: 800;
+  line-height: 1.15;
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+  color: var(--dark);
+}
+.cp-cta {
+  background: var(--gold);
+  color: var(--white);
+  align-self: flex-start;
+}
+.cp-cta:hover {
+  background: var(--gold-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(201,168,76,0.4);
+}
+@media (max-width: 720px) {
+  .cp-inner {
+    grid-template-columns: 1fr;
+    padding: 18px;
+    gap: 18px;
+  }
+  .cp-cta { align-self: stretch; }
+}
