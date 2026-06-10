@@ -550,9 +550,7 @@ function renderEmail() {
   const html = `
     <div class="capture">
       <span class="eyebrow">Final step</span>
-      <h2 class="h-section">Where do we send your audit?</h2>
-      <p class="lede lede--muted">We'll deliver your personal report and the free <strong>Aesthetic Foundations</strong> guide
-      straight to your inbox. No spam — one email, then it's on you.</p>
+      <h2 class="h-section">Enter your name and email to unlock your audit</h2>
 
       <form id="captureForm" class="capture__form" novalidate>
         <div class="capture__field">
