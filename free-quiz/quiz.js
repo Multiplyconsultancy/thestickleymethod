@@ -40,8 +40,9 @@ const QUESTIONS = [
   {
     id: "eyes",
     type: "photo",
+    multi: true,
     title: "What best describes your eye area?",
-    sub: "Pick the closest match — eye shape, hood, under-eye area.",
+    sub: "Pick as many as apply — eye shape, hood, under-eye area.",
     options: [
       // Order: worst → best, left to right.
       { value: "nct",     label: "Negative tilt (NCT)",   src: "assets/images/eye-area/1.jpeg" },
@@ -716,8 +717,10 @@ function buildManusUrl() {
   // Only `sharp` → "1" (hide). Everything else → "0" (show).
   const jaw = a.jawline === "sharp" ? "1" : "0";
 
-  // Eye: same strict pattern — only the rightmost "perfect" option.
-  const eye = a.eyes === "ideal" ? "1" : "0";
+  // Eye: multi-select. If the user picked "ideal" (alongside anything else
+  // or alone), treat the area as perfect → "1". Otherwise → "0".
+  const eyesArr = Array.isArray(a.eyes) ? a.eyes : (a.eyes ? [a.eyes] : []);
+  const eye = eyesArr.includes("ideal") ? "1" : "0";
 
   // Confidence: collected as a 1-10 scale. Treat 7+ as "high → hide".
   const confNum = Number(a.confidence) || 5;
