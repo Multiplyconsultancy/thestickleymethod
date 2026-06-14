@@ -255,6 +255,7 @@ const state = {
   answers: {},
   name: "",
   email: "",
+  submitted: false,          // guard so we never send the lead twice per session
 };
 
 const app = document.getElementById("quizApp");
@@ -575,8 +576,12 @@ function renderEmail() {
   const email = node.querySelector("#emailInput");
   const err   = node.querySelector("#captureError");
 
+  const submitBtn = form.querySelector('button[type="submit"]');
+
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+    if (state.submitted) return;          // guard: only ever send one lead per session
+
     const n = name.value.trim();
     const v = email.value.trim();
     if (n.length < 1) { err.textContent = "Enter your first name."; name.focus(); return; }
@@ -585,12 +590,18 @@ function renderEmail() {
       email.focus();
       return;
     }
+
+    state.submitted = true;               // flip immediately to block a second click
     state.name = n;
     state.email = v;
     err.textContent = "";
 
-    sendLead();   // fire-and-forget: GHL + Google Sheet in parallel
+    if (submitBtn) {                       // visual feedback during the 4s loading screen
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Loading…";
+    }
 
+    sendLead();   // fire-and-forget: GHL + Google Sheet in parallel
     goNext();     // advance to loading screen, which then redirects to Manus
   });
 
