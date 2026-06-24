@@ -376,13 +376,13 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 ═══════════════════════════════════════════════════════════ */
 #hero {
   background: var(--white);
-  padding: 18.2vh 24px 13vh;
+  padding: 24px 24px 40px;
   display: flex;
   align-items: flex-start;
   justify-content: center;
 }
 .hero-inner {
-  max-width: 680px;
+  max-width: 760px;
   width: 100%;
   margin: 0 auto;
   text-align: center;
@@ -395,23 +395,54 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 .hero-heading {
   font-family: var(--font-head);
   font-weight: 800;
-  font-size: clamp(2.8rem, 12vw, 7rem);
-  line-height: 0.95;
+  font-size: clamp(2.2rem, 7.5vw, 4.2rem);
+  line-height: 0.98;
   letter-spacing: -0.01em;
   text-transform: uppercase;
   color: var(--dark);
   margin-top: 0;
-  margin-bottom: 45px;
+  margin-bottom: 18px;
+}
+
+/* In-hero VSL */
+.hero-vsl {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 16 / 9;
+  margin: 0 auto 20px;
+  background: #0b1422;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 24px 56px -28px rgba(10,37,64,0.35);
+}
+.hero-vsl > div[id^="vidalytics_embed_"] {
+  position: absolute !important;
+  inset: 0;
+  padding-top: 0 !important;
+}
+.hero-vsl iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 .hero-body {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--mid);
-  max-width: 460px;
-  margin: 34px auto 24px;
-  line-height: 1.65;
+  max-width: 480px;
+  margin: 24px auto 0;
+  line-height: 1.6;
 }
 .hero-body strong { color: var(--dark); }
+
+@media (max-width: 600px) {
+  #hero { padding: 16px 16px 28px; }
+  .hero-heading { margin-bottom: 14px; }
+  .hero-vsl { border-radius: 10px; margin-bottom: 16px; }
+}
 
 /* ═══════════════════════════════════════════════════════════
    STATS — compact, horizontal
@@ -1313,53 +1344,6 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   .pricing-grid,
   .guide-grid,
   .tier-callout-grid { grid-template-columns: 1fr; }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   VSL — between Hero and Stats
-═══════════════════════════════════════════════════════════ */
-#vsl {
-  padding: 36px 20px 28px;
-  background: var(--white);
-}
-.vsl-wrap {
-  max-width: 900px;
-  margin: 0 auto;
-  text-align: center;
-}
-.vsl-eyebrow {
-  font-family: var(--font-head);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gold-dark);
-  margin-bottom: 14px;
-}
-.vsl-frame {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: #0b1422;
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 28px 60px -28px rgba(10,37,64,0.35);
-}
-.vsl-frame > div[id^="vidalytics_embed_"] {
-  position: absolute !important;
-  inset: 0;
-  padding-top: 0 !important;
-}
-.vsl-frame iframe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-@media (max-width: 600px) {
-  #vsl { padding: 24px 16px 20px; }
-  .vsl-frame { border-radius: 10px; }
 }
 
 /* ═══════════════════════════════════════════════════════════
