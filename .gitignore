@@ -29,5 +29,6 @@ __pycache__/
 .env.*
 !.env.example
 
-# Large video files (host on Vimeo/Cloudflare Stream/etc., not GitHub)
-high-ticket/*.mp4
+# Large video files (host on Vimeo / Vidalytics / etc., not GitHub)
+*.mp4
+*.mov
