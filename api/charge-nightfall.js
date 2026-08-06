@@ -77,8 +77,13 @@ module.exports = async function handler(req, res) {
   const planId = process.env.NIGHTFALL_PLAN_ID || 'plan_egsP7USJc6IRk';
 
   if (!WHOP_API_KEY || !WHOP_COMPANY_ID) {
-    console.error('Missing WHOP_API_KEY or WHOP_COMPANY_ID');
-    return res.status(500).json({ error: 'not_configured' });
+    /* Names only, never values — enough to self-diagnose a misconfigured
+       deploy without leaking anything. */
+    const missing = [];
+    if (!WHOP_API_KEY) missing.push('WHOP_API_KEY');
+    if (!WHOP_COMPANY_ID) missing.push('WHOP_COMPANY_ID');
+    console.error('not_configured — missing:', missing.join(', '));
+    return res.status(500).json({ error: 'not_configured', missing });
   }
 
   const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
