@@ -42,23 +42,24 @@ async function readJson(res) {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-/* The card is vaulted asynchronously during checkout, so on a fast click
-   it may not be listed yet. Retry briefly rather than failing the sale. */
-async function findPaymentMethod(memberId, companyId) {
-  for (let attempt = 0; attempt < 5; attempt++) {
+/* Fallback only. Verified against the live API: this endpoint rejects
+   member_id and company_id together ("Only one of member_id or
+   company_id can be provided"), so pass member_id alone. */
+async function findPaymentMethod(memberId) {
+  for (let attempt = 0; attempt < 4; attempt++) {
     const res = await whop(
-      `/payment_methods?member_id=${encodeURIComponent(memberId)}` +
-      `&company_id=${encodeURIComponent(companyId)}&direction=desc&first=10`
+      `/payment_methods?member_id=${encodeURIComponent(memberId)}&direction=desc&first=10`
     );
     const body = await readJson(res);
 
     if (res.ok && Array.isArray(body.data) && body.data.length) {
-      // Prefer a card; fall back to whatever is newest.
+      // Prefer a card; otherwise take the newest method on file.
       const card = body.data.find((m) => m.payment_method_type === 'card');
       return (card || body.data[0]).id;
     }
     if (!res.ok && res.status !== 404) {
-      throw new Error(`payment_methods ${res.status}: ${JSON.stringify(body)}`);
+      console.error(`payment_methods ${res.status}`, body);
+      return null;
     }
     await sleep(600 * (attempt + 1));
   }
@@ -118,8 +119,13 @@ module.exports = async function handler(req, res) {
       return res.status(422).json({ error: 'no_member_on_receipt' });
     }
 
-    /* ── 3. The card Whop vaulted at checkout ───────────────────── */
-    const paymentMethodId = await findPaymentMethod(memberId, WHOP_COMPANY_ID);
+    /* ── 3. The card Whop vaulted at checkout ───────────────────────
+       The payment carries its own payment_method, so a paid receipt
+       always has the card attached — no second call, and no race with
+       Whop's async vaulting. The lookup below is just a safety net. */
+    const paymentMethodId =
+      payment.payment_method?.id || (await findPaymentMethod(memberId));
+
     if (!paymentMethodId) {
       // No saved card — the page falls back to hosted checkout.
       return res.status(200).json({ ok: false, reason: 'no_saved_card' });
