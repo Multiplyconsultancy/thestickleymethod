@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/checkout-complete.js"></script>
 </head>
 <body>
 
@@ -16,8 +17,11 @@
 <header class="join-header">
   <div class="join-header-inner">
     <a href="/" class="join-logo" aria-label="The Stickley Method home">
-      <span class="logo-brand-top">THE STICKLEY</span>
-      <span class="logo-brand-bot">METHOD</span>
+      <img src="/frames/frame_0001.png" alt="" class="join-logo-mark" width="40" height="40">
+      <span class="join-logo-text">
+        <span class="logo-brand-top">THE STICKLEY</span>
+        <span class="logo-brand-bot">METHOD</span>
+      </span>
     </a>
     <a href="/#pricing" class="join-back">← All plans</a>
   </div>
@@ -27,9 +31,7 @@
 
   <!-- ═══ PLAN HEADER ════════════════════════════════════════════════════ -->
   <div class="join-head">
-    <p class="join-eyebrow">The Stickley Method Membership</p>
     <h1 class="join-title">1 Month</h1>
-    <p class="join-tagline">Full access, month to month. Cancel whenever you want.</p>
     <div class="join-price"><span class="amt">$39</span><span class="per">/month</span></div>
     <p class="join-price-note">Billed monthly · cancel anytime</p>
   </div>
@@ -54,6 +56,7 @@
           data-whop-checkout-theme-button-text="Join"
           data-whop-checkout-setup-future-usage="off_session"
           data-whop-checkout-hide-tos="true"
+          data-whop-checkout-on-complete="tsmCheckoutComplete"
         ></div>
         <script async src="https://js.whop.com/static/checkout/loader.js"></script>
 
