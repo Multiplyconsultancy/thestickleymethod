@@ -94,12 +94,42 @@ async function findPaymentMethod(memberId) {
 }
 
 module.exports = async function handler(req, res) {
+  const { WHOP_API_KEY, WHOP_COMPANY_ID } = process.env;
+
+  /* GET ?selftest=1 reports whether the deployed key can actually
+     charge. It sends a deliberately non-existent member and card, so
+     no money can move: a 403 means the key still lacks payment:charge,
+     a 404 "member not found" means the permission is granted. */
+  if (req.method === 'GET' && req.query && req.query.selftest) {
+    if (!WHOP_API_KEY || !WHOP_COMPANY_ID) {
+      return res.status(200).json({ selftest: 'not_configured' });
+    }
+    const probe = await whop('/payments', {
+      method: 'POST',
+      body: JSON.stringify({
+        company_id: WHOP_COMPANY_ID,
+        member_id: 'mber_selftest_does_not_exist',
+        payment_method_id: 'payt_selftest_does_not_exist',
+        plan_id: PRODUCTS.babyai.plan,
+      }),
+    });
+    const body = await readJson(probe);
+    const msg = (body && body.error && body.error.message) || '';
+    const blocked = probe.status === 401 || probe.status === 403 ||
+                    /permission|not authorized/i.test(msg);
+    return res.status(200).json({
+      selftest: blocked ? 'MISSING payment:charge' : 'payment:charge OK',
+      httpStatus: probe.status,
+      whopSaid: msg,
+      keyEndsWith: WHOP_API_KEY.slice(-4),
+      companyId: WHOP_COMPANY_ID,
+    });
+  }
+
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'method_not_allowed' });
   }
-
-  const { WHOP_API_KEY, WHOP_COMPANY_ID } = process.env;
   if (!WHOP_API_KEY || !WHOP_COMPANY_ID) {
     const missing = [];
     if (!WHOP_API_KEY) missing.push('WHOP_API_KEY');
@@ -167,8 +197,14 @@ module.exports = async function handler(req, res) {
     const charge = await readJson(chargeRes);
 
     if (!chargeRes.ok) {
+      const msg = (charge && charge.error && charge.error.message) || '';
       console.error(`charge failed for ${product.label}`, chargeRes.status, charge);
-      return res.status(200).json({ ok: false, reason: 'charge_failed' });
+      return res.status(200).json({
+        ok: false,
+        reason: 'charge_failed',
+        httpStatus: chargeRes.status,
+        whopSaid: msg,        // config detail, never customer data
+      });
     }
 
     /* Whop settles asynchronously, so 'pending' here is normal. Use
