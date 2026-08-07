@@ -2355,3 +2355,65 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 /* Character Analysis is a wider plate than the photo cards, so it must
    fit inside the frame rather than fill it. */
 .nf-mod-img img.contain { object-fit: contain; background: #111; }
+
+/* ── Baby AI feature grid ─────────────────────────────────────── */
+.ba-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 26px;
+  text-align: left;
+}
+.ba-feat {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+/* Placeholder until the demo screenshots land. Swap the inner span for
+   <img src="..." alt="..."> and the styling still holds. */
+.ba-shot {
+  aspect-ratio: 16 / 10;
+  background: var(--light);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ba-shot span {
+  font-family: var(--font-head);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #b3b9c2;
+}
+.ba-shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ba-feat-body { padding: 15px 17px 17px; }
+.ba-feat-body h3 {
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--dark);
+  margin-bottom: 6px;
+}
+.ba-feat-body p { font-size: 0.9rem; line-height: 1.55; color: var(--mid); }
+
+.nf-savebar-price .per {
+  font-family: var(--font-head);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.ba-demo {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-top: 16px;
+}
+.ba-demo a { color: var(--cyan-dark); text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
+
+@media (min-width: 720px) {
+  .ba-grid { grid-template-columns: 1fr 1fr; }
+}
