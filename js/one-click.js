@@ -51,8 +51,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data && data.ok) {
           done = true;
           setState('is-done', '✓ NIGHTFALL ADDED', 'Charged $97. It is in your account now.');
-          btn.setAttribute('href', '/upsell/step-2');
-          setTimeout(function () { window.location.href = '/upsell/step-2'; }, 2200);
+          /* Whatever the decline link points at is the next step in the
+             funnel — read it rather than hardcoding, so reordering the
+             pages can't strand anyone here. */
+          var declineEl = document.querySelector('.us-decline');
+          var next = declineEl ? declineEl.getAttribute('href') : '/purchase/done';
+          btn.setAttribute('href', next);
+          setTimeout(function () { window.location.href = next; }, 2200);
         } else {
           // Fall back to hosted checkout rather than dead-ending the sale.
           setState('is-error', original.label, 'Tap again to complete it on Whop.');
