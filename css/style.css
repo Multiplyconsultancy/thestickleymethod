@@ -2422,3 +2422,15 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 @media (min-width: 720px) {
   .ba-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* Section title above the Nightfall module grid */
+.nf-grid-title {
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 5vw, 2.1rem);
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: var(--dark);
+  text-align: center;
+  margin: 40px 0 20px;
+}
