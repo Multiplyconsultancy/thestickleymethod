@@ -2308,3 +2308,50 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 
 /* Redirect + sales page CTAs: flat, no glow */
 .btn-accept:hover, .sp-cta:hover { box-shadow: none; transform: none; }
+
+/* ── Nightfall upsell: centred copy + savings bar ─────────────── */
+.us-page.nf-centred .us-pitch { text-align: center; }
+
+.nf-savebar {
+  background: linear-gradient(180deg, #f2fcff, #ffffff 70%);
+  border: 2px solid var(--cyan);
+  border-radius: 12px;
+  padding: 16px 18px 14px;
+  margin: 0 auto 24px;
+  max-width: 460px;
+}
+.nf-savebar-price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 4px;
+}
+.nf-savebar-price .was {
+  font-family: var(--font-head);
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  font-weight: 800;
+  color: var(--muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 4px;
+  text-decoration-color: #e0413a;
+}
+.nf-savebar-price .now {
+  font-family: var(--font-head);
+  font-size: clamp(2.4rem, 8vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--cyan);
+}
+.nf-savebar-note {
+  font-family: var(--font-head);
+  font-size: clamp(0.95rem, 3.2vw, 1.1rem);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--navy);
+}
+.nf-savebar-note strong { font-weight: 800; }
+
+/* Character Analysis is a wider plate than the photo cards, so it must
+   fit inside the frame rather than fill it. */
+.nf-mod-img img.contain { object-fit: contain; background: #111; }
