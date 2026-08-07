@@ -22,7 +22,12 @@ document.addEventListener('DOMContentLoaded', function () {
   var buttons = document.querySelectorAll('.js-one-click');
   if (!buttons.length) return;
 
-  var receipt = new URLSearchParams(window.location.search).get('receipt');
+  /* Our own callback sends ?receipt=, but a redirect configured in the
+     Whop dashboard may name it differently. Accept any of them rather
+     than silently falling back to hosted checkout. */
+  var qs = new URLSearchParams(window.location.search);
+  var receipt = qs.get('receipt') || qs.get('receipt_id') || qs.get('receiptId') ||
+                qs.get('payment_id') || qs.get('session_id');
   if (!receipt) return;              // no receipt, leave them as plain links
 
   var first   = buttons[0];
