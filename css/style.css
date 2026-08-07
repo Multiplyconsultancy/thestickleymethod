@@ -2096,3 +2096,155 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 .btn-accept.is-working { background: var(--navy); pointer-events: none; opacity: 0.92; }
 .btn-accept.is-done    { background: #1b9e5a; pointer-events: none; }
 .btn-accept.is-error   { background: var(--cyan-dark); }
+
+/* ═══════════════════════════════════════════════════════════
+   SALES PAGES — /nightfall · /baby-ai
+═══════════════════════════════════════════════════════════ */
+.sp-hero {
+  background: var(--navy);
+  color: var(--white);
+  padding: 54px 20px 58px;
+  text-align: center;
+}
+.sp-hero-inner { max-width: 760px; margin: 0 auto; }
+.sp-eyebrow {
+  font-family: var(--font-head);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 14px;
+}
+.sp-hero h1 {
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: clamp(2.1rem, 7vw, 3.6rem);
+  line-height: 1.02;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.sp-hero h1 .cyan { color: var(--cyan); }
+.sp-hero p {
+  font-size: clamp(1rem, 3.6vw, 1.2rem);
+  line-height: 1.55;
+  color: rgba(255,255,255,0.8);
+  max-width: 620px;
+  margin: 0 auto 26px;
+}
+.sp-hero p strong { color: var(--white); }
+
+.sp-body { max-width: 760px; margin: 0 auto; padding: 46px 20px 10px; }
+.sp-h2 {
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: clamp(1.6rem, 5.2vw, 2.4rem);
+  line-height: 1.08;
+  text-transform: uppercase;
+  color: var(--dark);
+  text-align: center;
+  margin-bottom: 18px;
+}
+.sp-section { margin-bottom: 42px; }
+.sp-quote {
+  border-left: 4px solid var(--cyan);
+  padding: 4px 0 4px 18px;
+  margin: 0 auto 22px;
+  font-size: clamp(1.05rem, 3.6vw, 1.25rem);
+  line-height: 1.5;
+  color: var(--dark);
+  font-weight: 600;
+  text-align: left;
+}
+.sp-cta-wrap { text-align: center; padding: 4px 0 8px; }
+.sp-cta {
+  width: 100%;
+  max-width: 520px;
+  flex-direction: column;
+  gap: 3px;
+  padding: 18px 26px;
+  min-height: 74px;
+  font-size: clamp(1.05rem, 3.8vw, 1.3rem);
+  border-radius: 8px;
+  box-shadow: 0 12px 30px -14px rgba(14,196,230,0.8);
+}
+.sp-cta .sm {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: rgba(255,255,255,0.85);
+  white-space: normal;
+}
+.sp-hero .sp-cta { box-shadow: 0 14px 34px -14px rgba(14,196,230,0.9); }
+.sp-guarantee {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 12px;
+}
+.sp-hero .sp-guarantee { color: rgba(255,255,255,0.6); }
+.sp-guarantee svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* ── Checkout modal ───────────────────────────────────────── */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 16px;
+  overflow-y: auto;
+  background: rgba(10,37,64,0.62);
+  /* Kept in the DOM with real dimensions so the embedded checkout
+     measures correctly — hidden by opacity, never display:none. */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.22s ease, visibility 0.22s ease;
+}
+.modal.open { opacity: 1; visibility: visible; pointer-events: auto; }
+.modal-panel {
+  background: var(--white);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 540px;
+  margin: auto;
+  padding: 20px 18px 18px;
+  position: relative;
+  box-shadow: 0 30px 80px -30px rgba(0,0,0,0.55);
+}
+.modal-head {
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--dark);
+  margin-bottom: 4px;
+  padding-right: 34px;
+}
+.modal-sub {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.modal-close {
+  position: absolute;
+  top: 10px; right: 12px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--muted);
+  background: var(--light);
+}
+.modal-close:hover { background: #e6e9ee; color: var(--dark); }
