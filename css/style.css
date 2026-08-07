@@ -2374,7 +2374,8 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
    <img src="..." alt="..."> and the styling still holds. */
 .ba-shot {
   aspect-ratio: 16 / 10;
-  background: var(--light);
+  /* matches the app's own background, so letterboxing is invisible */
+  background: #131a24;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -2388,7 +2389,11 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   text-transform: uppercase;
   color: #b3b9c2;
 }
-.ba-shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* contain, not cover: these are UI screenshots, so cropping them loses
+   the very detail that sells the thing. */
+.ba-shot img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.ba-feat-text { display: flex; align-items: center; }
+.ba-feat-text .ba-feat-body { padding: 20px 18px; }
 .ba-feat-body { padding: 15px 17px 17px; }
 .ba-feat-body h3 {
   font-family: var(--font-head);
