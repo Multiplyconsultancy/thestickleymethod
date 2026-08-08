@@ -2434,3 +2434,82 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   text-align: center;
   margin: 40px 0 20px;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   UPSELL CTAs — make them unmistakably buttons
+
+   Flat blocks on a long page read as banners, not controls. These
+   borrow the pattern high-converting one-click upsells use: a solid
+   raised edge so the button looks physically pressable, a press-down
+   on :active, a slow pulse to catch the eye, and a sheen that sweeps
+   every few seconds. All motion is dropped for reduced-motion users.
+═══════════════════════════════════════════════════════════ */
+.btn-accept, .sp-cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  --cta-edge: #0a7f96;                       /* cyan default */
+  border: 2px solid rgba(255,255,255,0.28);
+  box-shadow: 0 5px 0 var(--cta-edge), 0 14px 26px -12px rgba(10,37,64,0.55);
+  animation: cta-pulse 2.8s ease-in-out infinite;
+  will-change: transform;
+}
+.btn-accept.navy, .sp-cta.navy { --cta-edge: #04101d; }
+.btn-accept.is-done  { --cta-edge: #14713f; }
+.btn-accept.is-error { --cta-edge: #0a7f96; }
+
+/* the sheen */
+.btn-accept::after, .sp-cta::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: -60%;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.38), transparent);
+  transform: skewX(-18deg);
+  animation: cta-sheen 4.2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.btn-accept:hover, .sp-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 var(--cta-edge), 0 18px 30px -12px rgba(10,37,64,0.6);
+  animation-play-state: paused;
+}
+/* actually depresses, which is what sells it as a button */
+.btn-accept:active, .sp-cta:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 var(--cta-edge), 0 6px 14px -8px rgba(10,37,64,0.5);
+  animation-play-state: paused;
+}
+.btn-accept.is-working, .btn-accept.is-done {
+  animation: none;
+  transform: none;
+}
+.btn-accept.is-working::after, .btn-accept.is-done::after { display: none; }
+
+@keyframes cta-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.018); }
+}
+@keyframes cta-sheen {
+  0%, 62%  { left: -60%; }
+  92%, 100% { left: 130%; }
+}
+
+/* A nudging chevron reinforces that it does something */
+.cta-arrow {
+  display: inline-block;
+  margin-left: 8px;
+  animation: cta-nudge 1.6s ease-in-out infinite;
+}
+@keyframes cta-nudge {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-accept, .sp-cta, .cta-arrow { animation: none !important; }
+  .btn-accept::after, .sp-cta::after { display: none; }
+}
