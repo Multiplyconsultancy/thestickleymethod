@@ -56,6 +56,23 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  /* If we have to fall back to a checkout screen, carry the buyer's
+     email onto it. Without this Whop treats them as a new visitor,
+     tries to create a second account, and the phone number they
+     verified minutes ago collides with the one already on file. That
+     modal is unskippable, so the sale dies there. */
+  function prefillFallback(email) {
+    if (!email) return;
+    buttons.forEach(function (b) {
+      var href = b.getAttribute('href') || '';
+      if (href.indexOf('whop.com/checkout') === -1) return;
+      if (href.indexOf('email=') !== -1) return;
+      var sep = href.indexOf('?') > -1 ? '&' : '?';
+      b.setAttribute('href', href + sep + 'email=' + encodeURIComponent(email) +
+                             '&email.disabled=1');
+    });
+  }
+
   function goNext(delay) {
     /* Whatever the decline link points at is the next step in the
        funnel. Read it rather than hardcoding, so reordering the pages
@@ -96,10 +113,12 @@ document.addEventListener('DOMContentLoaded', function () {
           goNext(2200);
         } else if (data && data.reason === 'charge_declined') {
           // The bank refused it. Send them to a form that can ask for 3DS.
+          prefillFallback(data.email);
           setState('is-error', original.label, 'That card was declined. Tap again to pay another way.');
           done = true;
         } else {
           // Fall back to hosted checkout rather than dead-ending the sale.
+          prefillFallback(data && data.email);
           setState('is-error', original.label, 'Tap again to complete it on Whop.');
           done = true;
         }

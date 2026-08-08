@@ -185,6 +185,12 @@ module.exports = async function handler(req, res) {
     }
 
     const memberId = payment.member?.id || payment.membership?.member_id || payment.member_id;
+
+    /* Whop carries the buyer email on user, not member. If we ever have
+       to send them to a checkout screen, prefilling this is what stops
+       Whop treating them as a new visitor and re-verifying a phone
+       number that is already attached to the account it just made. */
+    const email = payment.user?.email || payment.member?.email || payment.email || '';
     if (!memberId) {
       console.error('no member on payment', payment);
       return res.status(422).json({ error: 'no_member_on_receipt' });
@@ -200,7 +206,7 @@ module.exports = async function handler(req, res) {
     const paymentMethodId =
       payment.payment_method?.id || (await findPaymentMethod(memberId));
     if (!paymentMethodId) {
-      return res.status(200).json({ ok: false, reason: 'no_saved_card' });
+      return res.status(200).json({ ok: false, reason: 'no_saved_card', email });
     }
 
     /* ── 5. Charge ──────────────────────────────────────────────── */
@@ -224,6 +230,7 @@ module.exports = async function handler(req, res) {
         reason: 'charge_failed',
         httpStatus: chargeRes.status,
         whopSaid: msg,        // config detail, never customer data
+        email,
       });
     }
 
@@ -232,7 +239,7 @@ module.exports = async function handler(req, res) {
 
     if (settlement === 'failed') {
       console.error(`charge did not settle for ${product.label}`, charge.id);
-      return res.status(200).json({ ok: false, reason: 'charge_declined', paymentId: charge.id });
+      return res.status(200).json({ ok: false, reason: 'charge_declined', paymentId: charge.id, email });
     }
 
     return res.status(200).json({
