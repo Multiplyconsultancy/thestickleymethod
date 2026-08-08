@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
     e.preventDefault();
     if (first.classList.contains('is-working')) return;
 
-    setState('is-working', 'CHARGING YOUR CARD…', 'One moment, do not close this page.');
+    setState('is-working', 'CHARGING YOUR CARD…', 'Confirming with your bank, do not close this page.');
 
     fetch('/api/charge-upsell', {
       method: 'POST',
@@ -84,10 +84,20 @@ document.addEventListener('DOMContentLoaded', function () {
           done = true;
           setState('is-done', '✓ ' + doneLbl, 'This is already on your account.');
           goNext(1800);
+        } else if (data && data.ok && data.settlement === 'pending') {
+          /* Accepted but not settled yet. Say so rather than claiming a
+             payment that might still fail. */
+          done = true;
+          setState('is-done', '✓ ' + doneLbl, 'Payment is processing. We will email you once it clears.');
+          goNext(2600);
         } else if (data && data.ok) {
           done = true;
           setState('is-done', '✓ ' + doneLbl, 'Charged ' + amount + '. It is on your account now.');
           goNext(2200);
+        } else if (data && data.reason === 'charge_declined') {
+          // The bank refused it. Send them to a form that can ask for 3DS.
+          setState('is-error', original.label, 'That card was declined. Tap again to pay another way.');
+          done = true;
         } else {
           // Fall back to hosted checkout rather than dead-ending the sale.
           setState('is-error', original.label, 'Tap again to complete it on Whop.');

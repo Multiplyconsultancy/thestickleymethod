@@ -72,6 +72,26 @@ async function alreadyCharged(memberId, planId, companyId) {
   });
 }
 
+/* Whop settles in the background: a charge comes back open/incomplete
+   and only becomes paid a few seconds later. Verified on a real $29
+   charge, which flipped to paid in about four seconds. Poll before
+   telling anyone their card went through, so a decline or an
+   unanswerable 3DS challenge is never reported as a success. */
+const SETTLED  = ['paid'];
+const REJECTED = ['uncollectible', 'void'];
+
+async function waitForSettlement(paymentId) {
+  for (let attempt = 0; attempt < 7; attempt++) {
+    await sleep(attempt === 0 ? 1200 : 1600);
+    const res = await whop(`/payments/${encodeURIComponent(paymentId)}`);
+    if (!res.ok) continue;
+    const p = await readJson(res);
+    if (SETTLED.includes(p.status) || p.substatus === 'succeeded') return 'paid';
+    if (REJECTED.includes(p.status) || p.substatus === 'failed')   return 'failed';
+  }
+  return 'pending';        // still working; don't claim either way
+}
+
 /* Fallback only. Verified against the live API: this endpoint rejects
    member_id and company_id together, so pass member_id alone. */
 async function findPaymentMethod(memberId) {
@@ -207,15 +227,20 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    /* Whop settles asynchronously, so 'pending' here is normal. Use
-       webhooks before granting anything you gate yourself. */
+    /* Don't report success on the acknowledgement alone. */
+    const settlement = charge.id ? await waitForSettlement(charge.id) : 'pending';
+
+    if (settlement === 'failed') {
+      console.error(`charge did not settle for ${product.label}`, charge.id);
+      return res.status(200).json({ ok: false, reason: 'charge_declined', paymentId: charge.id });
+    }
+
     return res.status(200).json({
       ok: true,
+      settlement,                       // 'paid' or 'pending'
       product: product.label,
       amount: product.amount,
       paymentId: charge.id,
-      status: charge.status,
-      substatus: charge.substatus,
     });
 
   } catch (err) {
