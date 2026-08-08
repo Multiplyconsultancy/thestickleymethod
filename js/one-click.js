@@ -36,6 +36,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var amount   = first.getAttribute('data-amount') || '';
   var doneLbl  = first.getAttribute('data-done-label') || 'ADDED';
+  var armedLbl = first.getAttribute('data-armed-label') || '';
+  var booking  = first.getAttribute('data-booking-url') || '';
   var original = {
     label: first.querySelector('.oc-label').textContent,
     sub:   first.querySelector('.sm').textContent
@@ -45,7 +47,18 @@ document.addEventListener('DOMContentLoaded', function () {
   // We can charge the saved card, so say exactly that.
   var chargeNote = first.getAttribute('data-charge-note') ||
                    ('Your card on file will be charged ' + amount + '. One click, no re-entry.');
-  buttons.forEach(function (b) { b.querySelector('.sm').textContent = chargeNote; });
+  buttons.forEach(function (b) {
+    b.querySelector('.sm').textContent = chargeNote;
+    /* Only promise an automatic charge once we can actually make one.
+       Without a receipt this button is a link to a checkout form, and
+       the label has to stay honest about that. */
+    if (armedLbl) {
+      var lbl = b.querySelector('.oc-label');
+      var arrow = lbl.querySelector('.cta-arrow');
+      lbl.textContent = armedLbl;
+      if (arrow) lbl.appendChild(arrow);
+    }
+  });
 
   function setState(cls, labelText, subText) {
     buttons.forEach(function (b) {
@@ -88,6 +101,14 @@ document.addEventListener('DOMContentLoaded', function () {
     e.preventDefault();
     if (first.classList.contains('is-working')) return;
 
+    /* Guard: if this offer has no checkout wired yet, move them on rather
+       than leaving them on a button that does nothing. */
+    if ((first.getAttribute('href') || '').indexOf('#REPLACE') === 0) {
+      done = true;
+      goNext(0);
+      return;
+    }
+
     setState('is-working', 'CHARGING YOUR CARD…', 'Confirming with your bank, do not close this page.');
 
     fetch('/api/charge-upsell', {
@@ -109,8 +130,16 @@ document.addEventListener('DOMContentLoaded', function () {
           goNext(2600);
         } else if (data && data.ok) {
           done = true;
-          setState('is-done', '✓ ' + doneLbl, 'Charged ' + amount + '. It is on your account now.');
-          goNext(2200);
+          if (booking) {
+            /* A call has to be booked, so send them to the calendar
+               instead of straight on through the funnel. */
+            setState('is-done', '✓ ' + doneLbl, 'Charged ' + amount + '. Pick your slot next.');
+            buttons.forEach(function (b) { b.setAttribute('href', booking); });
+            setTimeout(function () { window.location.href = booking; }, 1800);
+          } else {
+            setState('is-done', '✓ ' + doneLbl, 'Charged ' + amount + '. It is on your account now.');
+            goNext(2200);
+          }
         } else if (data && data.reason === 'charge_declined') {
           // The bank refused it. Send them to a form that can ask for 3DS.
           prefillFallback(data.email);

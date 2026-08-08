@@ -26,7 +26,7 @@
 
 <div class="us-progress">
   <div class="us-progress-track">
-    <div class="us-progress-fill" style="width:70%">70%</div>
+    <div class="us-progress-fill" style="width:80%">80%</div>
   </div>
 </div>
 
@@ -53,9 +53,12 @@
        a one-click charge like the other upsells: add the plan to PRODUCTS
        in api/charge-upsell.js and give the buttons the js-one-click class
        plus data-product="call". -->
-  <a href="#REPLACE-WITH-497-CALL-CHECKOUT" class="btn btn-primary btn-accept navy">
+  <a href="#REPLACE-WITH-497-CALL-CHECKOUT" class="btn btn-primary btn-accept navy js-one-click"
+     data-product="call" data-amount="$497" data-done-label="CALL BOOKED"
+     data-armed-label="AUTOMATICALLY CHARGE MY CARD $497"
+     data-booking-url="https://api.leadconnectorhq.com/widget/bookings/tsm_call_with_baby">
     <span class="oc-label">YES, BOOK MY CALL WITH BABY<span class="cta-arrow">→</span></span>
-    <span class="sm">One time payment of $497. Limited slots.</span>
+    <span class="sm">One time payment of $497.</span>
   </a>
 
   <div class="us-card navy" style="margin-top:28px;text-align:left">
@@ -94,11 +97,6 @@
     </div>
   </div>
 
-  <p class="us-pitch">
-    <strong>Twenty minutes is short on purpose.</strong> Baby only has so many of them, so slots
-    are limited and they go in the order they are booked. If they are gone this week, you will
-    be booked into the next.
-  </p>
 
   <!-- ═══ CTA ════════════════════════════════════════════════════════════ -->
   <div class="us-price">
@@ -107,13 +105,16 @@
   <p class="us-save">One time. Call, custom plan, 3 months of Baby AI.</p>
 
   <!-- ▼▼▼ SAME href AS ABOVE ▼▼▼ -->
-  <a href="#REPLACE-WITH-497-CALL-CHECKOUT" class="btn btn-primary btn-accept navy">
+  <a href="#REPLACE-WITH-497-CALL-CHECKOUT" class="btn btn-primary btn-accept navy js-one-click"
+     data-product="call" data-amount="$497" data-done-label="CALL BOOKED"
+     data-armed-label="AUTOMATICALLY CHARGE MY CARD $497"
+     data-booking-url="https://api.leadconnectorhq.com/widget/bookings/tsm_call_with_baby">
     <span class="oc-label">YES, BOOK MY CALL WITH BABY<span class="cta-arrow">→</span></span>
-    <span class="sm">One time payment of $497. Limited slots.</span>
+    <span class="sm">One time payment of $497.</span>
   </a>
 
-  <a href="/purchase/done" class="us-decline">No thanks, I don't want a call with Baby</a>
-  <p class="us-decline-note">We'll take you straight to your account.</p>
+  <a href="/purchase/nightfall" class="us-decline">No thanks, I don't want a call with Baby</a>
+  <p class="us-decline-note">We'll take you to the next step.</p>
 
 </main>
 
