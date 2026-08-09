@@ -4,5 +4,11 @@
   "installCommand": null,
   "framework": null,
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "crons": [
+    {
+      "path": "/api/cron/call-emails",
+      "schedule": "*/15 * * * *"
+    }
+  ]
 }

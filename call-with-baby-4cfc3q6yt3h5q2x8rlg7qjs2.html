@@ -48,12 +48,9 @@
     <p class="nf-savebar-note">One time payment. Includes <strong>3 months of Baby AI free</strong>.</p>
   </div>
 
-  <!-- ▼▼▼ REPLACE href ONCE THE $497 PLAN EXISTS IN WHOP ▼▼▼
-       No $497 plan exists on the account yet. Create it, then this becomes
-       a one-click charge like the other upsells: add the plan to PRODUCTS
-       in api/charge-upsell.js and give the buttons the js-one-click class
-       plus data-product="call". -->
-  <a href="#REPLACE-WITH-497-CALL-CHECKOUT" class="btn btn-primary btn-accept navy js-one-click"
+  <!-- One-click charge against the saved card (plan_tkwFktpbvuq90).
+       Falls back to Whop hosted checkout if there is no receipt. -->
+  <a href="https://whop.com/checkout/plan_tkwFktpbvuq90" class="btn btn-primary btn-accept navy js-one-click"
      data-product="call" data-amount="$497" data-done-label="CALL BOOKED"
      data-armed-label="AUTOMATICALLY CHARGE MY CARD $497"
      data-booking-url="https://api.leadconnectorhq.com/widget/bookings/tsm_call_with_baby">
@@ -104,8 +101,7 @@
   </div>
   <p class="us-save">One time. Call, custom plan, 3 months of Baby AI.</p>
 
-  <!-- ▼▼▼ SAME href AS ABOVE ▼▼▼ -->
-  <a href="#REPLACE-WITH-497-CALL-CHECKOUT" class="btn btn-primary btn-accept navy js-one-click"
+  <a href="https://whop.com/checkout/plan_tkwFktpbvuq90" class="btn btn-primary btn-accept navy js-one-click"
      data-product="call" data-amount="$497" data-done-label="CALL BOOKED"
      data-armed-label="AUTOMATICALLY CHARGE MY CARD $497"
      data-booking-url="https://api.leadconnectorhq.com/widget/bookings/tsm_call_with_baby">
