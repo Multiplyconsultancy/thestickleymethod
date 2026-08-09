@@ -27,6 +27,7 @@ const PRODUCTS = {
   prod_I9Jkfcyxb01FM: 'Baby AI',
   prod_90nrQ1qZDp1tE: 'Nightfall',
   prod_VYHv8ZRFNB9yc: 'your 1-on-1 call with Baby',
+  prod_jFpMnbLHRI78t: 'your personalised video from Baby',
 }
 
 const MIN_AGE_H = 20

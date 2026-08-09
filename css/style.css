@@ -2579,3 +2579,52 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
   line-height: 1.6;
   font-style: normal;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   AUDIT DOWNSELL POPUP — intercepts the call page's decline
+═══════════════════════════════════════════════════════════ */
+.audit-popup {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(10,37,64,0.55);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px 16px;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .22s ease, visibility .22s ease;
+}
+.audit-popup.open { opacity: 1; visibility: visible; pointer-events: auto; }
+.audit-popup-card {
+  background: var(--white); border-radius: 16px; max-width: 480px; width: 100%;
+  padding: 30px 26px 26px; text-align: center; position: relative;
+  box-shadow: 0 40px 90px -30px rgba(0,0,0,.6);
+  max-height: 92vh; overflow-y: auto;
+}
+.audit-popup-close {
+  position: absolute; top: 12px; right: 14px; width: 32px; height: 32px;
+  border-radius: 50%; background: var(--light); color: var(--muted);
+  font-size: 1.05rem; line-height: 1;
+}
+.audit-popup-close:hover { background: #e6e9ee; color: var(--dark); }
+.audit-popup-eyebrow {
+  font-family: var(--font-head); font-size: .78rem; font-weight: 800;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--cyan-dark);
+  margin-bottom: 8px;
+}
+.audit-popup-card h2 {
+  font-family: var(--font-head); font-weight: 800; text-transform: uppercase;
+  font-size: clamp(1.5rem, 5.6vw, 2rem); line-height: 1.08; color: var(--dark);
+  margin-bottom: 12px;
+}
+.audit-popup-sub { font-size: .95rem; color: var(--mid); line-height: 1.55; margin-bottom: 16px; }
+.audit-popup-list { text-align: left; display: flex; flex-direction: column; gap: 9px; margin: 0 0 18px; }
+.audit-popup-list li { display: flex; gap: 9px; align-items: flex-start; font-size: .9rem; color: var(--mid); line-height: 1.45; }
+.audit-popup-list svg { width: 16px; height: 16px; color: var(--cyan); flex-shrink: 0; margin-top: 2px; }
+.audit-popup-list strong { color: var(--dark); }
+.audit-popup-price {
+  font-family: var(--font-head); font-weight: 800; margin-bottom: 4px;
+  display: flex; align-items: baseline; justify-content: center; gap: 10px;
+}
+.audit-popup-price .was { font-size: 1.3rem; color: var(--muted); text-decoration: line-through; text-decoration-color: #e0413a; text-decoration-thickness: 3px; }
+.audit-popup-price .now { font-size: 2.6rem; line-height: 1; color: var(--cyan); }
+.audit-popup-meta { font-family: var(--font-head); font-size: .85rem; font-weight: 600; color: var(--muted); margin-bottom: 16px; }
+.audit-popup-card .btn-accept { max-width: 100%; }
+.audit-popup-card .us-decline { margin-top: 14px; }

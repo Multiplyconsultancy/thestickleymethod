@@ -16,7 +16,7 @@
                   member:payment_methods:read, plan:basic:read
 ══════════════════════════════════════════════════════════════════════ */
 
-const { sendCallEmail } = require('../lib/ghl')
+const { sendCallEmail, sendAuditEmail } = require('../lib/ghl')
 
 const API = 'https://api.whop.com/api/v1';
 
@@ -28,7 +28,9 @@ const PRODUCTS = {
   /* The only product that emails from here. Baby AI onboards through its
      own app, and Nightfall is delivered by Whop itself. A $497 call is
      worthless until it is booked, so this one has to send. */
-  call:      { plan: 'plan_tkwFktpbvuq90', label: '1-on-1 Call', amount: '$497', emails: true },
+  call:      { plan: 'plan_tkwFktpbvuq90', label: '1-on-1 Call', amount: '$497', emailKey: 'call' },
+  /* The audit downsell shown when someone declines the call. */
+  audit:     { plan: 'plan_knAQIVqbRck1t', label: 'Personalised Video', amount: '$147', emailKey: 'audit' },
 };
 
 /* A receipt older than this can't trigger an upsell charge. Receipt ids
@@ -246,9 +248,13 @@ module.exports = async function handler(req, res) {
     /* Email only once the money actually moved, never on the
        acknowledgement, so nobody is told to book a call they were not
        charged for. The cron is the backstop if this send fails. */
-    if (settlement === 'paid' && product.emails && email) {
-      const mail = await sendCallEmail(email, payment.user?.name || '')
-      if (!mail.ok) console.error('[charge] call booking email failed:', mail.reason)
+    if (settlement === 'paid' && product.emailKey && email) {
+      const senders = { call: sendCallEmail, audit: sendAuditEmail }
+      const send = senders[product.emailKey]
+      if (send) {
+        const mail = await send(email, payment.user?.name || '')
+        if (!mail.ok) console.error(`[charge] ${product.emailKey} email failed:`, mail.reason)
+      }
     }
 
 

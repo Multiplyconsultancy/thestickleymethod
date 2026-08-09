@@ -16,10 +16,14 @@
    GET /api/cron/call-emails?secret=...       manual trigger
 ═══════════════════════════════════════════════════════════════════════ */
 
-const { sendCallEmail, configured } = require('../../lib/ghl')
+const { sendCallEmail, sendAuditEmail, configured } = require('../../lib/ghl')
 
 const API = 'https://api.whop.com/api/v1'
-const CALL_PRODUCT = 'prod_VYHv8ZRFNB9yc'   // TSM - Call With Baby, $497
+/* product id -> which purchase email it needs */
+const PRODUCTS = {
+  prod_VYHv8ZRFNB9yc: 'call',    // TSM - Call With Baby, $497
+  prod_jFpMnbLHRI78t: 'audit',   // TSM - Personalised Video From Baby, $147
+}
 
 function authorised(req) {
   const secret = process.env.CRON_SECRET
@@ -61,19 +65,21 @@ module.exports = async function handler(req, res) {
         const paid = p.paid_at ? String(p.paid_at).slice(0, 10) : null
         if (paid && paid < since) { past = true; continue }
         if (p.status !== 'paid') continue
-        if (p.product?.id !== CALL_PRODUCT) continue
+        const kind = PRODUCTS[p.product?.id]
+        if (!kind) continue
         // Whop carries the buyer email on user, not member.
         const email = (p.user?.email || '').trim().toLowerCase()
         if (!email || buyers.has(email)) continue
-        buyers.set(email, p.user?.name || p.billing_address?.name || '')
+        buyers.set(email, { name: p.user?.name || p.billing_address?.name || '', kind })
       }
       if (past || !j.page_info?.has_next_page) break
       cursor = j.page_info.end_cursor
     }
 
     let sent = 0, skipped = 0, failed = 0
-    for (const [email, name] of buyers) {
-      const r = await sendCallEmail(email, name)
+    const senders = { call: sendCallEmail, audit: sendAuditEmail }
+    for (const [email, info] of buyers) {
+      const r = await senders[info.kind](email, info.name)
       if (r.ok && r.skipped) skipped++
       else if (r.ok) sent++
       else { failed++; console.error(`[cron] call email -> ${email}: ${r.reason}`) }
