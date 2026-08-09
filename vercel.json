@@ -9,6 +9,10 @@
     {
       "path": "/api/cron/call-emails",
       "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/dunning-emails",
+      "schedule": "0 */6 * * *"
     }
   ]
 }

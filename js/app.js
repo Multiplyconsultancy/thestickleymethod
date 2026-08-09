@@ -370,3 +370,19 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 });
+
+/* ── Review timestamps: "3 months ago", computed client-side so the
+      static page never goes stale ─────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function () {
+  var UNITS = [[31536000,'year'],[2592000,'month'],[604800,'week'],[86400,'day']];
+  document.querySelectorAll('.rev-time[data-rev-ts]').forEach(function (el) {
+    var ts = Date.parse(el.getAttribute('data-rev-ts'));
+    if (!ts) return;
+    var s = Math.max(0, (Date.now() - ts) / 1000);
+    for (var i = 0; i < UNITS.length; i++) {
+      var n = Math.floor(s / UNITS[i][0]);
+      if (n >= 1) { el.textContent = n + ' ' + UNITS[i][1] + (n > 1 ? 's' : '') + ' ago'; return; }
+    }
+    el.textContent = 'today';
+  });
+});
