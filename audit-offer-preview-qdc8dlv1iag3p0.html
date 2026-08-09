@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Preview: Audit Downsell Popup | The Stickley Method</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* Preview scaffolding: the dimmed call page behind, the popup in front,
+       exactly as it would appear when they click "No thanks" on the $497. */
+    .preview-note {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 600;
+      background: #f0b429; color: #1a1206; text-align: center;
+      font: 700 12px/1.4 'Barlow', sans-serif; letter-spacing: .08em;
+      text-transform: uppercase; padding: 6px;
+    }
+    .fake-page { filter: blur(3px) brightness(.55); pointer-events: none; user-select: none; }
+    .popup-backdrop {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(10,37,64,0.55);
+      display: flex; align-items: center; justify-content: center; padding: 20px 16px;
+    }
+    .popup {
+      background: var(--white); border-radius: 16px; max-width: 480px; width: 100%;
+      padding: 30px 26px 26px; text-align: center; position: relative;
+      box-shadow: 0 40px 90px -30px rgba(0,0,0,.6);
+      max-height: 92vh; overflow-y: auto;
+    }
+    .popup-close {
+      position: absolute; top: 12px; right: 14px; width: 32px; height: 32px;
+      border-radius: 50%; background: var(--light); color: var(--muted);
+      font-size: 1.05rem; line-height: 1;
+    }
+    .popup-eyebrow {
+      font-family: var(--font-head); font-size: .78rem; font-weight: 800;
+      letter-spacing: .2em; text-transform: uppercase; color: var(--cyan-dark);
+      margin-bottom: 8px;
+    }
+    .popup h2 {
+      font-family: var(--font-head); font-weight: 800; text-transform: uppercase;
+      font-size: clamp(1.5rem, 5.6vw, 2rem); line-height: 1.08; color: var(--dark);
+      margin-bottom: 12px;
+    }
+    .popup-sub { font-size: .95rem; color: var(--mid); line-height: 1.55; margin-bottom: 16px; }
+    .popup-list { text-align: left; display: flex; flex-direction: column; gap: 9px; margin: 0 0 18px; }
+    .popup-list li { display: flex; gap: 9px; align-items: flex-start; font-size: .9rem; color: var(--mid); line-height: 1.45; }
+    .popup-list svg { width: 16px; height: 16px; color: var(--cyan); flex-shrink: 0; margin-top: 2px; }
+    .popup-list strong { color: var(--dark); }
+    .popup-price {
+      font-family: var(--font-head); font-weight: 800; margin-bottom: 4px;
+      display: flex; align-items: baseline; justify-content: center; gap: 10px;
+    }
+    .popup-price .was { font-size: 1.3rem; color: var(--muted); text-decoration: line-through; text-decoration-color: #e0413a; text-decoration-thickness: 3px; }
+    .popup-price .now { font-size: 2.6rem; line-height: 1; color: var(--cyan); }
+    .popup-meta { font-family: var(--font-head); font-size: .85rem; font-weight: 600; color: var(--muted); margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+
+<div class="preview-note">Preview only — this is what the popup looks like over the call page. Not linked anywhere.</div>
+
+<!-- dimmed stand-in for the call page behind the popup -->
+<div class="fake-page">
+  <div class="us-bar"><p class="us-bar-head">WAIT</p><p class="us-bar-sub">Your order <strong>isn't complete yet</strong></p></div>
+  <main class="us-page nf-centred" style="padding-top:40px">
+    <h1 class="us-title">1-on-1 <span class="cyan">Video Call</span> With Baby</h1>
+    <p class="us-sub">A 20-minute one-on-one video call with Baby, where he looks at your situation properly and tells you exactly what to do.</p>
+    <div class="nf-savebar"><p class="nf-savebar-price"><span class="now">$497</span></p></div>
+  </main>
+</div>
+
+<!-- ═══ THE POPUP ═══════════════════════════════════════════════════════ -->
+<div class="popup-backdrop">
+  <div class="popup">
+    <button class="popup-close" aria-label="Close">✕</button>
+
+    <p class="popup-eyebrow">Before you go</p>
+    <h2>Can't do the call?<br>Keep the audit.</h2>
+    <p class="popup-sub">
+      Same eyes, same verdict, no calendar. Send Baby your photos and your questions, and he
+      records you a <strong>personal video audit</strong>, going through exactly what he'd
+      tell you on the call.
+    </p>
+
+    <ul class="popup-list">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span><strong>Baby reviews your photos and questions</strong>, personally, not a template.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span><strong>You get a video made for you</strong>: what to fix, in what order, and what to stop doing.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span><strong>His notes load into your Baby AI</strong>, so you're working from them every day.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span><strong>Delivered within a few days</strong>, watch it as many times as you like.</span></li>
+    </ul>
+
+    <p class="popup-price"><span class="was">$497</span><span class="now">$147</span></p>
+    <p class="popup-meta">One-time payment · no scheduling needed</p>
+
+    <!-- Wire-up later: js-one-click + data-product="audit" once the $147 plan exists -->
+    <a href="#" class="btn btn-primary btn-accept navy" style="max-width:100%">
+      <span class="oc-label">CHARGE MY CARD</span>
+      <span class="sm">One-time payment of $147.</span>
+    </a>
+    <a href="#" class="us-decline" style="margin-top:14px">No thanks, I'll pass on both</a>
+  </div>
+</div>
+
+</body>
+</html>
