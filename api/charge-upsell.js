@@ -16,18 +16,13 @@
                   member:payment_methods:read, plan:basic:read
 ══════════════════════════════════════════════════════════════════════ */
 
-const { sendPurchaseEmail } = require('../lib/ghl')
-
 const API = 'https://api.whop.com/api/v1';
 
 /* The browser sends a product key, never a plan id. If it sent the plan
    id, anyone could point this endpoint at any plan on the account. */
 const PRODUCTS = {
-  /* emailKey: which purchase email to send once the charge settles.
-     Baby AI has none: its own app provisions the account and sends the
-     setup link, and a second email from here would just confuse. */
-  nightfall: { plan: 'plan_egsP7USJc6IRk', label: 'Nightfall', amount: '$97', emailKey: 'nightfall' },
-  babyai:    { plan: 'plan_BbYD1fToXHLFk', label: 'Baby AI',   amount: '$29', emailKey: null },
+  nightfall: { plan: 'plan_egsP7USJc6IRk', label: 'Nightfall', amount: '$97' },
+  babyai:    { plan: 'plan_BbYD1fToXHLFk', label: 'Baby AI',   amount: '$29' },
 };
 
 /* A receipt older than this can't trigger an upsell charge. Receipt ids
@@ -242,18 +237,6 @@ module.exports = async function handler(req, res) {
     /* Don't report success on the acknowledgement alone. */
     const settlement = charge.id ? await waitForSettlement(charge.id) : 'pending'
 
-    /* Email only on a settled payment, never on the acknowledgement, so
-       nobody is welcomed to something they were not charged for. The
-       6-hourly cron is the backstop if this send fails. */
-    if (settlement === 'paid' && product.emailKey && email) {
-      const mail = await sendPurchaseEmail(product.emailKey, email, payment.user?.name || '')
-      if (!mail.ok) console.error(`[charge] ${product.emailKey} email failed:`, mail.reason)
-    };
-
-    if (settlement === 'failed') {
-      console.error(`charge did not settle for ${product.label}`, charge.id);
-      return res.status(200).json({ ok: false, reason: 'charge_declined', paymentId: charge.id, email });
-    }
 
     return res.status(200).json({
       ok: true,
