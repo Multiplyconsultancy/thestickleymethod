@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // We can charge the saved card, so say exactly that.
   var chargeNote = first.getAttribute('data-charge-note') ||
-                   ('Your card on file will be charged ' + amount + '. One click, no re-entry.');
+                   ('One-time payment of ' + amount + '.');
   buttons.forEach(function (b) {
     b.querySelector('.sm').textContent = chargeNote;
     /* Only promise an automatic charge once we can actually make one.
