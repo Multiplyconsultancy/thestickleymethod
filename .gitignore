@@ -28,7 +28,14 @@ __pycache__/
 .env
 .env.*
 !.env.example
+BABY-AI-ENV-TEMPLATE.txt
+*-ENV-TEMPLATE.txt
 
 # Large video files (host on Vimeo / Vidalytics / etc., not GitHub)
 *.mp4
 *.mov
+
+# Separate apps with their own Vercel projects and their own secrets.
+# This repo is PUBLIC: a stray `git add -A` here would publish .env.local.
+baby-ai/
+transcription/
