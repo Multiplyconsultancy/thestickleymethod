@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>One moment… | The Stickley Method</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .rz { min-height: 70vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 40px 22px; }
+    .rz-inner { max-width: 420px; }
+    .rz h1 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.6rem; letter-spacing: .02em; margin: 0 0 10px; }
+    .rz p { color: #93a5ba; font-size: .95rem; line-height: 1.6; margin: 0 0 20px; }
+    .rz-spin { width: 34px; height: 34px; margin: 0 auto 20px; border: 3px solid rgba(14,196,230,.25);
+               border-top-color: #0EC4E6; border-radius: 50%; animation: rz-turn .8s linear infinite; }
+    @keyframes rz-turn { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .rz-spin { animation: none; } }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     FUNNEL RESUME
+
+     Whop can only hold ONE post-purchase redirect per plan, but the same
+     plan is sold inside three funnels that each continue somewhere
+     different. So every plan redirects HERE with ?p=<what they just
+     bought>, and this page works out the rest:
+
+       flow  = whatever funnel they were already in (sessionStorage), or
+               inferred from the product when this IS the entry purchase
+       next  = the step after `p` in that funnel's sequence
+
+     That keeps one plan usable by every funnel, which is why no duplicate
+     call / video / Nightfall plans are needed.
+
+     Reached with JS off, the link below still moves them forward.
+═══════════════════════════════════════════════════════════════════════ -->
+<main class="rz">
+  <div class="rz-inner">
+    <div class="rz-spin" aria-hidden="true"></div>
+    <h1>Payment received</h1>
+    <p>Taking you to the next step…</p>
+    <a class="btn btn-primary" id="rz-go" href="/purchase/done">Continue &rarr;</a>
+  </div>
+</main>
+
+<script>
+(function () {
+  /* Each funnel's running order. The entry product is index 0. */
+  var SEQ = {
+    tsm: ['babyai', 'call', 'nightfall', 'done'],
+    ba:  ['babyai', 'call', 'nightfall', 'welcome'],
+    nf:  ['nightfall', 'babyai', 'call', 'done']
+  };
+  var URLS = {
+    babyai:    '/purchase/babyai',
+    call:      '/purchase/call-with-baby',
+    nightfall: '/purchase/nightfall',
+    done:      '/purchase/done',
+    welcome:   'https://ai.thestickleymethod.com/welcome'
+  };
+  /* Which funnel a product starts, when it is bought as the entry. */
+  var ENTRY = { tsm: 'tsm', babyai: 'ba', nightfall: 'nf' };
+
+  var qs = new URLSearchParams(window.location.search);
+  var p  = (qs.get('p') || '').trim();
+
+  var receipt = qs.get('receipt') || qs.get('receipt_id') || qs.get('receiptId') ||
+                qs.get('payment_id') || qs.get('session_id') || '';
+
+  var flow = '';
+  try {
+    flow = sessionStorage.getItem('tsm-flow') || '';
+    receipt = receipt || sessionStorage.getItem('tsm-receipt') || '';
+  } catch (e) { /* storage blocked, fall through to inference */ }
+
+  /* An existing flow always wins: mid-funnel, `p` says WHAT was bought,
+     not which funnel we are in. Only when there is no flow yet is this
+     the entry purchase, and then the product tells us the funnel. */
+  if (!flow) flow = ENTRY[p] || 'tsm';
+
+  try {
+    sessionStorage.setItem('tsm-flow', flow);
+    if (receipt) sessionStorage.setItem('tsm-receipt', receipt);
+  } catch (e) {}
+
+  var seq = SEQ[flow] || SEQ.tsm;
+
+  /* The video audit is a downsell sold from the call page, so someone who
+     just bought it is standing exactly where a call buyer stands. */
+  var step = (p === 'audit') ? 'call' : p;
+
+  var i = seq.indexOf(step);
+  var next = (i === -1) ? seq[0] : (seq[i + 1] || 'done');
+
+  var url = URLS[next] || URLS.done;
+  if (url.indexOf('http') !== 0) {
+    var extra = ['flow=' + encodeURIComponent(flow)];
+    if (receipt) extra.push('receipt=' + encodeURIComponent(receipt));
+    url += (url.indexOf('?') > -1 ? '&' : '?') + extra.join('&');
+  }
+
+  document.getElementById('rz-go').setAttribute('href', url);
+  window.location.replace(url);
+})();
+</script>
+</body>
+</html>
