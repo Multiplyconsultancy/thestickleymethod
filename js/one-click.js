@@ -32,7 +32,10 @@ document.addEventListener('DOMContentLoaded', function () {
   var qs = new URLSearchParams(window.location.search);
   var receipt = qs.get('receipt') || qs.get('receipt_id') || qs.get('receiptId') ||
                 qs.get('payment_id') || qs.get('session_id');
+  try { receipt = receipt || sessionStorage.getItem('tsm-receipt'); } catch (e) {}
   if (!receipt) return;              // no receipt, leave them as plain links
+  var flow = qs.get('flow');
+  try { flow = flow || sessionStorage.getItem('tsm-flow') || ''; } catch (e) { flow = flow || ''; }
 
   var groups = {};
   all.forEach(function (b) {
@@ -121,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
       fetch('/api/charge-upsell', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ receiptId: receipt, product: product })
+        body: JSON.stringify({ receiptId: receipt, product: product, flow: flow })
       })
         .then(function (r) { return r.json(); })
         .then(function (data) {

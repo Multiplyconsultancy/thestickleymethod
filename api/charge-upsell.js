@@ -225,7 +225,7 @@ module.exports = async function handler(req, res) {
         member_id: memberId,
         payment_method_id: paymentMethodId,
         plan_id: product.plan,
-        metadata: { source: 'upsell', product: product.label, origin_receipt: receiptId },
+        metadata: { source: 'upsell', product: product.label, origin_receipt: receiptId, funnel: flow },
       }),
     });
     const charge = await readJson(chargeRes);
