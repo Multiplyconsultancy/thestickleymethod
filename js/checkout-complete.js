@@ -17,8 +17,13 @@ function tsmReceiptFrom(a, b) {
 
 window.tsmCheckoutComplete = function (planId, receiptId) {
   var receipt = tsmReceiptFrom(planId, receiptId);
-  var next = '/purchase/babyai';
-  if (receipt) next += '?receipt=' + encodeURIComponent(receipt);
+  /* Name the funnel explicitly even though tsm is the default. It seeds
+     sessionStorage on the first upsell page, so if this buyer later falls
+     back to hosted checkout, /purchase/resume reads a known flow instead
+     of inferring one from the product and exiting them into the Baby AI
+     funnel. */
+  var next = '/purchase/babyai?flow=tsm';
+  if (receipt) next += '&receipt=' + encodeURIComponent(receipt);
   try { console.log('[tsm] checkout complete, receipt:', receipt || 'NONE'); } catch (e) {}
   window.location.href = next;
 };
