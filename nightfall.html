@@ -213,6 +213,8 @@
       data-whop-checkout-collect-phone-numbers="false"
       data-whop-checkout-hide-address="true"
       data-whop-checkout-hide-tos="true"
+      data-whop-checkout-skip-redirect="true"
+      data-whop-checkout-on-complete="nightfallDirectComplete"
     ></div>
     <script async src="https://js.whop.com/static/checkout/loader.js"></script>
   </div>
@@ -223,6 +225,17 @@
   <p>© 2026 The Stickley Method. All rights reserved.</p>
 </footer>
 
+<script>
+/* Nightfall bought directly from this page: into the upsell funnel with the
+   receipt, flagged flow=nf so the funnel offers Baby AI and the call, skips
+   the Nightfall step they just bought, and exits at /purchase/done. */
+function nightfallDirectComplete(planId, receiptId) {
+  var r = (typeof receiptId === 'string' && receiptId) ? receiptId :
+          (typeof planId === 'string' && planId.indexOf('pay_') === 0 ? planId : '');
+  window.location.href = '/purchase/babyai?flow=nf' +
+    (r ? '&receipt=' + encodeURIComponent(r) : '');
+}
+</script>
 <script src="/js/checkout-modal.js"></script>
 </body>
 </html>
