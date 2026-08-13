@@ -1,10 +1,11 @@
 /* ══════════════════════════════════════════════════════════════════════
-   Whop webhook. Verifies the signature, then hands the email to
-   syncPerson and lets that re-read the truth.
+   Whop webhook. Verifies the signature, then records only what the
+   event itself proves.
 
-   The payload is used for exactly two things: WHICH person changed, and
-   WHICH membership id to look up. Every decision about tags comes from a
-   fresh read, so a duplicate, out-of-order or replayed event is harmless.
+   It is deliberately not clever. One event never reveals a person's
+   whole position, and Whop has no per-user lookup, so anything that
+   needs the full picture is left to the reconcile. This makes a
+   duplicate, out-of-order or replayed event harmless.
 
    SECRET
    ------
@@ -80,15 +81,61 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ ok: true, skipped: 'no_email' })
   }
 
-  /* Add only what this event proves. A membership going invalid does
-     not mean they hold no other, and Whop cannot be asked, so removals
-     are left to the reconcile 15 minutes later. */
+  /* THE REAL WHOP EVENT NAMES, taken from the dashboard on 13 Aug 2026.
+     They use underscores, not the dotted names guessed from the Baby AI
+     code (`membership.went_valid` and friends). Those would never have
+     matched, and the handler would have silently done nothing forever.
+
+     Only these matter to us. Whop can fire around seventy events, most
+     of them about cards, payouts and identity checks, and anything not
+     listed here is acknowledged and ignored.
+
+       membership_activated ........... they have access
+       membership_deactivated ......... access ended
+       membership_cancel_at_period_end_changed
+                                        cancelled but still inside the
+                                        paid period, the "resume" state
+       payment_succeeded .............. money arrived
+       payment_failed ................. dunning territory
+       refund_created / refund_updated  money reversed
+       dispute_created / dispute_updated  chargeback
+
+     Removals are still left to the reconcile: one event never shows a
+     person's whole position, and Whop cannot be asked about one person. */
   const tags = []
   const title = String(data?.product?.title || data?.product_title || '')
-  if (/succeeded|went_valid|valid/i.test(action)) {
-    tags.push('customer-active')
-    if (/stickley/i.test(title)) tags.push('has-tsm')
-    if (/baby\s*ai/i.test(title)) tags.push('has-baby-ai')
+  const isTsm = /stickley/i.test(title)
+  const isBabyAi = /baby\s*ai/i.test(title)
+
+  switch (action) {
+    case 'membership_activated':
+    case 'payment_succeeded':
+    case 'invoice_paid':
+      tags.push('customer-active')
+      if (isTsm) tags.push('has-tsm')
+      if (isBabyAi) tags.push('has-baby-ai')
+      break
+
+    case 'membership_cancel_at_period_end_changed':
+      /* Fires both ways: cancelling, and un-cancelling. Only the
+         cancelling direction is safe to act on here, because removing
+         the tag on the reverse needs their full position. */
+      if (data?.cancel_at_period_end === true) tags.push('cancelling')
+      break
+
+    /* Deliberately no tag writes. Deciding someone has churned needs
+       their whole position, not one membership ending. The reconcile
+       does it, within the hour. */
+    case 'membership_deactivated':
+    case 'payment_failed':
+    case 'refund_created':
+    case 'refund_updated':
+    case 'dispute_created':
+    case 'dispute_updated':
+      break
+
+    default:
+      return res.status(200).json({ ok: true, action, skipped: 'not_relevant' })
   }
 
   try {
