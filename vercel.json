@@ -5,14 +5,16 @@
   "framework": null,
   "cleanUrls": true,
   "trailingSlash": false,
+  "functions": {
+    "api/cron/reconcile.js": { "maxDuration": 300 }
+  },
   "crons": [
-    {
-      "path": "/api/cron/call-emails",
-      "schedule": "*/15 * * * *"
-    },
-    {
-      "path": "/api/cron/dunning-emails",
-      "schedule": "0 */6 * * *"
-    }
+    { "path": "/api/cron/call-emails",    "schedule": "*/15 * * * *" },
+    { "path": "/api/cron/dunning-emails", "schedule": "0 */6 * * *" },
+    { "path": "/api/cron/reconcile",                            "schedule": "5 * * * *" },
+    { "path": "/api/cron/reconcile?mode=nightly&part=0&of=4",   "schedule": "0 3 * * *" },
+    { "path": "/api/cron/reconcile?mode=nightly&part=1&of=4",   "schedule": "10 3 * * *" },
+    { "path": "/api/cron/reconcile?mode=nightly&part=2&of=4",   "schedule": "20 3 * * *" },
+    { "path": "/api/cron/reconcile?mode=nightly&part=3&of=4",   "schedule": "30 3 * * *" }
   ]
 }
