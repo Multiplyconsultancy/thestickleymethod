@@ -41,6 +41,20 @@ const PRODUCTS = {
    are unguessable, but this keeps a leaked one from being replayed. */
 const MAX_RECEIPT_AGE_MIN = 60;
 
+/* Authenticates US, not the buyer's browser. Only ever relaxes the receipt
+   age window; it can never change WHO gets charged, because the member is
+   still resolved from the receipt itself. */
+function operatorAuthorised(req) {
+  const secret = process.env.CRON_SECRET;
+  if (!secret) return false;
+  if ((req.headers.authorization || '') === `Bearer ${secret}`) return true;
+  try {
+    return new URL(req.url, 'http://x').searchParams.get('secret') === secret;
+  } catch (e) {
+    return false;
+  }
+}
+
 function whop(path, options = {}) {
   return fetch(API + path, {
     ...options,
@@ -192,7 +206,11 @@ module.exports = async function handler(req, res) {
     }
     const createdAt = payment.created_at ? new Date(payment.created_at).getTime() : 0;
     const ageMin = createdAt ? (Date.now() - createdAt) / 60000 : Infinity;
-    if (ageMin > MAX_RECEIPT_AGE_MIN) {
+    /* The age window exists to stop a leaked receipt being replayed by a
+       browser. An operator holding CRON_SECRET is already authenticated, so
+       the window is not what is protecting anything there. Same secret the
+       cron jobs use; unset means disabled, never open. */
+    if (ageMin > MAX_RECEIPT_AGE_MIN && !operatorAuthorised(req)) {
       return res.status(410).json({ error: 'receipt_expired' });
     }
 
