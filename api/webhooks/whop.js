@@ -22,6 +22,7 @@
 
 const { createHmac, timingSafeEqual } = require('node:crypto')
 const { findContact, ghl, tagsAfterEvent, applyPlacement } = require('../../lib/syncPerson')
+const { locationTags } = require('../../lib/base44')
 
 /** Raw body, needed because a signature is computed over exact bytes. */
 function rawBody(req) {
@@ -93,6 +94,10 @@ module.exports = async function handler(req, res) {
   const title = String(data?.product?.title || data?.product_title || '')
   const isTsm = /stickley/i.test(title)
   const isBabyAi = /baby\s*ai/i.test(title)
+  /* Nightfall was not detected here at all, so a $97 buyer got
+     customer-active and no has-nightfall-97, which meant no card on the
+     Nightfall board until the reconcile ran. */
+  const isNightfall = /nightfall/i.test(title)
   const plan = /6 month/i.test(title) ? 'plan-6-month'
              : /3 month/i.test(title) ? 'plan-3-month'
              : /coaching/i.test(title) ? 'plan-coaching'
@@ -106,6 +111,7 @@ module.exports = async function handler(req, res) {
       add = ['customer-active']
       if (isTsm) add.push('has-tsm')
       if (isBabyAi) add.push('has-baby-ai')
+      if (isNightfall) add.push('has-nightfall-97')
       if (plan) add.push(plan)
       /* They are paying again, so nothing about churn is true any more.
          And a plan tag is exclusive: upgrading from monthly to six months
@@ -171,6 +177,14 @@ module.exports = async function handler(req, res) {
     /* Read by id, which is immediate, rather than by search. */
     const fresh = (await ghl(`/contacts/${contactId}`))?.contact || {}
     const had = fresh.tags || []
+
+    /* This handler writes tags itself rather than going through
+       applyAuthoritative, so it has to evaluate location itself too.
+       Without this a brand-new buyer gets no base44-eligible and no
+       India suppression until the next reconcile: no Base44 card for up
+       to an hour, and a window where an Indian contact is emailable. */
+    add = [...new Set([...add, ...locationTags(fresh)])]
+
     const missing = add.filter(t => !had.includes(t))
     const present = remove.filter(t => had.includes(t))
     if (missing.length) await ghl(`/contacts/${contactId}/tags`, 'POST', { tags: missing })

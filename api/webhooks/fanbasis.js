@@ -17,7 +17,7 @@
 ═══════════════════════════════════════════════════════════════════════ */
 
 const { createHmac, timingSafeEqual } = require('node:crypto')
-const { applyFromEvent } = require('../../lib/syncPerson')
+const { applyFromEvent, findContact, applyPlacement } = require('../../lib/syncPerson')
 
 function rawBody(req) {
   return new Promise((resolve, reject) => {
@@ -71,16 +71,46 @@ module.exports = async function handler(req, res) {
   /* Add-only, same reasoning as the Whop handler. */
   const tags = []
   const title = String(d?.product?.title || '')
-  if (/succeeded|created|renewed|recovered/i.test(type)) {
+  const isPurchase = /succeeded|created|renewed|recovered/i.test(type)
+  if (isPurchase) {
     tags.push('customer-active')
     if (/stickley/i.test(title)) tags.push('has-tsm')
     if (/nightfall/i.test(title)) tags.push('has-nightfall-legacy')
   }
 
+  /* WHY A CANCELLATION DOES NOT WRITE customer-churned HERE.
+     The Whop handler can, because a deactivation there means access has
+     genuinely ended. Fanbasis has no equivalent: a cancelled
+     subscription may still be inside its paid term, and the person may
+     hold a live Whop membership this payload knows nothing about.
+     Marking them churned would move them onto the win-back board and
+     start win-back email at somebody who is still a paying member.
+
+     So the segment waits for the reconcile, which sees both processors.
+     The cost is bounded: Fanbasis carries 130 active payers against
+     Whop's 837, and TSM churn overwhelmingly arrives through Whop. */
+  if (!isPurchase) {
+    console.log(`[fb-hook] ${type} ${email}: segment deferred to reconcile`)
+    return res.status(200).json({ ok: true, event: type, deferred: 'reconcile' })
+  }
+
   try {
     const r = await applyFromEvent(email, { tags, name: d?.customer?.name || '' })
-    console.log(`[fb-hook] ${type} ${email}: ${r.changed ? '+' + (r.added || []).join(',') : 'no change'} (reconcile will confirm)`)
-    return res.status(200).json({ ok: true, event: type, ...r })
+
+    /* MOVE THE CARD NOW, not at the top of the hour.
+       This handler used to write tags and stop, so a Fanbasis buyer sat
+       off every board until the reconcile ran. A setter looking at a
+       pipeline needs it right, now, or they stop trusting the board.
+       Placement is computed from the contact's tags after the event, by
+       the same rules the reconcile uses, so the two cannot disagree. */
+    let cards = null
+    const contact = await findContact(email)
+    if (contact?.id) {
+      cards = await applyPlacement(contact.id, contact.tags || [], contact.contactName || email)
+    }
+    console.log(`[fb-hook] ${type} ${email}: ${r.changed ? '+' + (r.added || []).join(',') : 'no tag change'}` +
+                (cards ? ` cards +${cards.made}/~${cards.moved}/-${cards.gone}` : ' (contact not readable yet)'))
+    return res.status(200).json({ ok: true, event: type, ...r, cards })
   } catch (e) {
     console.error(`[fb-hook] ${type} ${email} failed:`, e.message)
     return res.status(200).json({ ok: false, error: e.message })
