@@ -44,7 +44,8 @@
 const whop = require('../../lib/whopMembers')
 const fanbasis = require('../../lib/fanbasis')
 const { buildTruthTable, normEmail, emailsOf } = require('../../lib/people')
-const { applyAuthoritative, ghl } = require('../../lib/syncPerson')
+const { applyAuthoritative, desiredTags, findContact, OWNED, HISTORICAL, ghl } = require('../../lib/syncPerson')
+const { desiredPlacement, planCards } = require('../../lib/placement')
 
 const MAX_WRITES = 1500
 
@@ -121,14 +122,75 @@ module.exports = async function handler(req, res) {
     /* Gather. Both clients throw rather than return a short list: at
        concurrency 8 Whop rate-limited and silently dropped 851
        memberships, which would have marked paying customers churned. */
-    const [memberships, payments, fbSubscribers, fbCustomers] = await Promise.all([
+    /* NIGHTLY MUST READ EVERY PAYMENT, NOT A WINDOW.
+       A 400-day window looked like a sensible optimisation and was a
+       serious bug: anyone whose last payment predates it has no payment
+       row, so the resolver concludes they never paid, and the pass tries
+       to replace customer-churned with customer-never-paid. Caught in a
+       dry run wanting to do exactly that to 1,238 people in one quarter.
+
+       Spend and payment history are cumulative facts. A partial read of
+       them is not a smaller truth, it is a different and wrong one.
+
+       The hourly pass only ever ADDS from a short window and never
+       decides segment from it, so 5 days is fine there. */
+    const [memberships, fbSubscribers, fbCustomers, productTitles] = await Promise.all([
       whop.fetchAllMemberships(),
-      recentPayments(mode === 'nightly' ? 400 : 5),
       fanbasis.fetchSubscribers(),
       fanbasis.fetchCustomers(),
+      whop.fetchProducts(),
     ])
-    const table = buildTruthTable({ memberships, payments, fbCustomers, fbSubscribers })
+
+    /* Payments: v2 for the nightly pass because it is page-numbered and
+       so can be fetched concurrently, 62 seconds against 268 for the
+       cursor-paged v1. v2 does not carry the email, so ids are resolved
+       through the membership list. Verified: 338 of 338 sampled paid
+       payments resolved, and revenue reconciles to $505,367 against the
+       $503k v1 reports for Whop.
+
+       The hourly pass keeps v1, because it only wants the last few days
+       and a cursor is the right tool for that. */
+    let payments
+    if (mode === 'nightly') {
+      const raw = await whop.fetchAllPaymentsV2()
+      const idx = whop.userEmailIndex(memberships)
+      payments = raw.map(p => whop.normalisePaymentV2(p, idx, productTitles))
+    } else {
+      payments = await recentPayments(5)
+    }
+
+    const table = buildTruthTable({ memberships, payments, fbCustomers, fbSubscribers, productTitles })
     const gathered = Math.round((Date.now() - started) / 1000)
+
+    /* Boards and every card on them, read once. Placement needs to know
+       where someone already is, and looking that up per contact would be
+       9,400 searches. */
+    const pipelines = (await ghl(`/opportunities/pipelines?locationId=${process.env.GHL_LOCATION_ID}`)).pipelines || []
+    const pipelinesByName = new Map(pipelines.map(p => [p.name, p]))
+    const stageNameById = new Map()
+    for (const p of pipelines) for (const st of p.stages || []) stageNameById.set(st.id, st.name)
+    const cardsByContact = new Map()
+    for (const p of pipelines) {
+      if (!require('../../lib/placement').boardByName(p.name)) continue   // skip IMPACT etc
+      for (let pg = 1; pg <= 200; pg++) {
+        const j = await ghl(`/opportunities/search?location_id=${process.env.GHL_LOCATION_ID}&pipeline_id=${p.id}&limit=100&page=${pg}`)
+        const rows = j.opportunities || []
+        for (const o of rows) {
+          const cid = o.contactId || o.contact?.id
+          if (!cid) continue
+          if (!cardsByContact.has(cid)) cardsByContact.set(cid, [])
+          cardsByContact.get(cid).push({ id: o.id, pipelineId: o.pipelineId, pipelineStageId: o.pipelineStageId })
+        }
+        if (rows.length < 100) break
+      }
+    }
+
+    /* Every contact carrying a machine tag, read once and indexed by all
+       of their addresses. Avoids a per-person lookup later. */
+    const byEmail = new Map()
+    if (!only) {
+      for (const c of await taggedContacts()) for (const e of emailsOf(c)) if (!byEmail.has(e)) byEmail.set(e, c)
+    }
 
     /* Choose who to check. */
     let targets = []
@@ -146,22 +208,70 @@ module.exports = async function handler(req, res) {
       /* Everyone the processors know, plus anyone already tagged, so a
          tag that should no longer be there still gets cleaned up. */
       const t = new Set([...table.keys()])
-      for (const c of await taggedContacts()) for (const e of emailsOf(c)) if (table.has(e)) t.add(e)
+      for (const e of byEmail.keys()) if (table.has(e)) t.add(e)
       targets = [...t].sort()
       if (of > 1) targets = targets.filter((_, i) => i % of === part)
     }
 
     /* Converge. */
     let checked = 0, drift = 0, created = 0, failed = 0, writes = 0
+    let cardsMade = 0, cardsMoved = 0, cardsGone = 0
     const examples = []
     for (const email of targets) {
       const person = table.get(email)
       checked++
       if (!person) continue
-      if (dry) continue
       if (writes >= MAX_WRITES) break
       try {
-        const r = await applyAuthoritative(email, person, { create: mode === 'nightly', name: person.name })
+        /* A dry run has to actually COMPARE, or it reports zero drift
+           whatever the state of the data, which is worse than no dry run
+           at all: it looks like a passing test. */
+        if (dry) {
+          const want = desiredTags(person)
+          const contact = byEmail.has(email) ? byEmail.get(email) : await findContact(email)
+          if (!contact) { if (want.length) { drift++; if (examples.length < 10) examples.push({ email, wouldCreate: want }) } ; continue }
+          const has = new Set(contact.tags || [])
+          const add = want.filter(t => !has.has(t))
+          const remove = [...has].filter(t => OWNED.test(t) && !HISTORICAL.test(t) && !want.includes(t))
+          if (add.length || remove.length) {
+            drift++
+            if (examples.length < 10) examples.push({ email, add, remove })
+          }
+          continue
+        }
+        const contact = byEmail.has(email) ? byEmail.get(email) : undefined
+        const r = await applyAuthoritative(email, person, {
+          create: mode === 'nightly', name: person.name, contact,
+        })
+
+        /* Cards, from the same state that just drove the tags. Placement
+           is derived every run and never stored, so a board cannot drift
+           away from the truth the way the old one-off population did. */
+        const cid = contact?.id || (await findContact(email))?.id
+        if (cid) {
+          const tagsNow = new Set([...(contact?.tags || []), ...(r.added || [])])
+          for (const t of (r.removed || [])) tagsNow.delete(t)
+          const want = desiredPlacement(person, [...tagsNow])
+          const plan = planCards(want, cardsByContact.get(cid) || [], { pipelinesByName, stageNameById })
+          for (const c of plan.create) {
+            const ok = await ghl('/opportunities/', 'POST', {
+              pipelineId: c.pipelineId, locationId: process.env.GHL_LOCATION_ID, contactId: cid,
+              name: (contact?.contactName || email).slice(0, 80), status: 'open', pipelineStageId: c.stageId,
+            }).then(() => true).catch(() => false)
+            if (ok) cardsMade++
+          }
+          for (const m of plan.move) {
+            const ok = await ghl(`/opportunities/${m.id}`, 'PUT', {
+              pipelineId: m.pipelineId, pipelineStageId: m.stageId, status: 'open',
+            }).then(() => true).catch(() => false)
+            if (ok) cardsMoved++
+          }
+          for (const rm of plan.remove) {
+            const ok = await ghl(`/opportunities/${rm.id}`, 'DELETE').then(() => true).catch(() => false)
+            if (ok) cardsGone++
+          }
+        }
+
         if (r.changed) {
           writes++; drift++
           if (r.created) created++
@@ -171,13 +281,14 @@ module.exports = async function handler(req, res) {
     }
 
     const secs = Math.round((Date.now() - started) / 1000)
-    const line = `[reconcile] mode=${mode}${of > 1 ? ` part=${part}/${of}` : ''} checked=${checked} DRIFT=${drift} created=${created} failed=${failed} gather=${gathered}s total=${secs}s`
+    const line = `[reconcile] mode=${mode}${of > 1 ? ` part=${part}/${of}` : ''} checked=${checked} DRIFT=${drift} cards=+${cardsMade}/~${cardsMoved}/-${cardsGone} created=${created} failed=${failed} gather=${gathered}s total=${secs}s`
     if (drift > Math.max(20, checked * 0.05)) console.error(`${line}  <-- HIGH DRIFT, webhooks may have stopped`)
     else console.log(line)
 
     return res.status(200).json({
       ok: true, mode, dry, part, of,
       candidates: targets.length, checked, drift, created, failed,
+      cardsCreated: cardsMade, cardsMoved, cardsRemoved: cardsGone,
       gatherSeconds: gathered, seconds: secs, examples,
     })
   } catch (e) {
