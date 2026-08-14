@@ -31,6 +31,10 @@ const PRODUCTS = {
   call:      { plan: 'plan_tkwFktpbvuq90', label: '1-on-1 Call', amount: '$497', emailKey: 'call' },
   /* The audit downsell shown when someone declines the call. */
   audit:     { plan: 'plan_knAQIVqbRck1t', label: 'Personalised Video', amount: '$147', emailKey: 'audit' },
+  /* Manual balance on the 1-on-1 call, agreed with the buyer on the call itself.
+     Hidden plan, never linked from a page: reached only by an operator POSTing
+     product=call250 with that buyer's receipt id. */
+  call250:   { plan: 'plan_he7V5DCJO8I6m', label: 'Call balance', amount: '$250' },
 };
 
 /* A receipt older than this can't trigger an upsell charge. Receipt ids
