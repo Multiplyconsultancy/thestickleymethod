@@ -1,0 +1,5 @@
+# The TSM marketing site deploys this repo as a static site (vercel.json:
+# outputDirectory "."). Baby AI is a separate Next.js app in baby-ai/ with its own
+# Vercel project (Root Directory = baby-ai), so its source must not be uploaded
+# as static files here.
+baby-ai/

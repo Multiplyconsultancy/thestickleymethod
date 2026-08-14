@@ -39,3 +39,7 @@ BABY-AI-ENV-TEMPLATE.txt
 # This repo is PUBLIC: a stray `git add -A` here would publish .env.local.
 baby-ai/
 transcription/
+
+# Nightfall paid course content. Videos and transcripts, never in a public repo.
+nightfall lecture videos/
+transcription-nightfall/

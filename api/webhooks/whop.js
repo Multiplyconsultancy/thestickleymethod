@@ -21,7 +21,7 @@
 ═══════════════════════════════════════════════════════════════════════ */
 
 const { createHmac, timingSafeEqual } = require('node:crypto')
-const { applyFromEvent } = require('../../lib/syncPerson')
+const { findContact, ghl, tagsAfterEvent, applyPlacement } = require('../../lib/syncPerson')
 
 /** Raw body, needed because a signature is computed over exact bytes. */
 function rawBody(req) {
@@ -81,72 +81,109 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ ok: true, skipped: 'no_email' })
   }
 
-  /* THE REAL WHOP EVENT NAMES, taken from the dashboard on 13 Aug 2026.
-     They use underscores, not the dotted names guessed from the Baby AI
-     code (`membership.went_valid` and friends). Those would never have
-     matched, and the handler would have silently done nothing forever.
+  /* THE REAL WHOP EVENT NAMES, from the dashboard on 13 Aug 2026. They
+     use underscores, not the dotted names inferred from the Baby AI code.
+     Whop fires around seventy events, mostly about cards, payouts and
+     identity checks; anything not handled here is acknowledged and
+     ignored.
 
-     Only these matter to us. Whop can fire around seventy events, most
-     of them about cards, payouts and identity checks, and anything not
-     listed here is acknowledged and ignored.
-
-       membership_activated ........... they have access
-       membership_deactivated ......... access ended
-       membership_cancel_at_period_end_changed
-                                        cancelled but still inside the
-                                        paid period, the "resume" state
-       payment_succeeded .............. money arrived
-       payment_failed ................. dunning territory
-       refund_created / refund_updated  money reversed
-       dispute_created / dispute_updated  chargeback
-
-     Removals are still left to the reconcile: one event never shows a
-     person's whole position, and Whop cannot be asked about one person. */
-  const tags = []
+     Each case says what the event PROVES, as tags to add and remove. The
+     card then moves immediately, because a setter looking at a board
+     needs it right now rather than within the hour. */
   const title = String(data?.product?.title || data?.product_title || '')
   const isTsm = /stickley/i.test(title)
   const isBabyAi = /baby\s*ai/i.test(title)
+  const plan = /6 month/i.test(title) ? 'plan-6-month'
+             : /3 month/i.test(title) ? 'plan-3-month'
+             : /coaching/i.test(title) ? 'plan-coaching'
+             : isTsm ? 'plan-1-month' : null
 
+  let add = [], remove = []
   switch (action) {
     case 'membership_activated':
     case 'payment_succeeded':
     case 'invoice_paid':
-      tags.push('customer-active')
-      if (isTsm) tags.push('has-tsm')
-      if (isBabyAi) tags.push('has-baby-ai')
+      add = ['customer-active']
+      if (isTsm) add.push('has-tsm')
+      if (isBabyAi) add.push('has-baby-ai')
+      if (plan) add.push(plan)
+      /* They are paying again, so nothing about churn is true any more.
+         And a plan tag is exclusive: upgrading from monthly to six months
+         must clear the old one, or they end up holding both and the board
+         picks whichever the stage rules happen to check first. */
+      remove = ['customer-churned', 'customer-never-paid', 'cancelling',
+                'churn-0-30d', 'churn-31-90d', 'churn-91-180d', 'churn-181-365d', 'churn-1-2y']
+      if (plan) {
+        for (const other of ['plan-1-month', 'plan-3-month', 'plan-6-month', 'plan-coaching']) {
+          if (other !== plan) remove.push(other)
+        }
+      }
       break
 
     case 'membership_cancel_at_period_end_changed':
-      /* Fires both ways: cancelling, and un-cancelling. Only the
-         cancelling direction is safe to act on here, because removing
-         the tag on the reverse needs their full position. */
-      if (data?.cancel_at_period_end === true) tags.push('cancelling')
+      if (data?.cancel_at_period_end === true) add = ['cancelling']
+      else remove = ['cancelling']
       break
 
-    /* Deliberately no tag writes. Deciding someone has churned needs
-       their whole position, not one membership ending. The reconcile
-       does it, within the hour. */
     case 'membership_deactivated':
+      /* Access has ended. 0.5% of people hold a second valid membership,
+         and for them this moves the card early; the reconcile corrects it
+         within the hour. Worth it so the other 99.5% are instant. */
+      add = ['customer-churned', 'churn-0-30d']
+      remove = ['customer-active', 'cancelling', 'plan-1-month', 'plan-3-month',
+                'plan-6-month', 'plan-coaching', 'plan-fanbasis-legacy']
+      break
+
+    /* Money reversed. Segment needs the full picture, so leave it to the
+       reconcile rather than guess from one refund. */
     case 'payment_failed':
     case 'refund_created':
     case 'refund_updated':
     case 'dispute_created':
     case 'dispute_updated':
-      break
+      return res.status(200).json({ ok: true, action, deferred: 'reconcile' })
 
     default:
       return res.status(200).json({ ok: true, action, skipped: 'not_relevant' })
   }
 
   try {
-    const r = await applyFromEvent(email, { tags, name: data?.user?.name || data?.name || '' })
-    console.log(`[whop-hook] ${action} ${email}: ${r.changed ? '+' + (r.added || []).join(',') : 'no change'} (reconcile will confirm)`)
-    return res.status(200).json({ ok: true, action, ...r })
+    /* Upsert on EMAIL ONLY, always. Two reasons.
+
+       GHL's contact search index lags a write by a second or two, so
+       findContact can return nothing for a contact that plainly exists,
+       and a handler that branches on that took a create path which only
+       added tags and never removed them. Result: tags saying churned
+       while the card said active. Upsert is idempotent and returns the
+       id either way, so there is no branch to get wrong.
+
+       And phone is deliberately never sent: including it lets GHL match
+       on phone and silently overwrite a different contact's email
+       address, which it did to 125 people. */
+    const [first, ...rest] = String(data?.user?.name || data?.name || '').trim().split(' ')
+    const up = await ghl('/contacts/upsert', 'POST', {
+      locationId: process.env.GHL_LOCATION_ID, email,
+      firstName: first || undefined, lastName: rest.join(' ') || undefined,
+    })
+    const contactId = up?.contact?.id || up?.id
+    if (!contactId) throw new Error('no contact id from upsert')
+
+    /* Read by id, which is immediate, rather than by search. */
+    const fresh = (await ghl(`/contacts/${contactId}`))?.contact || {}
+    const had = fresh.tags || []
+    const missing = add.filter(t => !had.includes(t))
+    const present = remove.filter(t => had.includes(t))
+    if (missing.length) await ghl(`/contacts/${contactId}/tags`, 'POST', { tags: missing })
+    if (present.length) await ghl(`/contacts/${contactId}/tags`, 'DELETE', { tags: present })
+
+    const tags = tagsAfterEvent(had, { add, remove })
+    const cards = await applyPlacement(contactId, tags, fresh.contactName || email)
+    console.log(`[whop-hook] ${action} ${email}: +[${add}] -[${remove}] cards +${cards.made}/~${cards.moved}/-${cards.gone}`)
+    return res.status(200).json({ ok: true, action, added: add, removed: remove, cards })
   } catch (e) {
     console.error(`[whop-hook] ${action} ${email} failed:`, e.message)
-    /* 200 on purpose: the reconcile will catch this person within 15
-       minutes, and a 500 makes Whop retry a request that will fail the
-       same way. */
+    /* 200 on purpose: the reconcile catches this person anyway, and a 500
+       makes Whop retry something that will fail the same way. */
     return res.status(200).json({ ok: false, error: e.message })
   }
 }
