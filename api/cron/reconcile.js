@@ -49,6 +49,14 @@ const { desiredPlacement, planCards } = require('../../lib/placement')
 
 const MAX_WRITES = 1500
 
+/* STOP BEFORE THE PLATFORM STOPS YOU.
+   Vercel kills the function at 300s with no output, which is how a
+   reconcile can fail every hour and look like a reconcile with nothing
+   to do. Past this mark the run finishes early and SAYS SO, so a partial
+   pass is visible in the log instead of being indistinguishable from a
+   clean one. */
+const DEADLINE_MS = 255000
+
 function authorised(req) {
   const secret = process.env.CRON_SECRET
   if (!secret) return false                    // unset means disabled, not open
@@ -233,6 +241,7 @@ module.exports = async function handler(req, res) {
     }
 
     /* Converge. */
+    let ranOut = false
     let checked = 0, drift = 0, created = 0, failed = 0, writes = 0
     let cardsMade = 0, cardsMoved = 0, cardsGone = 0
     const examples = []
@@ -241,6 +250,7 @@ module.exports = async function handler(req, res) {
       checked++
       if (!person) continue
       if (writes >= MAX_WRITES) break
+      if (Date.now() - started > DEADLINE_MS) { ranOut = true; break }
       try {
         /* A dry run has to actually COMPARE, or it reports zero drift
            whatever the state of the data, which is worse than no dry run
@@ -300,13 +310,13 @@ module.exports = async function handler(req, res) {
     }
 
     const secs = Math.round((Date.now() - started) / 1000)
-    const line = `[reconcile] mode=${mode}${of > 1 ? ` part=${part}/${of}` : ''} checked=${checked} DRIFT=${drift} cards=+${cardsMade}/~${cardsMoved}/-${cardsGone} created=${created} failed=${failed} gather=${gathered}s total=${secs}s`
+    const line = `[reconcile] mode=${mode}${of > 1 ? ` part=${part}/${of}` : ''} checked=${checked}/${targets.length} DRIFT=${drift} cards=+${cardsMade}/~${cardsMoved}/-${cardsGone} created=${created} failed=${failed} gather=${gathered}s total=${secs}s${ranOut ? ' INCOMPLETE(deadline)' : ''}`
     if (drift > Math.max(20, checked * 0.05)) console.error(`${line}  <-- HIGH DRIFT, webhooks may have stopped`)
     else console.log(line)
 
     return res.status(200).json({
       ok: true, mode, dry, part, of,
-      candidates: targets.length, checked, drift, created, failed,
+      candidates: targets.length, checked, drift, created, failed, incomplete: ranOut,
       cardsCreated: cardsMade, cardsMoved, cardsRemoved: cardsGone,
       gatherSeconds: gathered, seconds: secs, examples,
     })

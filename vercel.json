@@ -6,15 +6,54 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "functions": {
-    "api/cron/reconcile.js": { "maxDuration": 300 }
+    "api/cron/reconcile.js": {
+      "maxDuration": 300
+    }
   },
   "crons": [
-    { "path": "/api/cron/call-emails",    "schedule": "*/15 * * * *" },
-    { "path": "/api/cron/dunning-emails", "schedule": "0 */6 * * *" },
-    { "path": "/api/cron/reconcile",                            "schedule": "5 * * * *" },
-    { "path": "/api/cron/reconcile?mode=nightly&part=0&of=4",   "schedule": "0 3 * * *" },
-    { "path": "/api/cron/reconcile?mode=nightly&part=1&of=4",   "schedule": "10 3 * * *" },
-    { "path": "/api/cron/reconcile?mode=nightly&part=2&of=4",   "schedule": "20 3 * * *" },
-    { "path": "/api/cron/reconcile?mode=nightly&part=3&of=4",   "schedule": "30 3 * * *" }
+    {
+      "path": "/api/cron/call-emails",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/dunning-emails",
+      "schedule": "0 */6 * * *"
+    },
+    {
+      "path": "/api/cron/reconcile",
+      "schedule": "5 * * * *"
+    },
+    {
+      "schedule": "0 3 * * *",
+      "path": "/api/cron/reconcile?mode=nightly&part=0&of=8"
+    },
+    {
+      "schedule": "6 3 * * *",
+      "path": "/api/cron/reconcile?mode=nightly&part=1&of=8"
+    },
+    {
+      "schedule": "12 3 * * *",
+      "path": "/api/cron/reconcile?mode=nightly&part=2&of=8"
+    },
+    {
+      "schedule": "18 3 * * *",
+      "path": "/api/cron/reconcile?mode=nightly&part=3&of=8"
+    },
+    {
+      "schedule": "24 3 * * *",
+      "path": "/api/cron/reconcile?mode=nightly&part=4&of=8"
+    },
+    {
+      "schedule": "30 3 * * *",
+      "path": "/api/cron/reconcile?mode=nightly&part=5&of=8"
+    },
+    {
+      "schedule": "36 3 * * *",
+      "path": "/api/cron/reconcile?mode=nightly&part=6&of=8"
+    },
+    {
+      "schedule": "42 3 * * *",
+      "path": "/api/cron/reconcile?mode=nightly&part=7&of=8"
+    }
   ]
 }
