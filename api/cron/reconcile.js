@@ -169,11 +169,27 @@ module.exports = async function handler(req, res) {
     const pipelinesByName = new Map(pipelines.map(p => [p.name, p]))
     const stageNameById = new Map()
     for (const p of pipelines) for (const st of p.stages || []) stageNameById.set(st.id, st.name)
+    /* PAGE 101 DOES NOT EXIST.
+       GHL refuses `page` beyond 100 on opportunity search: it returns
+       400 SEARCH_USE_START_AFTER_PAGINATION. So the moment a board passed
+       10,000 cards, this read threw, the whole reconcile aborted without
+       writing, and it stayed dead. Nothing else reported it, because
+       failing closed looks identical to having nothing to do.
+
+       The cursor in meta.startAfter/startAfterId has no such limit.
+
+       Boards are read concurrently because this is now the slowest step
+       by a distance: 29,401 cards over 294 sequential requests took 157
+       seconds against a 300 second function limit, leaving nothing for
+       the work the reconcile actually exists to do. */
     const cardsByContact = new Map()
-    for (const p of pipelines) {
-      if (!require('../../lib/placement').boardByName(p.name)) continue   // skip IMPACT etc
-      for (let pg = 1; pg <= 200; pg++) {
-        const j = await ghl(`/opportunities/search?location_id=${process.env.GHL_LOCATION_ID}&pipeline_id=${p.id}&limit=100&page=${pg}`)
+    const managed = pipelines.filter(p => require('../../lib/placement').boardByName(p.name))
+    await Promise.all(managed.map(async p => {
+      let after = null, afterId = null
+      for (let guard = 0; guard < 600; guard++) {
+        const q = `/opportunities/search?location_id=${process.env.GHL_LOCATION_ID}&pipeline_id=${p.id}&limit=100` +
+                  (afterId ? `&startAfter=${after}&startAfterId=${encodeURIComponent(afterId)}` : '')
+        const j = await ghl(q)
         const rows = j.opportunities || []
         for (const o of rows) {
           const cid = o.contactId || o.contact?.id
@@ -182,8 +198,11 @@ module.exports = async function handler(req, res) {
           cardsByContact.get(cid).push({ id: o.id, pipelineId: o.pipelineId, pipelineStageId: o.pipelineStageId })
         }
         if (rows.length < 100) break
+        after = j.meta?.startAfter
+        afterId = j.meta?.startAfterId
+        if (!afterId) break            // no cursor means no more pages we can reach
       }
-    }
+    }))
 
     /* Every contact carrying a machine tag, read once and indexed by all
        of their addresses. Avoids a per-person lookup later. */
