@@ -256,12 +256,14 @@ module.exports = async function handler(req, res) {
            whatever the state of the data, which is worse than no dry run
            at all: it looks like a passing test. */
         if (dry) {
-          const want = desiredTags(person)
+          const partialSpend = mode !== 'nightly'
+          const want = desiredTags(person, { partialSpend })
           const contact = byEmail.has(email) ? byEmail.get(email) : await findContact(email)
           if (!contact) { if (want.length) { drift++; if (examples.length < 10) examples.push({ email, wouldCreate: want }) } ; continue }
           const has = new Set(contact.tags || [])
           const add = want.filter(t => !has.has(t))
-          const remove = [...has].filter(t => OWNED.test(t) && !HISTORICAL.test(t) && !want.includes(t))
+          const remove = [...has].filter(t => OWNED.test(t) && !HISTORICAL.test(t) && !want.includes(t) &&
+            !(partialSpend && /^spent-/.test(t)))
           if (add.length || remove.length) {
             drift++
             if (examples.length < 10) examples.push({ email, add, remove })
@@ -271,6 +273,10 @@ module.exports = async function handler(req, res) {
         const contact = byEmail.has(email) ? byEmail.get(email) : undefined
         const r = await applyAuthoritative(email, person, {
           create: mode === 'nightly', name: person.name, contact,
+          /* The hourly pass reads five days of payments, so it knows the
+             segment but not the lifetime spend. Saying so stops it
+             downgrading bands it cannot see the evidence for. */
+          partialSpend: mode !== 'nightly',
         })
 
         /* Cards, from the same state that just drove the tags. Placement
