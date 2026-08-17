@@ -66,6 +66,12 @@ section{padding:clamp(74px,9vw,124px) 0;position:relative}
 .hero{min-height:100svh;display:flex;align-items:center;padding:88px 0 32px;overflow:hidden}
 .hero-bg{position:absolute;inset:0;z-index:-2;
   background:url(/funnel-preview-xp13dk702fhx0w51jj/img/hero.webp) center/cover no-repeat;opacity:.82}
+/* A 16:9 flat lay cropped to a tall phone screen shows only the empty middle,
+   because every object sits around the edges. Portrait companion for mobile,
+   same objects and same grade. Desktop is untouched. */
+@media(max-width:780px){
+  .hero-bg{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/hero-mobile.webp);opacity:.72}
+}
 .hero-bg::after{content:"";position:absolute;inset:0;
   background:
     linear-gradient(180deg, rgba(10,11,13,.95) 0%, rgba(10,11,13,.55) 90px, rgba(10,11,13,0) 170px),
