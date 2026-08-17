@@ -65,7 +65,7 @@ section{padding:clamp(74px,9vw,124px) 0;position:relative}
 /* ── hero ─────────────────────────────────────────────────────────────── */
 .hero{min-height:100svh;display:flex;align-items:center;padding:88px 0 32px;overflow:hidden}
 .hero-bg{position:absolute;inset:0;z-index:-2;
-  background:url(img/hero.webp) center/cover no-repeat;opacity:.82}
+  background:url(/funnel-preview-xp13dk702fhx0w51jj/img/hero.webp) center/cover no-repeat;opacity:.82}
 .hero-bg::after{content:"";position:absolute;inset:0;
   background:
     linear-gradient(180deg, rgba(10,11,13,.95) 0%, rgba(10,11,13,.55) 90px, rgba(10,11,13,0) 170px),
@@ -363,14 +363,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
    A light page with dark photography loses all its personality, and a light
    page with NO photography loses even more, which is why both sets exist.
 ═══════════════════════════════════════════════════════════════════════════ */
-.art-calls  {background-image:url(img/calls.webp)}
-.art-decide      .mod-art{background-image:url(img/m-decide.webp)}
-.art-today       .mod-art{background-image:url(img/m-today.webp)}
-.art-consistency .mod-art{background-image:url(img/m-consistency.webp)}
-.art-photos      .mod-art{background-image:url(img/m-photos.webp)}
-.art-reveal      .mod-art{background-image:url(img/m-reveal.webp)}
-.art-studio      .mod-art{background-image:url(img/studio.webp)}
-.art-baby   {background-image:url(img/texture.webp)}
+.art-calls  {background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/calls.webp)}
+.art-decide      .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/m-decide.webp)}
+.art-today       .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/m-today.webp)}
+.art-consistency .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/m-consistency.webp)}
+.art-photos      .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/m-photos.webp)}
+.art-reveal      .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/m-reveal.webp)}
+.art-studio      .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/studio.webp)}
+.art-baby   {background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/texture.webp)}
 
 /* Light hero stays clean. A busy photo behind the headline reads as a stock
    accident here; the art earns its place in the cards and split sections
@@ -379,14 +379,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
 [data-theme="light"] .hero-bg{background-image:none;
   background:radial-gradient(ellipse 78% 66% at 50% -10%, #E9F3F7 0%, rgba(251,250,248,0) 68%);opacity:1}
 [data-theme="light"] .hero-bg::after{background:none}
-[data-theme="light"] .art-calls  {background-image:url(img/lt-calls.webp)}
-[data-theme="light"] .art-decide      .mod-art{background-image:url(img/lt-m-decide.webp)}
-[data-theme="light"] .art-today       .mod-art{background-image:url(img/lt-m-today.webp)}
-[data-theme="light"] .art-consistency .mod-art{background-image:url(img/lt-m-consistency.webp)}
-[data-theme="light"] .art-photos      .mod-art{background-image:url(img/lt-m-photos.webp)}
-[data-theme="light"] .art-reveal      .mod-art{background-image:url(img/lt-m-reveal.webp)}
-[data-theme="light"] .art-studio      .mod-art{background-image:url(img/lt-studio.webp)}
-[data-theme="light"] .art-baby   {background-image:url(img/lt-studio.webp)}
+[data-theme="light"] .art-calls  {background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/lt-calls.webp)}
+[data-theme="light"] .art-decide      .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/lt-m-decide.webp)}
+[data-theme="light"] .art-today       .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/lt-m-today.webp)}
+[data-theme="light"] .art-consistency .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/lt-m-consistency.webp)}
+[data-theme="light"] .art-photos      .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/lt-m-photos.webp)}
+[data-theme="light"] .art-reveal      .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/lt-m-reveal.webp)}
+[data-theme="light"] .art-studio      .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/lt-studio.webp)}
+[data-theme="light"] .art-baby   {background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/lt-studio.webp)}
 [data-theme="light"] .mod-art{background-color:#EDEFF2}
 /* light art is pale, so the bottom scrim has to go the other way */
 [data-theme="light"] .mod-art::after{background:linear-gradient(180deg,transparent 60%,rgba(13,17,23,.12) 100%)}
