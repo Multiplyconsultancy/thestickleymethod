@@ -410,10 +410,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
 .toolband{background:var(--surface-2);border-block:1px solid var(--line);
   padding:clamp(70px,8vw,110px) 0}
 .tool-h{font-size:clamp(1.9rem,4.6vw,3.5rem);line-height:1.12}
-.rotator{color:var(--accent);display:inline-block;min-height:1.1em;
-  transition:opacity .28s ease, transform .28s ease}
-.rotator.out{opacity:0;transform:translateY(-8px)}
-@media(prefers-reduced-motion:reduce){.rotator{transition:none}}
+
 [data-theme="light"] .toolband{background:#F1F3F5}
 
 /* Short laptop screens: shrink the video further rather than let the chips
@@ -441,3 +438,38 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
   font:800 .74rem/1 var(--body)}
 .buildlist b{color:var(--text)}
 @media(max-width:780px){.buildlist{grid-template-columns:1fr}}
+
+/* ── rotating wheel ──────────────────────────────────────────────────────
+   Fixed height and one line per item, so a long phrase can never wrap and
+   push the section taller mid-rotation. That was the layout jump on phones. */
+.wheel{height:3.6em;overflow:hidden;position:relative;margin:6px auto 0;
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 26%,#000 74%,transparent);
+          mask-image:linear-gradient(180deg,transparent,#000 26%,#000 74%,transparent)}
+.wheel ul{list-style:none;margin:0;padding:0;transition:transform .5s cubic-bezier(.22,.61,.36,1)}
+.wheel li{height:1.2em;line-height:1.2em;font-family:var(--display);font-weight:800;
+  font-size:clamp(1.9rem,4.6vw,3.5rem);color:var(--accent);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;opacity:.22;transition:opacity .5s ease}
+.wheel li.on{opacity:1}
+@media(prefers-reduced-motion:reduce){.wheel ul,.wheel li{transition:none}}
+
+/* ── results: arrows page the rail, dragging works the slider ─────────── */
+.ba{touch-action:none}          /* stop the browser hijacking a drag as a scroll */
+.ba-rail{scroll-behavior:smooth}
+.ba-nav{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:20px}
+.ba-arrow{width:46px;height:46px;flex:none;border-radius:50%;cursor:pointer;
+  background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;
+  transition:border-color .18s, transform .18s}
+.ba-arrow:hover{border-color:var(--accent);transform:translateY(-2px)}
+.ba-arrow svg{width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2.4;
+  stroke-linecap:round;stroke-linejoin:round}
+.ba-hint{margin:0;text-transform:none;letter-spacing:0;font-weight:500;font-size:.86rem}
+
+/* ── section texture ─────────────────────────────────────────────────── */
+.tex{position:relative;isolation:isolate}
+.tex::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.16;
+  background:url(/funnel-preview-xp13dk702fhx0w51jj/img/texture.webp) center/cover no-repeat;
+  -webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 50%,#000,transparent 78%);
+          mask-image:radial-gradient(ellipse 80% 70% at 50% 50%,#000,transparent 78%)}
+[data-theme="light"] .tex::before{opacity:.07}
+
+@media(max-width:780px){ .desktop-only{display:none!important} }

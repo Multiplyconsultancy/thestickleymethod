@@ -74,7 +74,7 @@
      prices the products actually sell at today; the other four still need
      confirming against what was genuinely charged.
 ══════════════════════════════════════════════════════════════════════════ -->
-<section id="included">
+<section id="included" class="tex">
   <div class="shell">
     <div class="mid rise">
       <p class="eyebrow mid">Everything included</p>
@@ -87,8 +87,9 @@
       <div class="stack-row"><span>The Stickley Method, all 110+ modules</span><b>$468</b></div>
       <div class="stack-row"><span>Baby AI, the chatbot trained on the course</span><b>$348</b></div>
       <div class="stack-row"><span>Your photo system, plus the 30/60/90 milestones</span><b>$500</b></div>
+      <div class="stack-row"><span>Nightfall lectures: Looksmaxxing The Right Way</span><b>$600</b></div>
       <div class="stack-row"><span>The community, guys running the same thing right now</span><b>$500</b></div>
-      <div class="stack-row stack-total"><span>Total value</span><b>$7,316</b></div>
+      <div class="stack-row stack-total"><span>Total value</span><b>$7,916</b></div>
       <div class="stack-row stack-price"><span>Your price</span><b>FREE</b></div>
     </div>
     <p class="stack-foot">
@@ -140,12 +141,13 @@
         <div class="ba-knob"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/><polyline points="9 6 15 12 9 18"/></svg></div>
         <p class="ba-cap">[Name] · [timeline]</p></div>
     </div>
-    <p class="ba-hint">&larr; Drag the line &rarr;</p>
-    <p class="disc" style="margin-top:26px">
-      Results vary. The transformations shown reflect the consistency of specific individuals over
-      weeks and months. This programme is educational and is not medical, dermatological,
-      nutritional or mental health advice.
-    </p>
+    <div class="ba-nav">
+      <button class="ba-arrow" id="baPrev" aria-label="Previous transformation">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <p class="ba-hint">Drag the line on a photo &middot; arrows for the next one</p>
+      <button class="ba-arrow" id="baNext" aria-label="Next transformation">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+    </div>
   </div>
 </section>
 
@@ -186,7 +188,7 @@
 <hr class="rule">
 
 <!-- ═══ 5 · WHY IT WORKS ═════════════════════════════════════════════════ -->
-<section id="why">
+<section id="why" class="tex">
   <div class="shell">
     <div class="mid rise">
       <p class="eyebrow mid">The protocol</p>
@@ -199,7 +201,7 @@
       <div class="card rise"><span class="num">03</span><h3>Your Window Is Open Now</h3><p>The same work does more at nineteen than it does at thirty. Every year you wait, the window narrows and the work gets harder.</p></div>
       <div class="card rise"><span class="num">04</span><h3>The First Wins Are Free</h3><p>Posture, grooming, hair, leanness, sleep. The biggest early changes cost nothing but consistency.</p></div>
       <div class="card rise"><span class="num">05</span><h3>Information Is Not The Bottleneck</h3><p>You already know more than most people. So did I, for nine months, and nothing changed. Seeing what you are actually doing is the part everyone is missing.</p></div>
-      <div class="card rise"><span class="num">06</span><h3>Nobody Is Going To Tell You</h3><p>Your mum says you are handsome. Your mates never will. Somebody has to actually give you the list, and that is what the weekly calls are.</p></div>
+      <div class="card rise"><span class="num">06</span><h3>It Compounds</h3><p>None of this works in a week and all of it works in a year. The difference is never the information. It is who was still doing it in month six.</p></div>
     </div>
     <div class="mid cta-wrap"><a href="#claim" class="btn">Start With Me Free <span class="arw">&rarr;</span></a></div>
   </div>
@@ -306,8 +308,8 @@
       </div>
       </div>
 
-      <p class="eyebrow mid" style="margin:56px 0 18px">The build, video by video</p>
-      <ol class="buildlist rise">
+      <p class="eyebrow mid desktop-only" style="margin:56px 0 18px">The build, video by video</p>
+      <ol class="buildlist rise desktop-only">
         <li><b>The foundations.</b> The app shell and its five sections, live in about a minute.</li>
         <li><b>Your profile.</b> Goal, skin, hair, time you actually have, food, injuries. One place, editable forever.</li>
         <li><b>Your actions.</b> You decide what goes in and how often. The app never picks for you.</li>
@@ -339,7 +341,19 @@
 <section class="toolband">
   <div class="shell mid">
     <p class="eyebrow mid">All built in</p>
-    <h2 class="tool-h">Your system tracks<br><span class="rotator" id="rotator" aria-live="polite">your daily protocol</span></h2>
+    <h2 class="tool-h">Your system tracks</h2>
+    <div class="wheel" id="wheel" aria-live="polite">
+      <ul>
+        <li>your daily protocol</li>
+        <li>the consistency you hit</li>
+        <li>every streak you build</li>
+        <li>your progress photos</li>
+        <li>your before and after</li>
+        <li>day 30, 60 and 90</li>
+        <li>what you quietly skip</li>
+        <li>what you committed to</li>
+      </ul>
+    </div>
     <p class="lede mid">One place for all of it, and nothing to set up but your own routine.</p>
   </div>
 </section>
@@ -421,7 +435,7 @@
       <h2>Claim Your Free Course</h2>
     </div>
     <div class="claim rise">
-      <p class="was">$7,316 value</p>
+      <p class="was">$7,916 value</p>
       <p class="free">FREE</p>
       <p class="today">Today you pay nothing</p>
       <ul>

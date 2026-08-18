@@ -65,29 +65,37 @@ document.querySelectorAll('.ba').forEach(function (ba) {
 })();
 
 
-/* Rotating band. Pauses when off screen and respects reduced motion. */
+/* Rotating wheel. Fixed height, so no layout shift when a phrase is long. */
 (function () {
-  var el = document.getElementById('rotator');
-  if (!el) return;
-  var items = [
-    'your daily protocol', 'the consistency you actually hit', 'every streak you build',
-    'your progress photos', 'your before and after', 'your day 30, 60 and 90 reveal',
-    'the things you quietly skip', 'everything you said you would do'
-  ];
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var i = 0, on = true, timer;
-  new IntersectionObserver(function (e) { on = e[0].isIntersecting; })
-    .observe(el.closest('section') || el);
-  function tick() {
-    if (on) {
-      el.classList.add('out');
-      setTimeout(function () {
-        i = (i + 1) % items.length;
-        el.textContent = items[i];
-        el.classList.remove('out');
-      }, 280);
-    }
-    timer = setTimeout(tick, 2400);
+  var w = document.getElementById('wheel');
+  if (!w) return;
+  var ul = w.querySelector('ul'), items = w.querySelectorAll('li');
+  if (!items.length) return;
+  var i = 0, on = true;
+  function paint() {
+    var h = items[0].getBoundingClientRect().height;
+    ul.style.transform = 'translateY(' + (-(i * h) + w.clientHeight / 2 - h / 2) + 'px)';
+    items.forEach(function (el, n) { el.classList.toggle('on', n === i); });
   }
-  timer = setTimeout(tick, 2400);
+  paint();
+  addEventListener('resize', paint);
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  new IntersectionObserver(function (e) { on = e[0].isIntersecting; }).observe(w);
+  setInterval(function () { if (on) { i = (i + 1) % items.length; paint(); } }, 2200);
+})();
+
+/* Results arrows. Dragging a card moves its before/after divider, so paging
+   between transformations needs its own control rather than a swipe. */
+(function () {
+  var rail = document.querySelector('.ba-rail');
+  if (!rail) return;
+  function step(dir) {
+    var card = rail.querySelector('.ba');
+    if (!card) return;
+    var w = card.getBoundingClientRect().width + 18;
+    rail.scrollBy({ left: dir * w, behavior: 'smooth' });
+  }
+  var p = document.getElementById('baPrev'), n = document.getElementById('baNext');
+  if (p) p.addEventListener('click', function () { step(-1); });
+  if (n) n.addEventListener('click', function () { step(1); });
 })();
