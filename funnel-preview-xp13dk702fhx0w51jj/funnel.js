@@ -50,24 +50,6 @@ document.querySelectorAll('.ba').forEach(function (ba) {
     if (knob.hasPointerCapture && knob.hasPointerCapture(e.pointerId)) set(e.clientX);
   });
 });
-/* Theme switch — PROTOTYPE ONLY, remove before launch.
-   Persists so the choice survives navigating between the two pages. */
-(function () {
-  var KEY = 'bs-theme';
-  try { if (localStorage.getItem(KEY) === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}
-  var b = document.createElement('button');
-  b.className = 'themer';
-  function label() { b.textContent = document.documentElement.dataset.theme === 'light' ? 'Dark theme' : 'Light theme'; }
-  label();
-  b.addEventListener('click', function () {
-    var light = document.documentElement.dataset.theme === 'light';
-    if (light) delete document.documentElement.dataset.theme;
-    else document.documentElement.dataset.theme = 'light';
-    try { localStorage.setItem(KEY, light ? 'dark' : 'light'); } catch (e) {}
-    label();
-  });
-  addEventListener('DOMContentLoaded', function () { document.body.appendChild(b); });
-})();
 
 
 /* Rotating wheel. Fixed height, so no layout shift when a phrase is long. */
