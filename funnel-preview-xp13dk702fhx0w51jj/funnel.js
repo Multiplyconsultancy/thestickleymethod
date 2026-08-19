@@ -50,11 +50,6 @@ document.querySelectorAll('.ba').forEach(function (ba) {
     if (knob.hasPointerCapture && knob.hasPointerCapture(e.pointerId)) set(e.clientX);
   });
 });
-  ba.addEventListener('pointermove', function (e) { if (down) set(e.clientX); });
-  ba.addEventListener('pointerup',     function () { down = false; });
-  ba.addEventListener('pointercancel', function () { down = false; });
-});
-
 /* Theme switch — PROTOTYPE ONLY, remove before launch.
    Persists so the choice survives navigating between the two pages. */
 (function () {

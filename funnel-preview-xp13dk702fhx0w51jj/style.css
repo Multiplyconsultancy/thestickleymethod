@@ -454,8 +454,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
 @media(prefers-reduced-motion:reduce){.wheel ul,.wheel li{transition:none}}
 
 /* ── results: arrows page the rail, dragging works the slider ─────────── */
-.ba{touch-action:none}          /* stop the browser hijacking a drag as a scroll */
 .ba-rail{scroll-behavior:smooth}
+/* Only the knob owns the drag gesture; the rest of the card scrolls the rail. */
+.ba-knob{touch-action:none}
+.ba-knob::after{content:"";position:absolute;inset:-26px;border-radius:50%}
 .ba-nav{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:20px}
 .ba-arrow{width:46px;height:46px;flex:none;border-radius:50%;cursor:pointer;
   background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;
