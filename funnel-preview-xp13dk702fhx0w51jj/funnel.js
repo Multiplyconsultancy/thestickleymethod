@@ -24,13 +24,15 @@ document.querySelectorAll('.q').forEach(function (d) {
   });
 });
 
-/* before / after, drag or click anywhere on the card. Pointer events cover
-   mouse and touch in one path. */
+/* Before / after. THE KNOB is the only slider handle: dragging it (or the
+   generous invisible halo around it) moves the divider, and a drag anywhere
+   else on the card is left alone so it scrolls the rail to the next
+   transformation. Splitting the gestures this way is what stops the two
+   fighting each other on touch screens. */
 document.querySelectorAll('.ba').forEach(function (ba) {
   var after = ba.querySelector('.ba-after'),
       div   = ba.querySelector('.ba-div'),
-      knob  = ba.querySelector('.ba-knob'),
-      down  = false;
+      knob  = ba.querySelector('.ba-knob');
 
   function set(clientX) {
     var r = ba.getBoundingClientRect(),
@@ -39,7 +41,15 @@ document.querySelectorAll('.ba').forEach(function (ba) {
     div.style.left = p + '%';
     knob.style.left = p + '%';
   }
-  ba.addEventListener('pointerdown', function (e) { down = true; ba.setPointerCapture(e.pointerId); set(e.clientX); });
+  knob.addEventListener('pointerdown', function (e) {
+    e.preventDefault();
+    knob.setPointerCapture(e.pointerId);
+    set(e.clientX);
+  });
+  knob.addEventListener('pointermove', function (e) {
+    if (knob.hasPointerCapture && knob.hasPointerCapture(e.pointerId)) set(e.clientX);
+  });
+});
   ba.addEventListener('pointermove', function (e) { if (down) set(e.clientX); });
   ba.addEventListener('pointerup',     function () { down = false; });
   ba.addEventListener('pointercancel', function () { down = false; });
