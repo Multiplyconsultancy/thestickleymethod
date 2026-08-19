@@ -160,6 +160,7 @@ section{padding:clamp(74px,9vw,124px) 0;position:relative}
 .ba{position:relative;flex:none;width:330px;aspect-ratio:3/4;border-radius:15px;overflow:hidden;
   border:1px solid var(--line);scroll-snap-align:center;user-select:none;background:#0E1013}
 .ba-half{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:22px}
+.ba-img{background-size:cover;background-position:center;padding:0}
 .ba-after{clip-path:inset(0 0 0 50%)}
 .ba-ph{font:700 .7rem/1.7 var(--body);letter-spacing:.14em;text-transform:uppercase;color:#4A535E}
 .ba-a{background:repeating-linear-gradient(135deg,#101216 0 12px,#141720 12px 24px)}
@@ -376,7 +377,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
 .art-photos      .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/m-photos.webp)}
 .art-reveal      .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/m-reveal.webp)}
 .art-studio      .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/studio.webp)}
-.art-baby   {background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/texture.webp)}
+.art-baby   {background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/baby.webp)}
 
 /* Light hero stays clean. A busy photo behind the headline reads as a stock
    accident here; the art earns its place in the cards and split sections
@@ -392,7 +393,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
 [data-theme="light"] .art-photos      .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/lt-m-photos.webp)}
 [data-theme="light"] .art-reveal      .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/lt-m-reveal.webp)}
 [data-theme="light"] .art-studio      .mod-art{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/lt-studio.webp)}
-[data-theme="light"] .art-baby   {background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/lt-studio.webp)}
+
 [data-theme="light"] .mod-art{background-color:#EDEFF2}
 /* light art is pale, so the bottom scrim has to go the other way */
 [data-theme="light"] .mod-art::after{background:linear-gradient(180deg,transparent 60%,rgba(13,17,23,.12) 100%)}
@@ -473,3 +474,35 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
 [data-theme="light"] .tex::before{opacity:.07}
 
 @media(max-width:780px){ .desktop-only{display:none!important} }
+
+/* ── value stack: the free-access bonus row ─────────────────────────────── */
+.stack-bonus{background:color-mix(in srgb,var(--accent) 8%,transparent)!important;border-bottom:0}
+.stack-bonus span{color:var(--accent);font-weight:800;letter-spacing:.08em;font-size:.92rem}
+
+/* ── the wheel, redesigned to the reference: heading left, wheel right ──── */
+.toolband .shell{display:grid;grid-template-columns:auto 1fr;gap:8vw;align-items:center;text-align:left}
+.toolband .eyebrow{justify-content:flex-start}
+.toolband .lede{display:none}
+.tool-h{white-space:nowrap}
+.wheel{height:9em;margin:0;
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 32%,#000 68%,transparent);
+          mask-image:linear-gradient(180deg,transparent,#000 32%,#000 68%,transparent)}
+.wheel li{height:1.8em;line-height:1.8em;font-size:clamp(1.5rem,3.4vw,2.6rem);opacity:.14}
+.wheel li.on{opacity:1}
+@media(max-width:900px){
+  .toolband .shell{grid-template-columns:1fr;gap:10px;text-align:center}
+  .toolband .eyebrow{justify-content:center}
+  .tool-h{white-space:normal}
+  .wheel{height:7.5em}
+  .wheel li{font-size:1.35rem}
+}
+
+/* ── get started: same treatment as the hero ───────────────────────────── */
+.claim-scene{position:relative;isolation:isolate;overflow:hidden}
+.claim-scene::before{content:"";position:absolute;inset:0;z-index:-2;
+  background:url(/funnel-preview-xp13dk702fhx0w51jj/img/hero.webp) center/cover no-repeat;opacity:.5}
+.claim-scene::after{content:"";position:absolute;inset:0;z-index:-1;
+  background:radial-gradient(ellipse 62% 60% at 50% 50%, rgba(10,11,13,.92) 0%, rgba(10,11,13,.78) 55%, rgba(10,11,13,.6) 100%)}
+@media(max-width:780px){.claim-scene::before{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/hero-mobile.webp)}}
+[data-theme="light"] .claim-scene::before{display:none}
+[data-theme="light"] .claim-scene::after{display:none}
