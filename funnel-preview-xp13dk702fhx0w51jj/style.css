@@ -521,3 +521,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
   letter-spacing:.04em;color:var(--text);text-align:center}
 .stack-bonus-band b{color:var(--accent)}
 .sb-plus{font-weight:800;font-size:1.6em;color:var(--accent);line-height:1}
+
+/* Mobile: chips must not stack one per line. Tighter type and padding lets
+   the two offer chips share the first line with the third wrapping under. */
+@media(max-width:780px){
+  .chips{gap:6px}
+  .chip{padding:7px 11px;font-size:.72rem;gap:6px}
+  .chip svg{width:12px;height:12px}
+}
