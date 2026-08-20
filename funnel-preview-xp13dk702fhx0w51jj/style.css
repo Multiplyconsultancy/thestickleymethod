@@ -510,3 +510,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
 @media(max-width:780px){.claim-scene::before{background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/hero-mobile.webp)}}
 [data-theme="light"] .claim-scene::before{display:none}
 [data-theme="light"] .claim-scene::after{display:none}
+
+/* ── free-access emphasis ──────────────────────────────────────────────── */
+.hero-sub .hl{font-style:normal;color:var(--text);font-weight:600}
+.chip.hot{border-color:rgba(14,196,230,.45);background:rgba(14,196,230,.08);color:var(--text)}
+.stack-bonus-band{display:flex;align-items:center;justify-content:center;gap:12px;
+  padding:20px 26px;background:linear-gradient(90deg,rgba(14,196,230,.16),rgba(14,196,230,.05));
+  border-top:1px solid rgba(14,196,230,.4);border-bottom:1px solid var(--line);
+  font-family:var(--display);font-weight:700;font-size:clamp(1.05rem,2vw,1.45rem);
+  letter-spacing:.04em;color:var(--text);text-align:center}
+.stack-bonus-band b{color:var(--accent)}
+.sb-plus{font-weight:800;font-size:1.6em;color:var(--accent);line-height:1}
