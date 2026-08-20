@@ -479,13 +479,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
 .toolband-in{display:grid;grid-template-columns:auto 1fr;gap:6vw;align-items:center;text-align:left}
 .toolband-head .eyebrow{justify-content:flex-start}
 .tool-h{white-space:nowrap}
-.wheel{height:8.4em;overflow:hidden;position:relative;margin:0;
-  -webkit-mask-image:linear-gradient(180deg,transparent,#000 18%,#000 82%,transparent);
-          mask-image:linear-gradient(180deg,transparent,#000 18%,#000 82%,transparent)}
+/* No fade mask: the reference look is three fully-rendered lines where the
+   neighbours are simply dimmer text. The mask was swallowing them entirely,
+   because its fade zones landed exactly on the neighbour rows. */
+.wheel{height:8.4em;overflow:hidden;position:relative;margin:0}
 .wheel ul{list-style:none;margin:0;padding:0;transition:transform .5s cubic-bezier(.22,.61,.36,1)}
 .wheel li{height:2.8em;line-height:2.8em;font-family:var(--display);font-weight:800;
   font-size:clamp(1.4rem,3vw,2.4rem);color:var(--accent);white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis;opacity:.45;transition:opacity .5s ease}
+  overflow:hidden;text-overflow:ellipsis;opacity:.28;transition:opacity .5s ease}
 .wheel li.on{opacity:1}
 @media(prefers-reduced-motion:reduce){.wheel ul,.wheel li{transition:none}}
 @media(max-width:900px){
