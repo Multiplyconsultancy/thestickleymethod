@@ -482,10 +482,15 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
 /* No fade mask: the reference look is three fully-rendered lines where the
    neighbours are simply dimmer text. The mask was swallowing them entirely,
    because its fade zones landed exactly on the neighbour rows. */
-.wheel{height:8.4em;overflow:hidden;position:relative;margin:0}
+/* font-size lives on .wheel so the container height and the row heights are
+   measured in the SAME em. With it on the li, 8.4em of container resolved
+   against the 17px body font while each row resolved against ~38px, so the
+   window fit 1.3 rows and the neighbours were clipped out entirely. */
+.wheel{height:5.4em;overflow:hidden;position:relative;margin:0;
+  font-size:clamp(1.4rem,3vw,2.4rem)}
 .wheel ul{list-style:none;margin:0;padding:0;transition:transform .5s cubic-bezier(.22,.61,.36,1)}
-.wheel li{height:2.8em;line-height:2.8em;font-family:var(--display);font-weight:800;
-  font-size:clamp(1.4rem,3vw,2.4rem);color:var(--accent);white-space:nowrap;
+.wheel li{height:1.8em;line-height:1.8em;font-family:var(--display);font-weight:800;
+  color:var(--accent);white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis;opacity:.28;transition:opacity .5s ease}
 .wheel li.on{opacity:1}
 @media(prefers-reduced-motion:reduce){.wheel ul,.wheel li{transition:none}}
@@ -493,7 +498,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
   .toolband-in{grid-template-columns:1fr;gap:14px;text-align:center}
   .toolband-head .eyebrow{justify-content:center}
   .tool-h{white-space:normal}
-  .wheel li{font-size:1.3rem}
+  .wheel{font-size:1.3rem}
 }
 
 /* ── get started: same treatment as the hero ───────────────────────────── */
