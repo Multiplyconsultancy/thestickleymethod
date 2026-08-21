@@ -44,7 +44,7 @@
 const whop = require('../../lib/whopMembers')
 const fanbasis = require('../../lib/fanbasis')
 const { buildTruthTable, normEmail, emailsOf } = require('../../lib/people')
-const { applyAuthoritative, desiredTags, findContact, OWNED, HISTORICAL, ghl } = require('../../lib/syncPerson')
+const { applyAuthoritative, desiredTags, findContact, findAllContacts, OWNED, HISTORICAL, ghl, setPhoneIfBlank } = require('../../lib/syncPerson')
 const { desiredPlacement, planCards } = require('../../lib/placement')
 
 const MAX_WRITES = 1500
@@ -270,7 +270,21 @@ module.exports = async function handler(req, res) {
           }
           continue
         }
-        const contact = byEmail.has(email) ? byEmail.get(email) : undefined
+        /* ONE PERSON CAN BE TWO CONTACTS.
+           Gmail ignores dots, GHL does not, so the address the buyer
+           typed and the dot-stripped form are two records. The extra
+           lookup only fires when the processors saw a spelling that
+           differs from the normalised key, which is 282 people out of
+           56,000, so it costs nothing for everybody else. */
+        let contact = byEmail.has(email) ? byEmail.get(email) : undefined
+        const variants = (person.rawEmails || []).filter(a => a && a !== email)
+        let extras = []
+        if (variants.length) {
+          const all = await findAllContacts(email, variants)
+          extras = all.filter(c => c.id !== contact?.id)
+          if (!contact && all.length) { contact = all[0]; extras = all.slice(1) }
+        }
+
         const r = await applyAuthoritative(email, person, {
           create: mode === 'nightly', name: person.name, contact,
           /* The hourly pass reads five days of payments, so it knows the
@@ -282,6 +296,24 @@ module.exports = async function handler(req, res) {
         /* Cards, from the same state that just drove the tags. Placement
            is derived every run and never stored, so a board cannot drift
            away from the truth the way the old one-off population did. */
+        /* Backstop for the webhook. Same rule: blank fields only. */
+        if (contact?.id && person.phone) {
+          try { await setPhoneIfBlank(contact.id, person.phone, contact.phone) }
+          catch (e) { console.error(`[reconcile] phone ${email}: ${e.message}`) }
+        }
+
+        /* Apply the same conclusion to the other spelling. Either record
+           is a real inbox and either might be the one a setter opens. */
+        for (const other of extras) {
+          try {
+            await applyAuthoritative(email, person, {
+              create: false, name: person.name, contact: other,
+              partialSpend: mode !== 'nightly',
+            })
+            if (person.phone) await setPhoneIfBlank(other.id, person.phone, other.phone)
+          } catch (e) { console.error(`[reconcile] variant ${other.email}: ${e.message}`) }
+        }
+
         const cid = contact?.id || (await findContact(email))?.id
         if (cid) {
           const tagsNow = new Set([...(contact?.tags || []), ...(r.added || [])])

@@ -21,7 +21,7 @@
 ═══════════════════════════════════════════════════════════════════════ */
 
 const { createHmac, timingSafeEqual } = require('node:crypto')
-const { findContact, ghl, tagsAfterEvent, applyPlacement } = require('../../lib/syncPerson')
+const { findContact, ghl, tagsAfterEvent, applyPlacement, setPhoneIfBlank } = require('../../lib/syncPerson')
 const { locationTags } = require('../../lib/base44')
 
 /** Raw body, needed because a signature is computed over exact bytes. */
@@ -190,10 +190,28 @@ module.exports = async function handler(req, res) {
     if (missing.length) await ghl(`/contacts/${contactId}/tags`, 'POST', { tags: missing })
     if (present.length) await ghl(`/contacts/${contactId}/tags`, 'DELETE', { tags: present })
 
+    /* PHONE, NOW, NOT AT THE TOP OF THE HOUR.
+       Buyers get dialled within minutes of joining, so a number that
+       arrives with the next reconcile is a number that arrived too late.
+       Whop carries one on 98.5% of new memberships. Written by contact
+       id into a blank field only, so it can neither match on phone nor
+       overwrite something a form already captured. */
+    const eventPhone = data?.user?.phone || data?.phone_number || data?.customer_phone
+                    || data?.membership?.phone_number || ''
+    let phoneResult = { set: false, why: 'not_attempted' }
+    try {
+      phoneResult = await setPhoneIfBlank(contactId, eventPhone, fresh.phone)
+    } catch (e) {
+      /* Never let a phone write cost us the tags and the card. */
+      console.error(`[whop-hook] phone write failed for ${email}:`, e.message)
+    }
+
     const tags = tagsAfterEvent(had, { add, remove })
     const cards = await applyPlacement(contactId, tags, fresh.contactName || email)
-    console.log(`[whop-hook] ${action} ${email}: +[${add}] -[${remove}] cards +${cards.made}/~${cards.moved}/-${cards.gone}`)
-    return res.status(200).json({ ok: true, action, added: add, removed: remove, cards })
+    console.log(`[whop-hook] ${action} ${email}: +[${add}] -[${remove}] ` +
+                `cards +${cards.made}/~${cards.moved}/-${cards.gone} ` +
+                `phone=${phoneResult.set ? 'written' : phoneResult.why}`)
+    return res.status(200).json({ ok: true, action, added: add, removed: remove, cards, phone: phoneResult })
   } catch (e) {
     console.error(`[whop-hook] ${action} ${email} failed:`, e.message)
     /* 200 on purpose: the reconcile catches this person anyway, and a 500
