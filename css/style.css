@@ -2628,3 +2628,37 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 .audit-popup-meta { font-family: var(--font-head); font-size: .85rem; font-weight: 600; color: var(--muted); margin-bottom: 16px; }
 .audit-popup-card .btn-accept { max-width: 100%; }
 .audit-popup-card .us-decline { margin-top: 14px; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TRANSFORMATION SLIDERS (tf-)
+   The funnel's drag before/after component, ported to the light theme.
+   Namespaced tf- because .ba-* is already the Baby AI feature grid.
+═══════════════════════════════════════════════════════════════════════════ */
+.tf-rail { display: flex; gap: 18px; overflow-x: auto; padding: 34px 22px 12px;
+  scroll-snap-type: x mandatory; scrollbar-width: none; }
+.tf-rail::-webkit-scrollbar { display: none; }
+.tf { position: relative; flex: none; width: 320px; aspect-ratio: 3/4; border-radius: 14px;
+  overflow: hidden; border: 1px solid var(--line, #dfe4ea); scroll-snap-align: center;
+  user-select: none; background: #eef1f4; box-shadow: 0 10px 30px -18px rgba(10, 30, 50, .35); }
+.tf-half { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.tf-after { clip-path: inset(0 0 0 50%); }
+.tf-tag { position: absolute; top: 12px; font: 700 .64rem/1 'Barlow', sans-serif;
+  letter-spacing: .13em; text-transform: uppercase; background: rgba(255, 255, 255, .92);
+  border: 1px solid #dfe4ea; border-radius: 999px; padding: 7px 12px; color: #45505c; z-index: 2; }
+.tf-tag.l { left: 12px; } .tf-tag.r { right: 12px; }
+.tf-div { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: #0EC4E6;
+  box-shadow: 0 0 18px rgba(14, 196, 230, .8); pointer-events: none; }
+.tf-knob { position: absolute; top: 50%; left: 50%; translate: -50% -50%; width: 44px; height: 44px;
+  border-radius: 50%; border: 2px solid #0EC4E6; cursor: ew-resize; touch-action: none;
+  background: #fff url(/photos/transformations/eagle.png) center/72% no-repeat;
+  box-shadow: 0 0 22px rgba(14, 196, 230, .55); }
+.tf-knob::after { content: ""; position: absolute; inset: -26px; border-radius: 50%; }
+.tf-nav { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 20px; }
+.tf-arrow { width: 46px; height: 46px; flex: none; border-radius: 50%; cursor: pointer;
+  background: #fff; border: 1px solid #dfe4ea; display: grid; place-items: center;
+  transition: border-color .18s, transform .18s; }
+.tf-arrow:hover { border-color: #0EC4E6; transform: translateY(-2px); }
+.tf-arrow svg { width: 20px; height: 20px; stroke: #0894B4; fill: none; stroke-width: 2.4;
+  stroke-linecap: round; stroke-linejoin: round; }
+.tf-hint { margin: 0; color: #6b7683; font-size: .88rem; }
+@media (max-width: 780px) { .tf { width: 265px; } }
