@@ -1978,7 +1978,7 @@ button { cursor: pointer; background: none; border: none; font-family: inherit; 
 .us-next h2 {
   font-family: var(--font-head);
   font-weight: 800;
-  font-size: 1.25rem;
+  font-size: clamp(1.7rem, 3.4vw, 2.2rem);
   text-transform: uppercase;
   margin-bottom: 12px;
 }
