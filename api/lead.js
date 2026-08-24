@@ -80,8 +80,9 @@ module.exports = async function handler(req, res) {
   const [firstName, ...rest] = name.split(/\s+/);
   const payload = { name, email, phone };
 
-  // 1 · master record in our GHL
-  let contactId = null;
+  // 1 · master record in our GHL. Upsert reports whether the contact is
+  //     brand new, which drives the pipeline step below.
+  let contactId = null, isNew = false;
   try {
     const r = await fetch(`${GHL}/contacts/upsert`, {
       method: 'POST',
@@ -94,8 +95,34 @@ module.exports = async function handler(req, res) {
     });
     const j = await r.json().catch(() => ({}));
     contactId = j.contact && j.contact.id;
+    isNew = j.new === true;
   } catch (e) {
     console.error('[lead] GHL upsert failed:', e.message);
+  }
+
+  // 1b · someone we have never seen before: tag them and drop them into
+  //      the Opt-in stage of the Base44 - New Opt-ins pipeline. Existing
+  //      contacts are deliberately left out; they belong to other flows.
+  if (isNew && contactId) {
+    try {
+      await fetch(`${GHL}/contacts/${contactId}/tags`, {
+        method: 'POST',
+        headers: ghlHeaders(),
+        body: JSON.stringify({ tags: ['base44-new-lead'] }),
+      });
+      await fetch(`${GHL}/opportunities/`, {
+        method: 'POST',
+        headers: ghlHeaders(),
+        body: JSON.stringify({
+          locationId: process.env.GHL_LOCATION_ID,
+          pipelineId: 'GWRhHdTEnf88NBHhoHPY',            // Base44 - New Opt-ins
+          pipelineStageId: '736b5144-5bad-4501-a10f-1797fb39466a', // Opt-in
+          contactId,
+          name: `${name} — Base44 opt-in`,
+          status: 'open',
+        }),
+      });
+    } catch (e) { console.error('[lead] pipeline step failed:', e.message); }
   }
 
   // 2 · the partner's copy
@@ -115,6 +142,6 @@ module.exports = async function handler(req, res) {
   if (!contactId && !delivered) return res.status(502).json({ ok: false, error: 'try_again' });
 
   const out = { ok: true };
-  if (String(req.query && req.query.debug) === '1') { out.ghl = !!contactId; out.pipedream = delivered; }
+  if (String(req.query && req.query.debug) === '1') { out.ghl = !!contactId; out.new = isNew; out.pipedream = delivered; }
   return res.status(200).json(out);
 };
