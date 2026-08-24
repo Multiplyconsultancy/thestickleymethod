@@ -66,7 +66,10 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'method_not_allowed' });
 
   const body = req.body || {};
-  if (body.company) return res.status(200).json({ ok: true }); // honeypot: swallow bots silently
+  /* Honeypot: a filled hidden field USED to silently drop the submission.
+     Chrome autofill fills fields named company, which ate at least one real
+     lead. Now: process it anyway, tag it hp-flagged for review. */
+  const hpFlagged = !!(body.company || body._gotcha);
 
   const name = String(body.name || '').trim().slice(0, 120);
   const email = String(body.email || '').trim().toLowerCase().slice(0, 200);
@@ -90,7 +93,7 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         locationId: process.env.GHL_LOCATION_ID,
         email, phone, firstName, lastName: rest.join(' '),
-        tags: ['base44-optin', `base44-optin-${source}`],
+        tags: ['base44-optin', `base44-optin-${source}`, ...(hpFlagged ? ['hp-flagged'] : [])],
       }),
     });
     const j = await r.json().catch(() => ({}));
@@ -99,6 +102,21 @@ module.exports = async function handler(req, res) {
   } catch (e) {
     console.error('[lead] GHL upsert failed:', e.message);
   }
+
+  // 2 · the partner's copy
+  const delivered = await forwardToPipedream(payload);
+
+  // 3 · failed forward: tag it so the cron re-sends until it lands
+  if (!delivered && contactId) {
+    try {
+      await fetch(`${GHL}/contacts/${contactId}/tags`, {
+        method: 'POST',
+        headers: ghlHeaders(),
+        body: JSON.stringify({ tags: ['pipedream-failed'] }),
+      });
+    } catch (e) { console.error('[lead] failed-tag failed:', e.message); }
+  }
+
 
   /* Pipelines, by who this person is:
        brand new to GHL          -> Base44 - New Opt-ins        · Opt-in
@@ -166,20 +184,6 @@ module.exports = async function handler(req, res) {
       const churned = tags.some((t) => t.includes('stickley method - cancelled') || t.includes('sitckley method - cancelled'));
       await routeToPipeline(active ? 'active' : churned ? 'churned' : 'other');
     }
-  }
-
-  // 2 · the partner's copy
-  const delivered = await forwardToPipedream(payload);
-
-  // 3 · failed forward: tag it so the cron re-sends until it lands
-  if (!delivered && contactId) {
-    try {
-      await fetch(`${GHL}/contacts/${contactId}/tags`, {
-        method: 'POST',
-        headers: ghlHeaders(),
-        body: JSON.stringify({ tags: ['pipedream-failed'] }),
-      });
-    } catch (e) { console.error('[lead] failed-tag failed:', e.message); }
   }
 
   if (!contactId && !delivered) return res.status(502).json({ ok: false, error: 'try_again' });
