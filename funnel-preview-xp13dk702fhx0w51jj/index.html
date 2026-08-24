@@ -471,19 +471,16 @@ try{posthog.init('phc_pcBknaZJZYx8CrCbguMRD8Aod3uTv4U9aSnKocGyS2oV',
       <input type="text" name="name" placeholder="Your name" autocomplete="name" required>
       <input type="email" name="email" placeholder="Email" autocomplete="email" required>
       <div class="lf-phone">
-        <select name="cc" aria-label="Country code">
-          <option value="+44" selected>&#127468;&#127463; +44</option>
-          <option value="+1">&#127482;&#127480; +1</option>
-          <option value="+61">&#127462;&#127482; +61</option>
-          <option value="+353">&#127470;&#127466; +353</option>
-          <option value="+49">&#127465;&#127466; +49</option>
-          <option value="+33">&#127467;&#127479; +33</option>
-          <option value="+31">&#127475;&#127473; +31</option>
-          <option value="+46">&#127480;&#127466; +46</option>
-          <option value="+47">&#127475;&#127476; +47</option>
-          <option value="+971">&#127462;&#127466; +971</option>
-          <option value="">Other</option>
-        </select>
+        <div class="lf-cc" id="lf-cc">
+          <button type="button" class="lf-cc-btn" aria-haspopup="listbox">
+            <span class="lf-cc-flag">🇬🇧</span><span class="lf-cc-dial">+44</span><span class="lf-cc-car">▾</span>
+          </button>
+          <input type="hidden" name="cc" value="+44">
+          <div class="lf-cc-panel" hidden>
+            <input type="text" class="lf-cc-search" placeholder="Search country" autocomplete="off">
+            <div class="lf-cc-list" role="listbox"></div>
+          </div>
+        </div>
         <input type="tel" name="phone" placeholder="Phone number" autocomplete="tel" required>
       </div>
       <label class="lf-consent">
@@ -498,6 +495,7 @@ try{posthog.init('phc_pcBknaZJZYx8CrCbguMRD8Aod3uTv4U9aSnKocGyS2oV',
   </div>
 </div>
 
+<script src="/funnel-preview-xp13dk702fhx0w51jj/countries.js"></script>
 <script src="/funnel-preview-xp13dk702fhx0w51jj/funnel.js"></script>
 </body>
 </html>

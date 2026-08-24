@@ -154,3 +154,46 @@ document.querySelectorAll('.ba').forEach(function (ba) {
       });
   });
 })();
+
+
+/* Country picker: full list, search, and geo preselect from our own edge
+   header via /api/geo. Falls back to +44 when the country is unknown. */
+(function () {
+  var cc = document.getElementById('lf-cc');
+  if (!cc || typeof LF_COUNTRIES === 'undefined') return;
+  var btn = cc.querySelector('.lf-cc-btn'), flag = cc.querySelector('.lf-cc-flag'),
+      dial = cc.querySelector('.lf-cc-dial'), hidden = cc.querySelector('input[name="cc"]'),
+      panel = cc.querySelector('.lf-cc-panel'), search = cc.querySelector('.lf-cc-search'),
+      list = cc.querySelector('.lf-cc-list');
+
+  function choose(iso, d) {
+    flag.textContent = lfFlag(iso);
+    dial.textContent = d;
+    hidden.value = d;
+    panel.hidden = true;
+  }
+  function render(q) {
+    q = (q || '').toLowerCase();
+    list.innerHTML = '';
+    LF_COUNTRIES.forEach(function (c) {
+      if (q && c[0].toLowerCase().indexOf(q) === -1 && c[2].indexOf(q) === -1) return;
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'lf-cc-item';
+      b.innerHTML = '<span>' + lfFlag(c[1]) + '</span><span>' + c[0] + '</span><span class="d">' + c[2] + '</span>';
+      b.addEventListener('click', function () { choose(c[1], c[2]); });
+      list.appendChild(b);
+    });
+  }
+  btn.addEventListener('click', function () {
+    panel.hidden = !panel.hidden;
+    if (!panel.hidden) { search.value = ''; render(''); setTimeout(function () { search.focus(); }, 40); }
+  });
+  search.addEventListener('input', function () { render(search.value); });
+  document.addEventListener('click', function (e) { if (!cc.contains(e.target)) panel.hidden = true; });
+
+  fetch('/api/geo').then(function (r) { return r.json(); }).then(function (g) {
+    if (!g.country) return;
+    var hit = LF_COUNTRIES.filter(function (c) { return c[1] === g.country; })[0];
+    if (hit) choose(hit[1], hit[2]);
+  }).catch(function () {});
+})();
