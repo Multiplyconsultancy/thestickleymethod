@@ -87,24 +87,46 @@ document.querySelectorAll('.ba').forEach(function (ba) {
   if (n) n.addEventListener('click', function () { step(1); });
 })();
 
-/* Opt-in form. Same-origin POST to /api/lead, which stores the lead in our
-   GHL and forwards it to the partner. Redirect only after the server says
-   ok, so a failed submit is visible rather than a lost lead. */
+/* Opt-in modal + form. Every claim CTA opens the modal; the form POSTs to
+   /api/lead which stores the lead in our GHL and forwards to the partner.
+   Redirect only after the server says ok. */
 (function () {
+  var modal = document.getElementById('lmodal');
   var f = document.getElementById('lead-form');
-  if (!f) return;
+  if (!f || !modal) return;
+
+  function open(e) {
+    if (e) e.preventDefault();
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    var first = f.querySelector('input[name="name"]');
+    setTimeout(function () { if (first) first.focus(); }, 60);
+  }
+  function close() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.querySelectorAll('a[href="#claim"], .lead-open').forEach(function (el) {
+    el.addEventListener('click', open);
+  });
+  modal.querySelector('.lmodal-x').addEventListener('click', close);
+  modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
   var btn = f.querySelector('button'), err = f.querySelector('.lf-err');
   var label = btn.innerHTML;
   f.addEventListener('submit', function (e) {
     e.preventDefault();
     err.hidden = true;
+    var cc = f.cc ? f.cc.value : '';
+    var rawPhone = f.phone.value.trim().replace(/^0+/, '');
     var data = {
       name:  f.name.value.trim(),
       email: f.email.value.trim(),
-      phone: f.phone.value.trim(),
+      phone: (cc && rawPhone.indexOf('+') !== 0 ? cc : '') + rawPhone,
       company: f.company.value,
       source: f.dataset.source === 'members' ? 'members' : 'main'
     };
+    if (f.consent && !f.consent.checked) { err.hidden = false; return; }
     if (data.name.length < 2 || data.email.indexOf('@') < 1 || data.phone.replace(/\D/g, '').length < 7) {
       err.hidden = false; return;
     }

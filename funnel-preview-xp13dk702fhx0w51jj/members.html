@@ -242,14 +242,7 @@
         <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Weekly group calls, ongoing</li>
         <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Your TSM access, covered</li>
       </ul>
-      <form id="lead-form" data-source="members" class="lead-form" novalidate>
-        <input type="text" name="name" placeholder="Your name" autocomplete="name" required>
-        <input type="email" name="email" placeholder="Your best email" autocomplete="email" required>
-        <input type="tel" name="phone" placeholder="Phone number" autocomplete="tel" required>
-        <input type="text" name="company" class="lf-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <button type="submit" class="btn btn-lg">Yes Please <span class="arw">&rarr;</span></button>
-        <p class="lf-err" hidden>That didn&rsquo;t go through. Check your details and tap again.</p>
-      </form>
+      <a href="#" class="btn btn-lg lead-open" style="width:100%">Yes Please <span class="arw">&rarr;</span></a>
       <p class="cta-note">This is only offered to members, and it won&rsquo;t be offered forever.</p>
     </div>
   </div>
@@ -268,6 +261,47 @@
 
 <div class="sticky" id="sticky">
   <a href="#claim" class="btn">Yes, I Want This <span class="arw">&rarr;</span></a>
+</div>
+
+
+<!-- ═══ OPT-IN MODAL ═════════════════════════════════════════════════════
+     Every Start With Me Free CTA opens this. The form posts to /api/lead,
+     same pipeline as before; only the presentation changed. -->
+<div class="lmodal" id="lmodal" aria-hidden="true" role="dialog" aria-label="Claim your free course">
+  <div class="lmodal-panel">
+    <button class="lmodal-x" aria-label="Close">&times;</button>
+    <p class="eyebrow mid lmodal-eyebrow">Free access &middot; $4,600+ of value</p>
+    <h3 class="lmodal-h">Claim Your Free Course</h3>
+    <p class="lmodal-sub">Drop your details and my team reaches out to get you set up.</p>
+    <form id="lead-form" class="lead-form" novalidate data-source="members">
+      <input type="text" name="name" placeholder="Your name" autocomplete="name" required>
+      <input type="email" name="email" placeholder="Email" autocomplete="email" required>
+      <div class="lf-phone">
+        <select name="cc" aria-label="Country code">
+          <option value="+44" selected>&#127468;&#127463; +44</option>
+          <option value="+1">&#127482;&#127480; +1</option>
+          <option value="+61">&#127462;&#127482; +61</option>
+          <option value="+353">&#127470;&#127466; +353</option>
+          <option value="+49">&#127465;&#127466; +49</option>
+          <option value="+33">&#127467;&#127479; +33</option>
+          <option value="+31">&#127475;&#127473; +31</option>
+          <option value="+46">&#127480;&#127466; +46</option>
+          <option value="+47">&#127475;&#127476; +47</option>
+          <option value="+971">&#127462;&#127466; +971</option>
+          <option value="">Other</option>
+        </select>
+        <input type="tel" name="phone" placeholder="Phone number" autocomplete="tel" required>
+      </div>
+      <label class="lf-consent">
+        <input type="checkbox" name="consent" required>
+        <span>I agree The Stickley Method may contact me by email, phone and text (including
+        automated) about my access. Reply STOP to opt out.</span>
+      </label>
+      <input type="text" name="company" class="lf-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button type="submit" class="btn btn-lg">Yes, I Want This <span class="arw">&rarr;</span></button>
+      <p class="lf-err" hidden>That didn&rsquo;t go through. Check your details and tap again.</p>
+    </form>
+  </div>
 </div>
 
 <script src="/funnel-preview-xp13dk702fhx0w51jj/funnel.js"></script>
