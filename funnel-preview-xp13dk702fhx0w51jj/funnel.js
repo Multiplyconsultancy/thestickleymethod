@@ -125,7 +125,6 @@ document.querySelectorAll('.ba').forEach(function (ba) {
       company: f.company.value,
       source: f.dataset.source === 'members' ? 'members' : 'main'
     };
-    if (f.consent && !f.consent.checked) { err.hidden = false; return; }
     if (data.name.length < 2 || data.email.indexOf('@') < 1 || data.phone.replace(/\D/g, '').length < 7) {
       err.hidden = false; return;
     }
