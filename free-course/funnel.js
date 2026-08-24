@@ -122,7 +122,7 @@ document.querySelectorAll('.ba').forEach(function (ba) {
       name:  f.name.value.trim(),
       email: f.email.value.trim(),
       phone: (cc && rawPhone.indexOf('+') !== 0 ? cc : '') + rawPhone,
-      company: f.company.value,
+      _gotcha: f._gotcha ? f._gotcha.value : '',
       source: f.dataset.source === 'members' ? 'members' : 'main'
     };
     if (data.name.length < 2 || data.email.indexOf('@') < 1 || data.phone.replace(/\D/g, '').length < 7) {
