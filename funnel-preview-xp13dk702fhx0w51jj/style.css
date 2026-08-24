@@ -533,3 +533,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
 /* ── knob carries the eagle instead of the arrows ──────────────────────── */
 .ba-knob svg{display:none}
 .ba-knob{background:var(--bg) url(/funnel-preview-xp13dk702fhx0w51jj/img/eagle.png) center/72% no-repeat}
+
+/* ── opt-in form ───────────────────────────────────────────────────────── */
+.lead-form{display:grid;gap:11px;margin-top:6px}
+.lead-form input{width:100%;background:#0E1013;border:1px solid var(--line);border-radius:12px;
+  padding:16px 18px;color:var(--text);font:500 1rem var(--body);outline:none;
+  transition:border-color .16s}
+.lead-form input::placeholder{color:var(--dim)}
+.lead-form input:focus{border-color:rgba(14,196,230,.6)}
+.lead-form .btn{width:100%;margin-top:4px}
+.lf-hp{position:absolute!important;left:-9999px!important;height:1px;width:1px;opacity:0}
+.lf-err{color:#E8B4B4;font-size:.9rem;margin:4px 0 0;text-align:center}

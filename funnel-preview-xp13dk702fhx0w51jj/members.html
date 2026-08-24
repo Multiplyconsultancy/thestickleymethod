@@ -10,6 +10,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/funnel-preview-xp13dk702fhx0w51jj/style.css">
+<script src="/js/posthog.js"></script>
+<script>try{posthog.init('phc_pcBknaZJZYx8CrCbguMRD8Aod3uTv4U9aSnKocGyS2oV',{api_host:'https://r.scaled.llc',ui_host:'https://us.posthog.com',defaults:'2026-05-30',person_profiles:'always'},'partner');}catch(e){}</script>
 </head>
 <body>
 
@@ -240,7 +242,14 @@
         <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Weekly group calls, ongoing</li>
         <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Your TSM access, covered</li>
       </ul>
-      <a href="#" class="btn btn-lg" style="width:100%">Yes Please <span class="arw">&rarr;</span></a>
+      <form id="lead-form" data-source="members" class="lead-form" novalidate>
+        <input type="text" name="name" placeholder="Your name" autocomplete="name" required>
+        <input type="email" name="email" placeholder="Your best email" autocomplete="email" required>
+        <input type="tel" name="phone" placeholder="Phone number" autocomplete="tel" required>
+        <input type="text" name="company" class="lf-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button type="submit" class="btn btn-lg">Yes Please <span class="arw">&rarr;</span></button>
+        <p class="lf-err" hidden>That didn&rsquo;t go through. Check your details and tap again.</p>
+      </form>
       <p class="cta-note">This is only offered to members, and it won&rsquo;t be offered forever.</p>
     </div>
   </div>

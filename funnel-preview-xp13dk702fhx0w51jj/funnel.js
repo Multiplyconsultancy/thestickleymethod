@@ -86,3 +86,50 @@ document.querySelectorAll('.ba').forEach(function (ba) {
   if (p) p.addEventListener('click', function () { step(-1); });
   if (n) n.addEventListener('click', function () { step(1); });
 })();
+
+/* Opt-in form. Same-origin POST to /api/lead, which stores the lead in our
+   GHL and forwards it to the partner. Redirect only after the server says
+   ok, so a failed submit is visible rather than a lost lead. */
+(function () {
+  var f = document.getElementById('lead-form');
+  if (!f) return;
+  var btn = f.querySelector('button'), err = f.querySelector('.lf-err');
+  var label = btn.innerHTML;
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    err.hidden = true;
+    var data = {
+      name:  f.name.value.trim(),
+      email: f.email.value.trim(),
+      phone: f.phone.value.trim(),
+      company: f.company.value,
+      source: f.dataset.source === 'members' ? 'members' : 'main'
+    };
+    if (data.name.length < 2 || data.email.indexOf('@') < 1 || data.phone.replace(/\D/g, '').length < 7) {
+      err.hidden = false; return;
+    }
+    btn.disabled = true; btn.innerHTML = 'SENDING&hellip;';
+    fetch('/api/lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+      .then(function (r) { return r.json().catch(function () { return {}; }); })
+      .then(function (j) {
+        if (!j.ok) throw new Error('failed');
+        try { posthog.capture('lead_optin', { source: data.source }); } catch (e) {}
+        try { window.posthog && posthog.partner && posthog.partner.capture('lead_optin', { source: data.source }); } catch (e) {}
+        /* published pages live at /slug and /slug/members with no trailing
+           slash, so the confirmation path is computed, not hardcoded */
+        var path = location.pathname;
+        if (/\.html$/.test(path)) location.href = 'confirmed.html';
+        else {
+          var base = path.replace(/\/(members)?$/, '');
+          location.href = base + '/confirmed';
+        }
+      })
+      .catch(function () {
+        btn.disabled = false; btn.innerHTML = label; err.hidden = false;
+      });
+  });
+})();
