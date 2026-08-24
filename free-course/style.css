@@ -594,3 +594,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
 .avs i:nth-child(3){background-image:url(/free-course/img/avatars/av3.webp)}
 .avs i:nth-child(4){background-image:url(/free-course/img/avatars/av4.webp)}
 .avs i:nth-child(5){background-image:url(/free-course/img/avatars/av5.webp)}
+
+/* ── live Vidalytics players ───────────────────────────────────────────── */
+/* Our .vsl shell already gives the 16:9 frame, the rounded border and the
+   fold-height cap; the embed just fills it, so Vidalytics' own padding-top
+   sizing is overridden with an absolute fill. */
+.vsl-live{background:#000}
+.vsl-live iframe,.vsl-live video{border-radius:inherit}
