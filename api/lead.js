@@ -100,29 +100,72 @@ module.exports = async function handler(req, res) {
     console.error('[lead] GHL upsert failed:', e.message);
   }
 
-  // 1b · someone we have never seen before: tag them and drop them into
-  //      the Opt-in stage of the Base44 - New Opt-ins pipeline. Existing
-  //      contacts are deliberately left out; they belong to other flows.
-  if (isNew && contactId) {
+  /* Pipelines, by who this person is:
+       brand new to GHL          -> Base44 - New Opt-ins        · Opt-in
+       existing, active member   -> Base44 · Active TSM members · Opted in
+       existing, churned member  -> Base44 · Churned TSM members· Opted in
+       existing, everything else -> Base44 · Everyone else      · Opted in
+     If the contact already has a card in the target pipeline it is MOVED
+     to the opted-in stage rather than duplicated. */
+  const PIPES = {
+    new:     { pipe: 'GWRhHdTEnf88NBHhoHPY', stage: '736b5144-5bad-4501-a10f-1797fb39466a' },
+    active:  { pipe: 'kYLXJWj7MEnJQdkpEt5d', stage: '1f1a8573-65cf-47a9-b6f6-5e866573e4d3' },
+    churned: { pipe: 'wemXCOsoR33ugCTseEMo', stage: '15df4c11-702a-49d7-946c-f579a3443831' },
+    other:   { pipe: 'iTbJ6rELAnLBgHcNRGbh', stage: '6345aed6-80b6-4676-a55b-cb5c489b2795' },
+  };
+
+  async function routeToPipeline(target, contactTags) {
+    const t = PIPES[target];
     try {
-      await fetch(`${GHL}/contacts/${contactId}/tags`, {
-        method: 'POST',
-        headers: ghlHeaders(),
-        body: JSON.stringify({ tags: ['base44-new-lead'] }),
-      });
-      await fetch(`${GHL}/opportunities/`, {
-        method: 'POST',
-        headers: ghlHeaders(),
-        body: JSON.stringify({
-          locationId: process.env.GHL_LOCATION_ID,
-          pipelineId: 'GWRhHdTEnf88NBHhoHPY',            // Base44 - New Opt-ins
-          pipelineStageId: '736b5144-5bad-4501-a10f-1797fb39466a', // Opt-in
-          contactId,
-          name: `${name} — Base44 opt-in`,
-          status: 'open',
-        }),
-      });
-    } catch (e) { console.error('[lead] pipeline step failed:', e.message); }
+      const q = await fetch(
+        `${GHL}/opportunities/search?location_id=${process.env.GHL_LOCATION_ID}&contact_id=${contactId}`,
+        { headers: ghlHeaders() }
+      );
+      const found = ((await q.json().catch(() => ({}))).opportunities || [])
+        .find((o) => o.pipelineId === t.pipe);
+      if (found) {
+        await fetch(`${GHL}/opportunities/${found.id}`, {
+          method: 'PUT',
+          headers: ghlHeaders(),
+          body: JSON.stringify({ pipelineId: t.pipe, pipelineStageId: t.stage, status: 'open' }),
+        });
+      } else {
+        await fetch(`${GHL}/opportunities/`, {
+          method: 'POST',
+          headers: ghlHeaders(),
+          body: JSON.stringify({
+            locationId: process.env.GHL_LOCATION_ID,
+            pipelineId: t.pipe, pipelineStageId: t.stage,
+            contactId, name: `${name} — Base44 opt-in`, status: 'open',
+          }),
+        });
+      }
+    } catch (e) { console.error('[lead] pipeline route failed:', target, e.message); }
+  }
+
+  // 1b · brand new: tag and file under New Opt-ins.
+  if (contactId) {
+    if (isNew) {
+      try {
+        await fetch(`${GHL}/contacts/${contactId}/tags`, {
+          method: 'POST',
+          headers: ghlHeaders(),
+          body: JSON.stringify({ tags: ['base44-new-lead'] }),
+        });
+      } catch (e) { console.error('[lead] new-lead tag failed:', e.message); }
+      await routeToPipeline('new');
+    } else {
+      /* segment by the contact's existing tags. Tag spellings are as they
+         exist in GHL, including the historical typo variant. */
+      let tags = [];
+      try {
+        const c = await fetch(`${GHL}/contacts/${contactId}`, { headers: ghlHeaders() });
+        tags = (((await c.json().catch(() => ({}))).contact || {}).tags || []).map((t) => String(t).toLowerCase());
+      } catch (e) { console.error('[lead] tag fetch failed:', e.message); }
+      const active = tags.includes('customer-active');
+      const churned = tags.some((t) => t.includes('stickley method - cancelled') || t.includes('sitckley method - cancelled'));
+      await routeToPipeline(active ? 'active' : churned ? 'churned' : 'other');
+    }
   }
 
   // 2 · the partner's copy
