@@ -586,3 +586,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
 /* the claim section is far shorter than the tall mobile art, and centring it
    sliced the statue's head. Anchor to the bottom half, steak and bottle. */
 @media(max-width:780px){.claim-scene::before{background-position:center bottom}}
+
+/* ── hero avatars: real member after-photos ────────────────────────────── */
+.avs i{background-size:cover;background-position:center}
+.avs i:nth-child(1){background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/avatars/av1.webp)}
+.avs i:nth-child(2){background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/avatars/av2.webp)}
+.avs i:nth-child(3){background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/avatars/av3.webp)}
+.avs i:nth-child(4){background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/avatars/av4.webp)}
+.avs i:nth-child(5){background-image:url(/funnel-preview-xp13dk702fhx0w51jj/img/avatars/av5.webp)}
