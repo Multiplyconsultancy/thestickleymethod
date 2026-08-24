@@ -139,6 +139,7 @@ document.querySelectorAll('.ba').forEach(function (ba) {
         if (!j.ok) throw new Error('failed');
         try { posthog.capture('lead_optin', { source: data.source }); } catch (e) {}
         try { window.posthog && posthog.partner && posthog.partner.capture('lead_optin', { source: data.source }); } catch (e) {}
+        try { window.__partnerFormEvents && window.__partnerFormEvents(data); } catch (e) {}
         /* the live funnel sits at /free-course with its confirmation at the
            TOP-LEVEL /free-course-confirmed; older preview slugs keep the
            computed /slug/confirmed shape, and local files use the .html */
@@ -197,4 +198,56 @@ document.querySelectorAll('.ba').forEach(function (ba) {
     var hit = LF_COUNTRIES.filter(function (c) { return c[1] === g.country; })[0];
     if (hit) choose(hit[1], hit[2]);
   }).catch(function () {});
+})();
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   PARTNER FUNNEL EVENTS (Davey's spec, 2026-08-24)
+   Numbered steps for his conversion report, fired on HIS PostHog instance
+   ('partner'), which runs alongside ours. His snippets assume a single
+   instance; ours must not receive these or his dashboard stays empty.
+══════════════════════════════════════════════════════════════════════ */
+(function () {
+  function partner() {
+    try { return window.posthog && posthog.partner ? posthog.partner : null; } catch (e) { return null; }
+  }
+
+  /* ?debug -> verbose event logging in the console, both projects */
+  try {
+    if (new URLSearchParams(location.search).has('debug')) {
+      if (partner()) partner().debug();
+      if (window.posthog && posthog.debug) posthog.debug();
+    }
+  } catch (e) {}
+
+  /* step 1 and step 3 pageviews, by which page this actually is */
+  try {
+    var path = location.pathname, page = null;
+    if (/free-course-confirmed/.test(path) || /confirmed\.html$/.test(path)) page = '03_page_view';
+    else if (/free-course/.test(path) || /\.html$/.test(path)) page = '01_page_view';
+    if (page && partner()) partner().capture(page, { funnel: 'looksmaxxing', path: path });
+  } catch (e) {}
+
+  /* step 2 + identify are fired from the form success handler below */
+  window.__partnerFormEvents = function (data) {
+    var p = partner();
+    if (!p) return;
+    try {
+      var parts = data.name.split(/\s+/);
+      p.identify(p.get_distinct_id(), {
+        email: data.email,
+        first_name: parts[0] || '',
+        last_name: parts.slice(1).join(' '),
+        phone: data.phone
+      });
+    } catch (e) {}
+    try {
+      p.capture('02_form_submitted', {
+        funnel: 'looksmaxxing',
+        path: location.pathname,
+        cta_source: data.source,
+        destination: 'confirmation'
+      });
+    } catch (e) {}
+  };
 })();
