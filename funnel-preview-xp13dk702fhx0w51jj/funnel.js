@@ -1,8 +1,7 @@
 /* nav background after 40px, sticky mobile CTA after the hero leaves */
-var nav = document.getElementById('nav'), sticky = document.getElementById('sticky');
+var nav = document.getElementById('nav');
 addEventListener('scroll', function () {
   nav.classList.toggle('stuck', scrollY > 40);
-  sticky.classList.toggle('show', scrollY > innerHeight * 0.9);
 }, { passive: true });
 
 /* scroll reveal, staggered across grids */
