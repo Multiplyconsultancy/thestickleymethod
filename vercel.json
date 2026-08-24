@@ -54,6 +54,10 @@
     {
       "schedule": "42 3 * * *",
       "path": "/api/cron/reconcile?mode=nightly&part=7&of=8"
+    },
+    {
+      "path": "/api/cron/lead-retry",
+      "schedule": "*/15 * * * *"
     }
   ]
 }
