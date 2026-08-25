@@ -60,8 +60,8 @@
       "schedule": "*/15 * * * *"
     },
     {
-      "path": "/api/cron/close-sync",
-      "schedule": "*/15 * * * *"
+      "path": "/api/cron/close-sync?commit=1",
+      "schedule": "*/5 * * * *"
     }
   ]
 }
