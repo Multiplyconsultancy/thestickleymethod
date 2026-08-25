@@ -76,6 +76,16 @@ module.exports = async function handler(req, res) {
   const phone = normalisePhone(body.phone);
   const source = body.source === 'members' ? 'members' : 'main';
 
+  /* Country net behind the edge gate: tag ineligible submissions so a
+     setter never dials a lead the partnership will not pay on. Keep the
+     list in sync with middleware.js by hand. */
+  const ELIGIBLE = new Set(['US','GB','AU','CA','NZ','AT','BE','DK','FR','DE','IE','IT','LU','NL','NO','PL','ES','SE','CH']);
+  const leadCountry = String(
+    (String(req.query && req.query.debug) === '1' && body.geo_test) ||
+    req.headers['x-vercel-ip-country'] || ''
+  ).toUpperCase();
+  const ineligible = !!leadCountry && !ELIGIBLE.has(leadCountry);
+
   if (name.length < 2) return res.status(400).json({ ok: false, error: 'name' });
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return res.status(400).json({ ok: false, error: 'email' });
   if (!/^\+?\d{7,15}$/.test(phone)) return res.status(400).json({ ok: false, error: 'phone' });
@@ -93,7 +103,7 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         locationId: process.env.GHL_LOCATION_ID,
         email, phone, firstName, lastName: rest.join(' '),
-        tags: ['base44-optin', `base44-optin-${source}`, ...(hpFlagged ? ['hp-flagged'] : [])],
+        tags: ['base44-optin', `base44-optin-${source}`, ...(hpFlagged ? ['hp-flagged'] : []), ...(ineligible ? ['base44-ineligible-country'] : [])],
       }),
     });
     const j = await r.json().catch(() => ({}));
@@ -189,6 +199,6 @@ module.exports = async function handler(req, res) {
   if (!contactId && !delivered) return res.status(502).json({ ok: false, error: 'try_again' });
 
   const out = { ok: true };
-  if (String(req.query && req.query.debug) === '1') { out.ghl = !!contactId; out.new = isNew; out.pipedream = delivered; }
+  if (String(req.query && req.query.debug) === '1') { out.ghl = !!contactId; out.new = isNew; out.pipedream = delivered; out.country = leadCountry; out.ineligible = ineligible; }
   return res.status(200).json(out);
 };
