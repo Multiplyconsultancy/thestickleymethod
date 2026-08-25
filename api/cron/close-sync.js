@@ -281,8 +281,14 @@ module.exports = async (req, res) => {
     });
   }
 
-  const secret = req.headers.authorization === `Bearer ${process.env.CRON_SECRET}`
-    || req.query.secret === process.env.CRON_SECRET;
+  /* Vercel's scheduler authenticates with CRON_SECRET, whose value the
+     dashboard will not reveal after creation. CLOSE_SYNC_SECRET is a second
+     accepted credential so a human can trigger a dry run on demand without
+     rotating the shared cron secret. */
+  const bearer = String(req.headers.authorization || '').replace(/^Bearer /, '');
+  const supplied = bearer || String(req.query.secret || '');
+  const accepted = [process.env.CRON_SECRET, process.env.CLOSE_SYNC_SECRET].filter(Boolean);
+  const secret = !!supplied && accepted.includes(supplied);
   if (!secret) return res.status(401).json({ error: 'unauthorized' });
 
   membershipIndex = null; // fresh per invocation
