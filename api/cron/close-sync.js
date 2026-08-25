@@ -245,6 +245,81 @@ async function upsertContact(person, tags, fields) {
   return (data && data.contact) || null;
 }
 
+
+/* ── the email ─────────────────────────────────────────────────────────── */
+
+const WRAP = 'font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;'
+  + 'font-size:16px;line-height:1.6;color:#111;max-width:560px';
+
+/* Table-wrapped so the button survives Outlook, which ignores padding on <a>. */
+function button(href, label) {
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:14px 0">`
+    + `<tr><td align="center" bgcolor="#0B1A2D" style="border-radius:8px">`
+    + `<a href="${href}" style="display:inline-block;padding:14px 30px;`
+    + `font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;`
+    + `letter-spacing:.04em;color:#ffffff;text-decoration:none;border-radius:8px">${label}</a>`
+    + `</td></tr></table>`;
+}
+const fine = (t) => `<p style="color:#555;font-size:14px">${t}</p>`;
+const head = (t) => `<p style="font-size:17px;font-weight:700;margin-bottom:2px">${t}</p>`;
+const body = (t) => `<p style="margin-top:0">${t}</p>`;
+
+function buildEmail(first, line) {
+  const courseLink = `https://whop.com/checkout/${PLANS.course}`;
+  let html = `<div style="${WRAP}"><p>${first},</p><p>You're all set.</p>`
+    + head('Your Free Looksmaxxing AI')
+    + body("Once you're inside, you'll see the full course and a button to connect your discord.")
+    + button(courseLink, 'JOIN NOW &rarr;');
+
+  const two = !!(line.tsmTrialLink && line.babyLink);
+
+  if (line.tsmTrialLink) {
+    html += head('One month of The Stickley Method, free')
+      + body('110+ modules, group calls with me, the discord, and challenges with cash prizes.')
+      + button(line.tsmTrialLink, two ? 'START TSM FREE &rarr;' : 'CLAIM YOUR FREE MONTH &rarr;');
+  }
+  if (line.tsmPromoLink) {
+    html += head('Half off your first month of The Stickley Method')
+      + body('110+ modules, group calls with me, the discord, and challenges with cash prizes.')
+      + button(line.tsmPromoLink, 'CLAIM HALF OFF &rarr;');
+  }
+  if (line.babyLink) {
+    html += head('One month of Baby AI, free')
+      + body(two
+        ? 'The chatbot trained on every one of those modules. Ask it anything, any hour.'
+        : 'Baby AI is the chatbot trained on all 110+ TSM modules. Ask it anything, any hour, and it answers for your exact situation.')
+      + button(line.babyLink, two ? 'CLAIM BABY AI FREE &rarr;' : 'CLAIM YOUR FREE MONTH &rarr;');
+  }
+
+  if (two) html += fine('Click the buttons above to sign up. Free for 30 days, then TSM is $39/month and Baby AI is $29/month');
+  else if (line.tsmPromoLink) html += fine('Click the button above to sign up. $19.50 for your first month, then $39/month');
+  else if (line.babyLink || line.tsmTrialLink) html += fine('Click the button above to sign up. Free for 30 days, then $29/month');
+
+  if (line.freeDaysAdded) {
+    html += `<p>Also, we have already added one month free to your Stickley Method membership</p>`;
+  }
+  html += `<p>Glad to have you inside,</p><p>Baby</p></div>`;
+  return html;
+}
+
+async function sendEmail(contactId, first, line) {
+  const res = await fetch(`${GHL}/conversations/messages`, {
+    method: 'POST',
+    headers: ghlHeaders(),
+    body: JSON.stringify({
+      type: 'Email',
+      contactId,
+      subject: "You're in - get set up now",
+      html: buildEmail(first, line),
+    }),
+  });
+  if (!res.ok) {
+    const e = await jsonOrNull(res);
+    return { error: (e && (e.message || e.error)) || `send failed (${res.status})` };
+  }
+  return { ok: true };
+}
+
 /* ── the grid ──────────────────────────────────────────────────────────── */
 
 function entitlementsFor(tier, isMember) {
@@ -342,13 +417,13 @@ module.exports = async (req, res) => {
       if (commit) {
         const r = await addFreeDays(membership.id, 30);
         r.error ? line.errors.push(`add_free_days: ${r.error}`)
-                : line.grants.push('30 free days added to live TSM sub');
+                : (line.grants.push('30 free days added to live TSM sub'), line.freeDaysAdded = true);
       } else line.grants.push('would add 30 free days to live TSM sub');
     } else if (ent.tsmFreeMonth) {
       if (commit) {
         const r = await mintOneUsePlan(PLANS.tsmTrial, `TSM free month · ${person.email}`);
         r.error ? line.errors.push(`tsm trial: ${r.error}`)
-                : (line.grants.push('TSM 30-day trial link'), line.tsmLink = r.link);
+                : (line.grants.push('TSM 30-day trial link'), line.tsmTrialLink = r.link);
       } else line.grants.push('would mint a one-use TSM 30-day trial link');
     }
 
@@ -364,7 +439,7 @@ module.exports = async (req, res) => {
       if (commit) {
         const r = await mintHalfPricePromo(person.email);
         r.error ? line.errors.push(`50% promo: ${r.error}`)
-                : (line.grants.push('50% off first month of TSM'), line.tsmLink = r.link);
+                : (line.grants.push('50% off first month of TSM'), line.tsmPromoLink = r.link);
       } else line.grants.push('would mint a one-use 50%-off code for TSM');
     }
 
@@ -373,11 +448,31 @@ module.exports = async (req, res) => {
     if (commit) {
       const newTags = ['close-synced', `base44-sale-${person.tier}`, 'base44-fulfilled'];
       if (line.errors.length) newTags.push('base44-fulfilment-failed');
-      await upsertContact(person, newTags, [
+      const saved = await upsertContact(person, newTags, [
         { key: 'base44_course_link', field_value: line.courseLink },
-        { key: 'base44_tsm_link', field_value: line.tsmLink || '' },
+        { key: 'base44_tsm_link', field_value: line.tsmTrialLink || line.tsmPromoLink || '' },
         { key: 'base44_babyai_link', field_value: line.babyLink || '' },
       ]);
+      /* Send from here rather than leaning on a GHL workflow: the grant and
+         the email that carries it must not be able to drift apart. */
+      const contactId = (saved && saved.id) || (contact && contact.id);
+      if (contactId && !line.errors.length) {
+        const first = (person.name || '').trim().split(/\s+/)[0] || 'there';
+        const sent = await sendEmail(contactId, first.charAt(0).toUpperCase() + first.slice(1), line);
+        if (sent.error) {
+          line.errors.push(`email: ${sent.error}`);
+          await fetch(`${GHL}/contacts/${contactId}/tags`, {
+            method: 'POST', headers: ghlHeaders(),
+            body: JSON.stringify({ tags: ['base44-email-failed'] }),
+          });
+        } else {
+          line.emailed = true;
+          await fetch(`${GHL}/contacts/${contactId}/tags`, {
+            method: 'POST', headers: ghlHeaders(),
+            body: JSON.stringify({ tags: ['base44-emailed'] }),
+          });
+        }
+      }
     }
     report.push(line);
   }
