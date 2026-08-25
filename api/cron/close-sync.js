@@ -106,15 +106,39 @@ async function buyersFromSmartView(savedSearchId, tier) {
 
 /* ── Whop ──────────────────────────────────────────────────────────────── */
 
-/* Their live TSM membership, if any. Churned and expired both count as "no
-   membership": the grid treats churned buyers exactly like new ones. */
+/* Whop's /memberships endpoint SILENTLY IGNORES ?email= and ?search= — it
+   returns the whole company either way, so filtering server-side matched
+   every buyer against a stranger's membership. Verified 2026-08-25 with a
+   nonsense address returning the same 872 rows. The only safe read is to
+   pull every valid membership once per run and index it by email here.
+   ~18 requests, cached for the life of the run. */
+let membershipIndex = null;
+async function buildMembershipIndex() {
+  if (membershipIndex) return membershipIndex;
+  const idx = new Map();
+  for (let page = 1; page <= 30; page += 1) {
+    const res = await fetch(`${WHOP}/memberships?per=50&page=${page}&valid=true`,
+      { headers: whopHeaders() });
+    const data = await jsonOrNull(res);
+    const rows = (data && data.data) || [];
+    for (const m of rows) {
+      const email = String(m.email || '').toLowerCase();
+      if (!email) continue;
+      if (!idx.has(email)) idx.set(email, []);
+      idx.get(email).push(m);
+    }
+    if (rows.length < 50) break;
+  }
+  membershipIndex = idx;
+  return idx;
+}
+
+/* Churned and expired both count as "no membership": the grid treats churned
+   buyers exactly like new ones. */
 async function liveTsmMembership(email) {
-  const res = await fetch(`${WHOP}/memberships?per=50&valid=true&email=${encodeURIComponent(email)}`,
-    { headers: whopHeaders() });
-  const data = await jsonOrNull(res);
-  const rows = (data && data.data) || [];
-  return rows.find((m) =>
-    TSM_PRODUCTS.includes(m.product) && m.valid && m.status === 'active') || null;
+  const idx = await buildMembershipIndex();
+  return (idx.get(email) || []).find(
+    (m) => TSM_PRODUCTS.includes(m.product) && m.valid && m.status === 'active') || null;
 }
 
 /* A fresh single-use plan. stock 1 + unlimited_stock false = the checkout
@@ -233,6 +257,7 @@ module.exports = async (req, res) => {
     || req.query.secret === process.env.CRON_SECRET;
   if (!secret) return res.status(401).json({ error: 'unauthorized' });
 
+  membershipIndex = null; // fresh per invocation
   const commit = String(req.query.commit) === '1';
   const watermark = String(req.query.watermark) === '1';
 
