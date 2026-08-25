@@ -22,11 +22,26 @@ const ELIGIBLE = new Set([
 ]);
 
 export const config = {
-  matcher: ['/free-course', '/free-course/members'],
+  matcher: ['/free-course', '/free-course/members', '/geo-debug'],
 };
 
 export default function middleware(request) {
   const url = new URL(request.url);
+
+  /* Diagnostic: what does the EDGE actually see? The ?geo= override bypasses
+     the header, so testing with it proves nothing about real traffic. */
+  if (url.pathname === '/geo-debug') {
+    const seen = {};
+    for (const [k, v] of request.headers.entries()) {
+      if (k.startsWith('x-vercel-ip') || k === 'x-forwarded-for') seen[k] = v;
+    }
+    return new Response(JSON.stringify({
+      country_header: request.headers.get('x-vercel-ip-country'),
+      geo_object: request.geo || null,
+      all_ip_headers: seen,
+    }, null, 2), { headers: { 'content-type': 'application/json' } });
+  }
+
   const country =
     url.searchParams.get('geo') ||
     request.headers.get('x-vercel-ip-country') ||
