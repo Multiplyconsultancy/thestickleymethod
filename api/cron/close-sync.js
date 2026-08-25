@@ -257,6 +257,30 @@ function entitlementsFor(tier, isMember) {
 /* ── handler ───────────────────────────────────────────────────────────── */
 
 module.exports = async (req, res) => {
+  /* ?health=1 needs no secret: it reports only whether the wiring is in
+     place, never a key, a value or any customer data. */
+  if (String(req.query.health) === '1') {
+    let closeReachable = null;
+    if (process.env.CLOSE_API_KEY) {
+      try {
+        const r = await fetch(`${CLOSE}/me/`, { headers: closeHeaders() });
+        closeReachable = r.ok;
+      } catch (e) { closeReachable = false; }
+    }
+    return res.status(200).json({
+      ok: true,
+      env: {
+        CLOSE_API_KEY: !!process.env.CLOSE_API_KEY,
+        CLOSE_SMARTVIEW_MONTHLY: !!process.env.CLOSE_SMARTVIEW_MONTHLY,
+        CLOSE_SMARTVIEW_YEARLY: !!process.env.CLOSE_SMARTVIEW_YEARLY,
+        WHOP_API_KEY: !!process.env.WHOP_API_KEY,
+        GHL_API_KEY: !!process.env.GHL_API_KEY,
+        CRON_SECRET: !!process.env.CRON_SECRET,
+      },
+      closeReachable,
+    });
+  }
+
   const secret = req.headers.authorization === `Bearer ${process.env.CRON_SECRET}`
     || req.query.secret === process.env.CRON_SECRET;
   if (!secret) return res.status(401).json({ error: 'unauthorized' });
