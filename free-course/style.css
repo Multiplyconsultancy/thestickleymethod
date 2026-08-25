@@ -133,11 +133,10 @@ section{padding:clamp(74px,9vw,124px) 0;position:relative}
 .mod{background:var(--surface);border:1px solid var(--line);border-radius:15px;overflow:hidden;
   transition:border-color .2s, transform .2s}
 .mod:hover{border-color:rgba(14,196,230,.42);transform:translateY(-3px)}
-.mod-art{aspect-ratio:3/2;position:relative;background:#0C0E11 center/cover no-repeat;
+.mod-art{aspect-ratio:16/9;position:relative;background:#0C0E11 center/cover no-repeat;
   transition:background-size .5s ease}
 .mod:hover .mod-art{background-size:106%}
-.mod-art::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,transparent 55%,rgba(18,20,23,.9) 100%)}
+.mod-art::after{content:none}
 .mod-body{padding:22px 24px 26px}
 .mod-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px}
 .mod-tag{font:700 .68rem/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
@@ -357,12 +356,12 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
    page with NO photography loses even more, which is why both sets exist.
 ═══════════════════════════════════════════════════════════════════════════ */
 .art-calls  {background-image:url(/free-course/img/calls.webp)}
-.art-decide      .mod-art{background-image:url(/free-course/img/m-decide.webp)}
-.art-today       .mod-art{background-image:url(/free-course/img/m-today.webp)}
-.art-consistency .mod-art{background-image:url(/free-course/img/m-consistency.webp)}
-.art-photos      .mod-art{background-image:url(/free-course/img/m-photos.webp)}
-.art-reveal      .mod-art{background-image:url(/free-course/img/m-reveal.webp)}
-.art-studio      .mod-art{background-image:url(/free-course/img/studio.webp)}
+.art-decide      .mod-art{background-image:url(/free-course/img/prog-decide.webp)}
+.art-today      .mod-art{background-image:url(/free-course/img/prog-today.webp)}
+.art-consistency      .mod-art{background-image:url(/free-course/img/prog-consistency.webp)}
+.art-photos      .mod-art{background-image:url(/free-course/img/prog-photos.webp)}
+.art-reveal      .mod-art{background-image:url(/free-course/img/prog-reveal.webp)}
+.art-studio      .mod-art{background-image:url(/free-course/img/prog-studio.webp)}
 .art-baby   {background-image:url(/free-course/img/baby.webp)}
 
 /* Light hero stays clean. A busy photo behind the headline reads as a stock
@@ -373,12 +372,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
   background:radial-gradient(ellipse 78% 66% at 50% -10%, #E9F3F7 0%, rgba(251,250,248,0) 68%);opacity:1}
 [data-theme="light"] .hero-bg::after{background:none}
 [data-theme="light"] .art-calls  {background-image:url(/free-course/img/lt-calls.webp)}
-[data-theme="light"] .art-decide      .mod-art{background-image:url(/free-course/img/lt-m-decide.webp)}
-[data-theme="light"] .art-today       .mod-art{background-image:url(/free-course/img/lt-m-today.webp)}
-[data-theme="light"] .art-consistency .mod-art{background-image:url(/free-course/img/lt-m-consistency.webp)}
-[data-theme="light"] .art-photos      .mod-art{background-image:url(/free-course/img/lt-m-photos.webp)}
-[data-theme="light"] .art-reveal      .mod-art{background-image:url(/free-course/img/lt-m-reveal.webp)}
-[data-theme="light"] .art-studio      .mod-art{background-image:url(/free-course/img/lt-studio.webp)}
 
 [data-theme="light"] .mod-art{background-color:#EDEFF2}
 /* light art is pale, so the bottom scrim has to go the other way */
