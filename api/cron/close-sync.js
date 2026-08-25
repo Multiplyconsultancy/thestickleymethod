@@ -179,11 +179,12 @@ async function addFreeDays(membershipId, days) {
   return { ok: true };
 }
 
-/* 50% off the first month. Percentage promos are the mechanism the account
-   already uses for this; if the key is not scoped for it the buyer is
-   flagged for manual handling rather than silently getting nothing. */
+/* 50% off the first month. Percentage promos are the mechanism this account
+   already uses; the shape below matches an existing one. `duration: once` so
+   it discounts the first payment only, and stock 1 so the code dies after a
+   single redemption and is worthless if forwarded. */
 async function mintHalfPricePromo(email) {
-  const code = `B44-${Math.abs(hash(email)).toString(36).toUpperCase().slice(0, 8)}`;
+  const code = `B44${Math.abs(hash(email)).toString(36).toUpperCase().slice(0, 8)}`;
   const res = await fetch(`${WHOP}/promo_codes`, {
     method: 'POST',
     headers: whopHeaders(),
@@ -191,11 +192,14 @@ async function mintHalfPricePromo(email) {
       code,
       promo_type: 'percentage',
       amount_off: 50,
+      base_currency: 'usd',
       duration: 'once',
+      number_of_intervals: 1,
       stock: 1,
       unlimited_stock: false,
       plan_ids: [PLANS.tsmMonthly],
       new_users_only: false,
+      existing_memberships_only: false,
     }),
   });
   const promo = await jsonOrNull(res);
