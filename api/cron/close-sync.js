@@ -229,13 +229,21 @@ function hash(s) {
 
 /* ── GHL ───────────────────────────────────────────────────────────────── */
 
+/* Returns the contact, `{ absent: true }` when GHL definitely has no such
+   record, or null when the request itself failed. The caller must treat null
+   as "unknown", never as "new". */
 async function findContact(email) {
-  const res = await fetch(
-    `${GHL}/contacts/?locationId=${process.env.GHL_LOCATION_ID}&query=${encodeURIComponent(email)}`,
-    { headers: ghlHeaders() });
-  const data = await jsonOrNull(res);
-  return ((data && data.contacts) || []).find(
-    (c) => String(c.email || '').toLowerCase() === email) || null;
+  let data = null;
+  try {
+    const res = await fetch(
+      `${GHL}/contacts/?locationId=${process.env.GHL_LOCATION_ID}&query=${encodeURIComponent(email)}`,
+      { headers: ghlHeaders() });
+    if (!res.ok) return null;
+    data = await jsonOrNull(res);
+  } catch (e) { return null; }
+  if (!data || !Array.isArray(data.contacts)) return null;
+  return data.contacts.find(
+    (c) => String(c.email || '').toLowerCase() === email) || { absent: true, tags: [] };
 }
 
 async function upsertContact(person, tags, fields) {
@@ -248,7 +256,9 @@ async function upsertContact(person, tags, fields) {
       email: person.email,
       firstName: firstName || '',
       lastName: rest.join(' '),
-      tags,
+      /* Tags deliberately omitted: GHL's upsert REPLACES the tag array, which
+         wiped base44-optin, the backlog watermark and everything else off
+         these contacts. Tags are added through the append endpoint below. */
       customFields: fields,
       source: 'Close · Base44 sale',
     }),
@@ -442,9 +452,21 @@ module.exports = async (req, res) => {
   const report = [];
   for (const person of unique) {
     const contact = await findContact(person.email);
-    const tags = (contact && contact.tags) || [];
 
-    if (tags.includes('close-synced')) {
+    /* FAIL CLOSED. A lookup that errors or returns nothing used to fall
+       through to `tags = []`, which is indistinguishable from "never
+       processed" — so a transient GHL search failure granted and emailed
+       people who had already been handled, including watermarked backlog
+       buyers. Anything other than a definite, readable record is skipped
+       and left for the next run. */
+    if (!contact || !Array.isArray(contact.tags)) {
+      report.push({ email: person.email, skipped: 'lookup failed, left for next run' });
+      continue;
+    }
+    const tags = contact.tags;
+
+    if (tags.includes('close-synced') || tags.includes('base44-backlog-ignored')
+        || tags.includes('base44-fulfilled')) {
       report.push({ email: person.email, skipped: 'already processed' });
       continue;
     }
@@ -503,7 +525,7 @@ module.exports = async (req, res) => {
     if (commit) {
       const newTags = ['close-synced', `base44-sale-${person.tier}`, 'base44-fulfilled'];
       if (line.errors.length) newTags.push('base44-fulfilment-failed');
-      const saved = await upsertContact(person, newTags, [
+      const saved = await upsertContact(person, [], [
         { key: 'base44_course_link', field_value: line.courseLink },
         { key: 'base44_tsm_link', field_value: line.tsmTrialLink || line.tsmPromoLink || '' },
         { key: 'base44_babyai_link', field_value: line.babyLink || '' },
@@ -511,6 +533,11 @@ module.exports = async (req, res) => {
       /* Send from here rather than leaning on a GHL workflow: the grant and
          the email that carries it must not be able to drift apart. */
       const contactId = (saved && saved.id) || (contact && contact.id);
+      if (contactId) {
+        await fetch(`${GHL}/contacts/${contactId}/tags`, {
+          method: 'POST', headers: ghlHeaders(), body: JSON.stringify({ tags: newTags }),
+        }).catch(() => {});
+      }
       if (contactId) {
         const moved = await moveToSignedUp(contactId, person.tier);
         if (moved.length) line.grants.push(`pipeline card moved to Signed up (${moved.length})`);
