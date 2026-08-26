@@ -116,18 +116,30 @@ let membershipIndex = null;
 async function buildMembershipIndex() {
   if (membershipIndex) return membershipIndex;
   const idx = new Map();
-  for (let page = 1; page <= 30; page += 1) {
-    const res = await fetch(`${WHOP}/memberships?per=50&page=${page}&valid=true`,
-      { headers: whopHeaders() });
-    const data = await jsonOrNull(res);
-    const rows = (data && data.data) || [];
+  const add = (rows) => {
     for (const m of rows) {
       const email = String(m.email || '').toLowerCase();
       if (!email) continue;
       if (!idx.has(email)) idx.set(email, []);
       idx.get(email).push(m);
     }
-    if (rows.length < 50) break;
+  };
+  const page = async (n) => {
+    const res = await fetch(`${WHOP}/memberships?per=50&page=${n}&valid=true`, { headers: whopHeaders() });
+    const data = await jsonOrNull(res);
+    return (data && data.data) || [];
+  };
+  /* Fetched in parallel batches, not one page at a time: sequential paging
+     took long enough to risk the webhook timing out. */
+  const first = await page(1);
+  add(first);
+  if (first.length === 50) {
+    for (let start = 2; start <= 30; start += 6) {
+      const batch = await Promise.all(
+        Array.from({ length: 6 }, (_, i) => page(start + i)));
+      batch.forEach(add);
+      if (batch.some((rows) => rows.length < 50)) break;
+    }
   }
   membershipIndex = idx;
   return idx;
