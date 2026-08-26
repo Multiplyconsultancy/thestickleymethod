@@ -104,6 +104,59 @@ async function buyersFromSmartView(savedSearchId, tier) {
   return out;
 }
 
+/* Leads whose STATUS is one of the two Base44 statuses.
+
+   The smart views key off the "03 - Base44 Sale" custom activity, but the
+   webhook fires on a status change. Those are different signals, so a closer
+   who sets one and not the other used to fall through the gap entirely.
+   Reading both and merging means either action is enough. */
+const BASE44_STATUS = {
+  stat_pAfFKqZ28X2N2EWR3LgDCPw7XwN5jYsTTsH5UDi4kBw: 'monthly',
+  stat_wiDrCZsgSHw6mCt3EbgCRIGkvn8FdOYgyP4Tg7aTQbD: 'yearly',
+};
+
+async function buyersFromStatuses() {
+  const out = [];
+  for (const [statusId, tier] of Object.entries(BASE44_STATUS)) {
+    try {
+      const res = await fetch(`${CLOSE}/data/search/`, {
+        method: 'POST',
+        headers: closeHeaders(),
+        body: JSON.stringify({
+          query: {
+            type: 'and',
+            queries: [
+              { type: 'object_type', object_type: 'lead' },
+              {
+                type: 'field_condition',
+                field: { type: 'regular_field', object_type: 'lead', field_name: 'status_id' },
+                condition: { type: 'term', values: [statusId] },
+              },
+            ],
+          },
+          _limit: 200,
+          _fields: { lead: ['id', 'display_name', 'contacts'] },
+        }),
+      });
+      const data = await jsonOrNull(res);
+      for (const lead of (data && data.data) || []) {
+        for (const contact of lead.contacts || []) {
+          const email = ((contact.emails || [])[0] || {}).email;
+          if (!email) continue;
+          out.push({
+            leadId: lead.id,
+            name: contact.name || lead.display_name || '',
+            email: String(email).trim().toLowerCase(),
+            tier,
+          });
+          break;
+        }
+      }
+    } catch (e) { console.error('[close-sync] status query failed:', tier, e.message); }
+  }
+  return out;
+}
+
 /* ── Whop ──────────────────────────────────────────────────────────────── */
 
 /* Whop's /memberships endpoint SILENTLY IGNORES ?email= and ?search= — it
@@ -443,6 +496,7 @@ module.exports = async (req, res) => {
   const buyers = [
     ...await buyersFromSmartView(process.env.CLOSE_SMARTVIEW_MONTHLY, 'monthly'),
     ...await buyersFromSmartView(process.env.CLOSE_SMARTVIEW_YEARLY, 'yearly'),
+    ...await buyersFromStatuses(),
   ];
 
   // one row per person; Close has at least one duplicated lead
