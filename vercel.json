@@ -8,6 +8,15 @@
   "functions": {
     "api/cron/reconcile.js": {
       "maxDuration": 300
+    },
+    "api/cron/close-sync.js": {
+      "maxDuration": 300
+    },
+    "api/close-sale.js": {
+      "maxDuration": 300
+    },
+    "api/lead.js": {
+      "maxDuration": 60
     }
   },
   "crons": [
