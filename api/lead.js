@@ -103,7 +103,10 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         locationId: process.env.GHL_LOCATION_ID,
         email, phone, firstName, lastName: rest.join(' '),
-        tags: ['base44-optin', `base44-optin-${source}`, ...(hpFlagged ? ['hp-flagged'] : []), ...(ineligible ? ['base44-ineligible-country'] : [])],
+        // `base44-opted-in` is the tag lib/placement.js reads to move a card
+        // off Eligible. Writing only `base44-optin` meant reconcile never saw a
+        // single opt-in and re-filed everyone under Eligible every five minutes.
+        tags: ['base44-opted-in', 'base44-optin', `base44-optin-${source}`, ...(hpFlagged ? ['hp-flagged'] : []), ...(ineligible ? ['base44-ineligible-country'] : [])],
       }),
     });
     const j = await r.json().catch(() => ({}));
