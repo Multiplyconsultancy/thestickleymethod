@@ -149,8 +149,13 @@ async function buildMembershipIndex() {
    buyers exactly like new ones. */
 async function liveTsmMembership(email) {
   const idx = await buildMembershipIndex();
+  /* `valid` is Whop's own "does this grant access" flag, and it is the right
+     test. An earlier version also demanded status === 'active', which
+     excluded anyone on a TSM free trial: they hold live access but were
+     classified as non-members and offered 50% off a subscription they
+     already have. */
   return (idx.get(email) || []).find(
-    (m) => TSM_PRODUCTS.includes(m.product) && m.valid && m.status === 'active') || null;
+    (m) => TSM_PRODUCTS.includes(m.product) && m.valid === true) || null;
 }
 
 /* A fresh single-use plan. stock 1 + unlimited_stock false = the checkout
