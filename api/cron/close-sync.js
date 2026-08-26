@@ -35,7 +35,11 @@ const GHL = 'https://services.leadconnectorhq.com';
 /* Verified live 2026-08-25. Shapes cloned from plans already in the account. */
 const PLANS = {
   // Free Looksmaxxing AI: $0, unlimited, sent to every buyer as-is.
-  course: 'plan_SYQ6dzY5Ystkb',
+  /* The live Free Looksmaxxing AI plan. The previous one (plan_SYQ6dzY5Ystkb)
+     was archived in Whop after this was wired in, which silently killed the
+     access link in every email already sent. If access reports come in again,
+     check this plan's visibility first. */
+  course: 'plan_XkAv3bcWnI8Jr',
   // Templates we clone per person. Both proven: $0 for 30 days, then billed.
   tsmTrial: { product: 'prod_pF8nU8AqdAO1U', renewal: 39.0, trialDays: 30, period: 30 },
   babyTrial: { product: 'prod_I9Jkfcyxb01FM', renewal: 29.0, trialDays: 30, period: 30 },
