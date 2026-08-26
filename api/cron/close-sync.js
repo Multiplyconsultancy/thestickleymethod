@@ -258,6 +258,49 @@ async function upsertContact(person, tags, fields) {
 }
 
 
+
+/* ── pipelines ─────────────────────────────────────────────────────────── */
+
+/* Whichever Base44 pipeline the person already sits in, move their card to
+   the stage that matches what they bought. Without this they stay parked on
+   Opted in forever and the boards read as if nobody ever converts. */
+const SIGNED_STAGES = {
+  kYLXJWj7MEnJQdkpEt5d: { monthly: '95ae3502-27bc-487d-8617-969a046bf738',   // Active TSM members
+                          yearly:  'eea6ebd7-d39a-464d-92b9-0350b4d24817' },
+  wemXCOsoR33ugCTseEMo: { monthly: 'c24cd3b9-64d2-4fa4-a6fa-6a790b72aaa4',   // Churned TSM members
+                          yearly:  'abea1ecd-b867-444f-9f7c-9bfe6cc1ab8c' },
+  iTbJ6rELAnLBgHcNRGbh: { monthly: 'e5496e94-3a46-4b65-a328-92d12bdce60a',   // Everyone else
+                          yearly:  'c49d0824-be28-44e4-9970-cbcb098c3a8d' },
+  GWRhHdTEnf88NBHhoHPY: { monthly: 'b12c7272-9b32-4990-9ea4-60c5b0e1e5c1',   // New Opt-ins
+                          yearly:  'da696c64-6c91-4027-90f0-0b1a5c704d7b' },
+};
+
+async function moveToSignedUp(contactId, tier) {
+  try {
+    const q = await fetch(
+      `${GHL}/opportunities/search?location_id=${process.env.GHL_LOCATION_ID}&contact_id=${contactId}`,
+      { headers: ghlHeaders() });
+    const rows = ((await q.json().catch(() => ({}))).opportunities) || [];
+    const moved = [];
+    for (const o of rows) {
+      const stages = SIGNED_STAGES[o.pipelineId];
+      if (!stages) continue;
+      const stage = stages[tier === 'yearly' ? 'yearly' : 'monthly'];
+      if (!stage || o.pipelineStageId === stage) continue;
+      await fetch(`${GHL}/opportunities/${o.id}`, {
+        method: 'PUT',
+        headers: ghlHeaders(),
+        body: JSON.stringify({ pipelineId: o.pipelineId, pipelineStageId: stage, status: 'open' }),
+      });
+      moved.push(o.pipelineId);
+    }
+    return moved;
+  } catch (e) {
+    console.error('[close-sync] pipeline move failed:', e.message);
+    return [];
+  }
+}
+
 /* ── the email ─────────────────────────────────────────────────────────── */
 
 const WRAP = 'font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;'
@@ -468,6 +511,10 @@ module.exports = async (req, res) => {
       /* Send from here rather than leaning on a GHL workflow: the grant and
          the email that carries it must not be able to drift apart. */
       const contactId = (saved && saved.id) || (contact && contact.id);
+      if (contactId) {
+        const moved = await moveToSignedUp(contactId, person.tier);
+        if (moved.length) line.grants.push(`pipeline card moved to Signed up (${moved.length})`);
+      }
       if (contactId && !line.errors.length) {
         const first = (person.name || '').trim().split(/\s+/)[0] || 'there';
         const sent = await sendEmail(contactId, first.charAt(0).toUpperCase() + first.slice(1), line);

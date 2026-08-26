@@ -190,8 +190,15 @@ module.exports = async function handler(req, res) {
         const c = await fetch(`${GHL}/contacts/${contactId}`, { headers: ghlHeaders() });
         tags = (((await c.json().catch(() => ({}))).contact || {}).tags || []).map((t) => String(t).toLowerCase());
       } catch (e) { console.error('[lead] tag fetch failed:', e.message); }
+      /* The tag GHL actually carries is `customer-churned` (plus churn-N-Nd
+         buckets). An earlier version looked for a "stickley method - cancelled"
+         tag that does not exist, so every churned member was filed under
+         Everyone else. `customer-active` wins if both are present: someone
+         mid-cancellation still has access. */
       const active = tags.includes('customer-active');
-      const churned = tags.some((t) => t.includes('stickley method - cancelled') || t.includes('sitckley method - cancelled'));
+      const churned = !active && (
+        tags.includes('customer-churned')
+        || tags.some((t) => t.startsWith('churn-') || t.includes('cancel')));
       await routeToPipeline(active ? 'active' : churned ? 'churned' : 'other');
     }
   }
