@@ -503,7 +503,7 @@ module.exports = async (req, res) => {
       if (line.errors.length) newTags.push('base44-fulfilment-failed');
       const saved = await upsertContact(person, [], [
         { key: 'base44_course_link', field_value: line.courseLink },
-        { key: 'base44_tsm_link', field_value: line.tsmTrialLink || line.tsmPromoLink || '' },
+        { key: 'base44_tsm_link', field_value: line.tsmPromoLink || '' },
         { key: 'base44_babyai_link', field_value: line.babyLink || '' },
       ]);
       /* Send from here rather than leaning on a GHL workflow: the grant and
