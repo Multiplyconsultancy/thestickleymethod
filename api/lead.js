@@ -81,15 +81,34 @@ module.exports = async function handler(req, res) {
      list in sync with middleware.js by hand. */
   const ELIGIBLE = new Set(['US','GB','AU','CA','NZ','AT','BE','DK','FR','DE','IE','IT','LU','NL','NO','PL','ES','SE','CH']);
 
-  /* PHONE-NUMBER BLOCK. The edge gate reads IP country, which a VPN defeats:
-     we had an opt-in with a +91 number whose IP resolved to an eligible
-     country. A dialling code is harder to fake than an exit node, so numbers
-     from blocked countries are stopped here regardless of what the IP says.
-     The lead is still written to GHL for the record, but it is NOT forwarded
-     to the partner, so no setter wastes a dial on it. */
-  const BLOCKED_DIAL_CODES = ['+91'];   // India
+  /* PHONE-NUMBER GATE, AS AN ALLOWLIST.
+
+     The edge gate reads IP country, which a VPN defeats: we had an opt-in
+     with a +91 number whose IP resolved to an eligible country. A dialling
+     code is much harder to fake than an exit node.
+
+     This allows only the codes belonging to the countries the partnership
+     actually pays commission on, and blocks everything else. An allowlist
+     rather than a blocklist because the eligible set is short, known and
+     already defined above, whereas the set of everything else is not.
+
+     Caveat worth knowing: +1 covers the US and Canada but also the Caribbean,
+     so a Jamaican or Dominican number passes this check. The IP gate is the
+     backstop for those. */
+  const ELIGIBLE_DIAL_CODES = [
+    '+1',                                   // US, Canada
+    '+44', '+61', '+64',                    // UK, Australia, New Zealand
+    '+31', '+32', '+33', '+34', '+39',      // NL, BE, FR, ES, IT
+    '+41', '+43', '+45', '+46', '+47',      // CH, AT, DK, SE, NO
+    '+48', '+49', '+352', '+353',           // PL, DE, LU, IE
+  ];
   const e164 = String(phone || '').replace(/[^\d+]/g, '');
-  const blockedPhone = BLOCKED_DIAL_CODES.some((c) => e164.startsWith(c));
+  /* Longest match first so +353 is not shadowed by +3, and an unparseable
+     number is treated as blocked rather than waved through. */
+  const blockedPhone = !ELIGIBLE_DIAL_CODES
+    .slice()
+    .sort((a, b) => b.length - a.length)
+    .some((c) => e164.startsWith(c));
   const leadCountry = String(
     (String(req.query && req.query.debug) === '1' && body.geo_test) ||
     req.headers['x-vercel-ip-country'] || ''
