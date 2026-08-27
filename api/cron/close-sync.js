@@ -280,7 +280,15 @@ async function mintHalfPricePromo(email) {
   if (!res.ok) {
     return { error: (promo && promo.error && promo.error.message) || `promo create failed (${res.status})` };
   }
-  return { code, link: `https://whop.com/checkout/${PLANS.tsmMonthly}?promo=${code}` };
+  /* USE THE CODE WHOP RETURNS, NOT THE ONE WE ASKED FOR. Whop rewrites it:
+     request B4428D44C9C and it stores b44dwuq4m. Building the link from the
+     requested code put a non-existent code in every email, so no buyer could
+     ever redeem the discount. */
+  const actual = (promo && promo.code) || code;
+  if (!promo || !promo.code) {
+    return { error: 'promo created but no code returned' };
+  }
+  return { code: actual, link: `https://whop.com/checkout/${PLANS.tsmMonthly}?promoCode=${encodeURIComponent(actual)}` };
 }
 
 function hash(s) {
