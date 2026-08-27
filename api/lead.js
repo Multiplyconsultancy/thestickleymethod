@@ -79,7 +79,14 @@ module.exports = async function handler(req, res) {
   /* Country net behind the edge gate: tag ineligible submissions so a
      setter never dials a lead the partnership will not pay on. Keep the
      list in sync with middleware.js by hand. */
-  const ELIGIBLE = new Set(['US','GB','AU','CA','NZ','AT','BE','DK','FR','DE','IE','IT','LU','NL','NO','PL','ES','SE','CH']);
+  const ELIGIBLE = new Set([
+    'US', 'CA', 'AU', 'NZ', 'GB', 'AT', 'BE', 'FR', 'DE',
+    'IE', 'LU', 'NL', 'CH', 'DK', 'FI', 'IS', 'NO', 'SE',
+    'IT', 'ES', 'PT', 'GR', 'MT', 'CY', 'PL', 'CZ', 'SI',
+    'EE', 'LT', 'LV', 'SK', 'HR', 'HU', 'RO', 'JP', 'KR',
+    'SG', 'TW', 'HK', 'MO', 'AE', 'QA', 'IL', 'KW', 'SA',
+    'OM', 'BH',
+  ]);
 
   /* PHONE-NUMBER GATE, AS AN ALLOWLIST.
 
@@ -96,11 +103,12 @@ module.exports = async function handler(req, res) {
      so a Jamaican or Dominican number passes this check. The IP gate is the
      backstop for those. */
   const ELIGIBLE_DIAL_CODES = [
-    '+1',                                   // US, Canada
-    '+44', '+61', '+64',                    // UK, Australia, New Zealand
-    '+31', '+32', '+33', '+34', '+39',      // NL, BE, FR, ES, IT
-    '+41', '+43', '+45', '+46', '+47',      // CH, AT, DK, SE, NO
-    '+48', '+49', '+352', '+353',           // PL, DE, LU, IE
+    '+1', '+30', '+31', '+32', '+33', '+34', '+351', '+352', '+353',
+    '+354', '+356', '+357', '+358', '+36', '+370', '+371', '+372', '+385',
+    '+386', '+39', '+40', '+41', '+420', '+421', '+43', '+44', '+45',
+    '+46', '+47', '+48', '+49', '+61', '+64', '+65', '+81', '+82',
+    '+852', '+853', '+886', '+965', '+966', '+968', '+971', '+972', '+973',
+    '+974',
   ];
   const e164 = String(phone || '').replace(/[^\d+]/g, '');
   /* Longest match first so +353 is not shadowed by +3, and an unparseable

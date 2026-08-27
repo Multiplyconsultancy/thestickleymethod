@@ -16,9 +16,16 @@
 ══════════════════════════════════════════════════════════════════════ */
 
 const ELIGIBLE = new Set([
-  'US', 'GB', 'AU', 'CA', 'NZ',                    // Tier 1 English-speaking
-  'AT', 'BE', 'DK', 'FR', 'DE', 'IE', 'IT', 'LU',  // Western & Northern Europe
-  'NL', 'NO', 'PL', 'ES', 'SE', 'CH',
+  // The 47 countries the partnership pays commission on, by region.
+  // Source: Base44 country list, updated 2026-08-27. An earlier version
+  // carried only 19 and was blocking eligible traffic from the Gulf,
+  // East Asia, and most of central and southern Europe.
+  'US', 'CA', 'AU', 'NZ', 'GB', 'AT', 'BE', 'FR', 'DE',
+  'IE', 'LU', 'NL', 'CH', 'DK', 'FI', 'IS', 'NO', 'SE',
+  'IT', 'ES', 'PT', 'GR', 'MT', 'CY', 'PL', 'CZ', 'SI',
+  'EE', 'LT', 'LV', 'SK', 'HR', 'HU', 'RO', 'JP', 'KR',
+  'SG', 'TW', 'HK', 'MO', 'AE', 'QA', 'IL', 'KW', 'SA',
+  'OM', 'BH',
 ]);
 
 export const config = {
