@@ -110,6 +110,19 @@ module.exports = async function handler(req, res) {
     case 'invoice_paid':
       add = ['customer-active']
       if (isTsm) add.push('has-tsm')
+      /* TRIGGER TAG FOR THE ONBOARDING SEQUENCE.
+
+         Neither existing tag works for this. `has-tsm` is historical and
+         never removed, so a returning member already carries it and a
+         "tag added" trigger would never fire for them again. And
+         `customer-active` is re-applied on payment_succeeded and
+         invoice_paid, which fire on every monthly renewal.
+
+         `tsm-joined` is added only on membership_activated, which fires
+         when a membership becomes valid and not on renewals, and it is
+         removed on deactivation. So it fires exactly once per join,
+         including a genuine re-join after churn, and never on a rebill. */
+      if (isTsm && action === 'membership_activated') add.push('tsm-joined');
       if (isBabyAi) add.push('has-baby-ai')
       if (isNightfall) add.push('has-nightfall-97')
       if (plan) add.push(plan)
@@ -137,7 +150,9 @@ module.exports = async function handler(req, res) {
          within the hour. Worth it so the other 99.5% are instant. */
       add = ['customer-churned', 'churn-0-30d']
       remove = ['customer-active', 'cancelling', 'plan-1-month', 'plan-3-month',
-                'plan-6-month', 'plan-coaching', 'plan-fanbasis-legacy']
+                'plan-6-month', 'plan-coaching', 'plan-fanbasis-legacy',
+                /* cleared so a later re-join re-fires the onboarding sequence */
+                'tsm-joined']
       break
 
     /* Money reversed. Segment needs the full picture, so leave it to the
