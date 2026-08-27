@@ -33,19 +33,26 @@ const WHOP = 'https://api.whop.com/api/v2';
 const GHL = 'https://services.leadconnectorhq.com';
 
 /* Verified live 2026-08-25. Shapes cloned from plans already in the account. */
-const PLANS = {
-  // Free Looksmaxxing AI: $0, unlimited, sent to every buyer as-is.
-  /* The live Free Looksmaxxing AI plan. The previous one (plan_SYQ6dzY5Ystkb)
-     was archived in Whop after this was wired in, which silently killed the
-     access link in every email already sent. If access reports come in again,
-     check this plan's visibility first. */
-  course: 'plan_XkAv3bcWnI8Jr',
-  // Templates we clone per person. Both proven: $0 for 30 days, then billed.
-  tsmTrial: { product: 'prod_pF8nU8AqdAO1U', renewal: 39.0, trialDays: 30, period: 30 },
-  babyTrial: { product: 'prod_I9Jkfcyxb01FM', renewal: 29.0, trialDays: 30, period: 30 },
-  // The live TSM monthly plan a 50%-off promo attaches to.
-  tsmMonthly: 'plan_zSV2Aey6NUe23',
+/* FIXED LINKS. Everyone gets the same three URLs. Nothing is generated per
+   buyer any more.
+
+   The per-person approach produced four separate live bugs: Whop rewrote the
+   promo code so the one in the email never existed, the URL used ?promo=
+   instead of ?promoCode= so no discount applied, an archived plan silently
+   killed the course link, and the fail-open lookup minted duplicates. All of
+   that surface disappears with constants.
+
+   Verified by rendering each checkout on 2026-08-27:
+     course  -> $0.00
+     tsm     -> $19.50 then $39.00 with the code, $39.00 without
+     babyAi  -> "30 days free", then $29.00
+*/
+const LINKS = {
+  course: 'https://whop.com/checkout/plan_XkAv3bcWnI8Jr',
+  tsmHalfPrice: 'https://whop.com/checkout/plan_ryIwNrucGt5FQ?promoCode=BASE44',
+  babyAiTrial: 'https://whop.com/checkout/plan_4xBt2fkYeZAsJ',
 };
+
 const TSM_PRODUCTS = ['prod_pF8nU8AqdAO1U', 'prod_QcVWRgKOCZH9U', 'prod_by2oiuCX0pVu6',
                       'prod_dnB3ROMALqsAR', 'prod_KHHplKsGSxPNL'];
 
@@ -215,31 +222,6 @@ async function liveTsmMembership(email) {
     (m) => TSM_PRODUCTS.includes(m.product) && m.valid === true) || null;
 }
 
-/* A fresh single-use plan. stock 1 + unlimited_stock false = the checkout
-   link works exactly once. */
-async function mintOneUsePlan(tpl, label) {
-  const res = await fetch(`${WHOP}/plans`, {
-    method: 'POST',
-    headers: whopHeaders(),
-    body: JSON.stringify({
-      product_id: tpl.product,
-      plan_type: 'renewal',
-      billing_period: tpl.period,
-      renewal_price: tpl.renewal,
-      trial_period_days: tpl.trialDays,
-      stock: 1,
-      unlimited_stock: false,
-      visibility: 'hidden',
-      internal_notes: `Base44 bonus · ${label}`,
-    }),
-  });
-  const plan = await jsonOrNull(res);
-  if (!res.ok || !plan || !plan.id) {
-    return { error: (plan && plan.error && plan.error.message) || `plan create failed (${res.status})` };
-  }
-  return { id: plan.id, link: plan.direct_link || `https://whop.com/checkout/${plan.id}` };
-}
-
 async function addFreeDays(membershipId, days) {
   const res = await fetch(`${WHOP}/memberships/${membershipId}/add_free_days`, {
     method: 'POST',
@@ -251,50 +233,6 @@ async function addFreeDays(membershipId, days) {
     return { error: (e && e.error && e.error.message) || `add_free_days failed (${res.status})` };
   }
   return { ok: true };
-}
-
-/* 50% off the first month. Percentage promos are the mechanism this account
-   already uses; the shape below matches an existing one. `duration: once` so
-   it discounts the first payment only, and stock 1 so the code dies after a
-   single redemption and is worthless if forwarded. */
-async function mintHalfPricePromo(email) {
-  const code = `B44${Math.abs(hash(email)).toString(36).toUpperCase().slice(0, 8)}`;
-  const res = await fetch(`${WHOP}/promo_codes`, {
-    method: 'POST',
-    headers: whopHeaders(),
-    body: JSON.stringify({
-      code,
-      promo_type: 'percentage',
-      amount_off: 50,
-      base_currency: 'usd',
-      duration: 'once',
-      number_of_intervals: 1,
-      stock: 1,
-      unlimited_stock: false,
-      plan_ids: [PLANS.tsmMonthly],
-      new_users_only: false,
-      existing_memberships_only: false,
-    }),
-  });
-  const promo = await jsonOrNull(res);
-  if (!res.ok) {
-    return { error: (promo && promo.error && promo.error.message) || `promo create failed (${res.status})` };
-  }
-  /* USE THE CODE WHOP RETURNS, NOT THE ONE WE ASKED FOR. Whop rewrites it:
-     request B4428D44C9C and it stores b44dwuq4m. Building the link from the
-     requested code put a non-existent code in every email, so no buyer could
-     ever redeem the discount. */
-  const actual = (promo && promo.code) || code;
-  if (!promo || !promo.code) {
-    return { error: 'promo created but no code returned' };
-  }
-  return { code: actual, link: `https://whop.com/checkout/${PLANS.tsmMonthly}?promoCode=${encodeURIComponent(actual)}` };
-}
-
-function hash(s) {
-  let h = 0;
-  for (let i = 0; i < s.length; i += 1) { h = (h * 31 + s.charCodeAt(i)) | 0; }
-  return h;
 }
 
 /* ── GHL ───────────────────────────────────────────────────────────────── */
@@ -367,7 +305,7 @@ const head = (t) => `<p style="font-size:17px;font-weight:700;margin-bottom:2px"
 const body = (t) => `<p style="margin-top:0">${t}</p>`;
 
 function buildEmail(first, line) {
-  const courseLink = `https://whop.com/checkout/${PLANS.course}`;
+  const courseLink = LINKS.course;
   let html = `<div style="${WRAP}"><p>${first},</p><p>You're all set.</p>`
     + head('Your Free Looksmaxxing AI')
     + body("Once you're inside, you'll see the full course and a button to connect your discord.")
@@ -535,30 +473,24 @@ module.exports = async (req, res) => {
                 : (line.grants.push('30 free days added to live TSM sub'), line.freeDaysAdded = true);
       } else line.grants.push('would add 30 free days to live TSM sub');
     } else if (ent.tsmFreeMonth) {
-      if (commit) {
-        const r = await mintOneUsePlan(PLANS.tsmTrial, `TSM free month · ${person.email}`);
-        r.error ? line.errors.push(`tsm trial: ${r.error}`)
-                : (line.grants.push('TSM 30-day trial link'), line.tsmTrialLink = r.link);
-      } else line.grants.push('would mint a one-use TSM 30-day trial link');
+      /* Not a member, so they need TSM itself. The shared half-price link is
+         the closest thing we offer; a genuinely free month would need its own
+         fixed plan if you want one. */
+      line.tsmPromoLink = LINKS.tsmHalfPrice;
+      line.grants.push('half-price TSM link');
     }
 
     if (ent.babyFreeMonth) {
-      if (commit) {
-        const r = await mintOneUsePlan(PLANS.babyTrial, `Baby AI free month · ${person.email}`);
-        r.error ? line.errors.push(`baby trial: ${r.error}`)
-                : (line.grants.push('Baby AI 30-day trial link'), line.babyLink = r.link);
-      } else line.grants.push('would mint a one-use Baby AI 30-day trial link');
+      line.babyLink = LINKS.babyAiTrial;
+      line.grants.push('Baby AI free month link');
     }
 
     if (ent.tsmHalfPrice) {
-      if (commit) {
-        const r = await mintHalfPricePromo(person.email);
-        r.error ? line.errors.push(`50% promo: ${r.error}`)
-                : (line.grants.push('50% off first month of TSM'), line.tsmPromoLink = r.link);
-      } else line.grants.push('would mint a one-use 50%-off code for TSM');
+      line.tsmPromoLink = LINKS.tsmHalfPrice;
+      line.grants.push('half-price TSM link');
     }
 
-    line.courseLink = `https://whop.com/checkout/${PLANS.course}`;
+    line.courseLink = LINKS.course;
 
     if (commit) {
       const newTags = ['close-synced', `base44-sale-${person.tier}`, 'base44-fulfilled'];
