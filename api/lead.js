@@ -80,6 +80,16 @@ module.exports = async function handler(req, res) {
      setter never dials a lead the partnership will not pay on. Keep the
      list in sync with middleware.js by hand. */
   const ELIGIBLE = new Set(['US','GB','AU','CA','NZ','AT','BE','DK','FR','DE','IE','IT','LU','NL','NO','PL','ES','SE','CH']);
+
+  /* PHONE-NUMBER BLOCK. The edge gate reads IP country, which a VPN defeats:
+     we had an opt-in with a +91 number whose IP resolved to an eligible
+     country. A dialling code is harder to fake than an exit node, so numbers
+     from blocked countries are stopped here regardless of what the IP says.
+     The lead is still written to GHL for the record, but it is NOT forwarded
+     to the partner, so no setter wastes a dial on it. */
+  const BLOCKED_DIAL_CODES = ['+91'];   // India
+  const e164 = String(phone || '').replace(/[^\d+]/g, '');
+  const blockedPhone = BLOCKED_DIAL_CODES.some((c) => e164.startsWith(c));
   const leadCountry = String(
     (String(req.query && req.query.debug) === '1' && body.geo_test) ||
     req.headers['x-vercel-ip-country'] || ''
@@ -106,7 +116,7 @@ module.exports = async function handler(req, res) {
         // `base44-opted-in` is the tag lib/placement.js reads to move a card
         // off Eligible. Writing only `base44-optin` meant reconcile never saw a
         // single opt-in and re-filed everyone under Eligible every five minutes.
-        tags: ['base44-opted-in', 'base44-optin', `base44-optin-${source}`, ...(hpFlagged ? ['hp-flagged'] : []), ...(ineligible ? ['base44-ineligible-country'] : [])],
+        tags: ['base44-opted-in', 'base44-optin', `base44-optin-${source}`, ...(hpFlagged ? ['hp-flagged'] : []), ...(ineligible ? ['base44-ineligible-country'] : []), ...(blockedPhone ? ['base44-blocked-phone'] : [])],
       }),
     });
     const j = await r.json().catch(() => ({}));
@@ -117,7 +127,9 @@ module.exports = async function handler(req, res) {
   }
 
   // 2 · the partner's copy
-  const delivered = await forwardToPipedream(payload);
+  /* Blocked numbers are recorded but never handed to the partner's dialer. */
+  const delivered = blockedPhone ? true : await forwardToPipedream(payload);
+  if (blockedPhone) console.log('[lead] blocked dial code, not forwarded:', email);
 
   // 3 · failed forward: tag it so the cron re-sends until it lands
   if (!delivered && contactId) {
@@ -209,6 +221,6 @@ module.exports = async function handler(req, res) {
   if (!contactId && !delivered) return res.status(502).json({ ok: false, error: 'try_again' });
 
   const out = { ok: true };
-  if (String(req.query && req.query.debug) === '1') { out.ghl = !!contactId; out.new = isNew; out.pipedream = delivered; out.country = leadCountry; out.ineligible = ineligible; }
+  if (String(req.query && req.query.debug) === '1') { out.ghl = !!contactId; out.new = isNew; out.pipedream = delivered; out.country = leadCountry; out.ineligible = ineligible; out.blockedPhone = blockedPhone; }
   return res.status(200).json(out);
 };
