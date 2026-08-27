@@ -304,41 +304,47 @@ const fine = (t) => `<p style="color:#555;font-size:14px">${t}</p>`;
 const head = (t) => `<p style="font-size:17px;font-weight:700;margin-bottom:2px">${t}</p>`;
 const body = (t) => `<p style="margin-top:0">${t}</p>`;
 
+/* The four approved variants, as signed off 2026-08-27. Which blocks appear
+   is decided by the grid; the wording below is fixed. */
+const BABY_DESC_SOLO = 'Baby AI is the chatbot trained on all 110+ TSM modules. '
+  + 'Ask it anything, any hour, and it answers for your exact situation.';
+const BABY_DESC_PAIR = 'The chatbot trained on every one of those modules. Ask it anything, any hour.';
+const TSM_DESC = '110+ modules, group calls with me, the discord, and challenges with cash prizes.';
+
 function buildEmail(first, line) {
-  const courseLink = LINKS.course;
   let html = `<div style="${WRAP}"><p>${first},</p><p>You're all set.</p>`
     + head('Your Free Looksmaxxing AI')
     + body("Once you're inside, you'll see the full course and a button to connect your discord.")
-    + button(courseLink, 'JOIN NOW &rarr;');
+    + button(LINKS.course, 'JOIN NOW &rarr;');
 
-  const two = !!(line.tsmTrialLink && line.babyLink);
+  const hasTsm = !!line.tsmPromoLink;
+  const hasBaby = !!line.babyLink;
+  const two = hasTsm && hasBaby;
 
-  if (line.tsmTrialLink) {
-    html += head('One month of The Stickley Method, free')
-      + body('110+ modules, group calls with me, the discord, and challenges with cash prizes.')
-      + button(line.tsmTrialLink, two ? 'START TSM FREE &rarr;' : 'CLAIM YOUR FREE MONTH &rarr;');
-  }
-  if (line.tsmPromoLink) {
+  if (hasTsm) {
     html += head('Half off your first month of The Stickley Method')
-      + body('110+ modules, group calls with me, the discord, and challenges with cash prizes.')
+      + body(TSM_DESC)
       + button(line.tsmPromoLink, 'CLAIM HALF OFF &rarr;');
   }
-  if (line.babyLink) {
+  if (hasBaby) {
     html += head('One month of Baby AI, free')
-      + body(two
-        ? 'The chatbot trained on every one of those modules. Ask it anything, any hour.'
-        : 'Baby AI is the chatbot trained on all 110+ TSM modules. Ask it anything, any hour, and it answers for your exact situation.')
+      + body(two ? BABY_DESC_PAIR : BABY_DESC_SOLO)
       + button(line.babyLink, two ? 'CLAIM BABY AI FREE &rarr;' : 'CLAIM YOUR FREE MONTH &rarr;');
   }
 
-  if (two) html += fine('Click the buttons above to sign up. Free for 30 days, then TSM is $39/month and Baby AI is $29/month');
-  else if (line.tsmPromoLink) html += fine('Click the button above to sign up. $19.50 for your first month, then $39/month');
-  else if (line.babyLink || line.tsmTrialLink) html += fine('Click the button above to sign up. Free for 30 days, then $29/month');
+  if (two) {
+    html += fine('Click the buttons above to sign up. TSM is $19.50 for your first month '
+      + 'then $39/month, and Baby AI is free for 30 days then $29/month');
+  } else if (hasTsm) {
+    html += fine('Click the button above to sign up. $19.50 for your first month, then $39/month');
+  } else if (hasBaby) {
+    html += fine('Click the button above to sign up. Free for 30 days, then $29/month');
+  }
 
   if (line.freeDaysAdded) {
-    html += `<p>Also, we have already added one month free to your Stickley Method membership</p>`;
+    html += '<p>Also, we have already added one month free to your Stickley Method membership</p>';
   }
-  html += `<p>Glad to have you inside,</p><p>Baby</p></div>`;
+  html += '<p>Glad to have you inside,</p><p>Baby</p></div>';
   return html;
 }
 
