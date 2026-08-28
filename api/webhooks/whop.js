@@ -70,6 +70,9 @@ module.exports = async function handler(req, res) {
   try { evt = JSON.parse(raw) } catch { return res.status(400).json({ error: 'bad_json' }) }
 
   const action = evt.action || evt.event || evt.type || 'unknown'
+  /* The event vocabulary was guessed once and cost a silent failure.
+     Log it so the real names are visible in the function logs. */
+  console.log('[whop] event:', action)
   const data = evt.data || evt.membership || evt.payment || evt
 
   const email = String(data?.user?.email || data?.email || '').trim().toLowerCase()
@@ -112,17 +115,18 @@ module.exports = async function handler(req, res) {
       if (isTsm) add.push('has-tsm')
       /* TRIGGER TAG FOR THE ONBOARDING SEQUENCE.
 
-         Neither existing tag works for this. `has-tsm` is historical and
-         never removed, so a returning member already carries it and a
-         "tag added" trigger would never fire for them again. And
-         `customer-active` is re-applied on payment_succeeded and
-         invoice_paid, which fire on every monthly renewal.
+         Added on any successful TSM payment, NOT gated on the event name.
+         The first version waited for `membership_activated`, which Whop
+         never sends: real traffic arrives as payment_succeeded, so the tag
+         never fired once across seven new subscriptions.
 
-         `tsm-joined` is added only on membership_activated, which fires
-         when a membership becomes valid and not on renewals, and it is
-         removed on deactivation. So it fires exactly once per join,
-         including a genuine re-join after churn, and never on a rebill. */
-      if (isTsm && action === 'membership_activated') add.push('tsm-joined');
+         Adding it on every TSM payment is still correct, because GHL does
+         not re-fire a "tag added" trigger for a tag the contact already
+         holds. So a renewal is a no-op, the first purchase fires once, and
+         since it is removed on deactivation a genuine re-join fires again.
+         That behaviour depends only on GHL's own semantics rather than on
+         guessing Whop's event vocabulary. */
+      if (isTsm) add.push('tsm-joined');
       if (isBabyAi) add.push('has-baby-ai')
       if (isNightfall) add.push('has-nightfall-97')
       if (plan) add.push(plan)
