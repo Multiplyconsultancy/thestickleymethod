@@ -17,6 +17,9 @@
     },
     "api/lead.js": {
       "maxDuration": 60
+    },
+    "api/cron/base44-board.js": {
+      "maxDuration": 300
     }
   },
   "crons": [
@@ -71,6 +74,10 @@
     {
       "path": "/api/cron/close-sync?commit=1",
       "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/base44-board",
+      "schedule": "*/30 * * * *"
     }
   ]
 }
