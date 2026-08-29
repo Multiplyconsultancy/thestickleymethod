@@ -216,13 +216,8 @@ module.exports = async function handler(req, res) {
   // 1b · brand new: tag and file under New Opt-ins.
   if (contactId) {
     if (isNew) {
-      try {
-        await fetch(`${GHL}/contacts/${contactId}/tags`, {
-          method: 'POST',
-          headers: ghlHeaders(),
-          body: JSON.stringify({ tags: ['base44-new-lead'] }),
-        });
-      } catch (e) { console.error('[lead] new-lead tag failed:', e.message); }
+      /* No base44-new-lead tag: it was written and never read. Whether the
+         contact was new is already implied by the pipeline they land in. */
       await routeToPipeline('new');
     } else {
       /* segment by the contact's existing tags. Tag spellings are as they
