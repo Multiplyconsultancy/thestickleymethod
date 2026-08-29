@@ -117,7 +117,7 @@ async function eligibleOptIns() {
         locationId: process.env.GHL_LOCATION_ID,
         pageLimit: 100,
         page,
-        filters: [{ field: 'tags', operator: 'eq', value: 'base44-optin' }],
+        filters: [{ field: 'tags', operator: 'eq', value: 'base44-opted-in' }],
       }),
     });
     const data = await jsonOrNull(res);

@@ -447,8 +447,8 @@ module.exports = async (req, res) => {
     }
     const tags = contact.tags;
 
-    if (tags.includes('close-synced') || tags.includes('base44-backlog-ignored')
-        || tags.includes('base44-fulfilled')) {
+    /* close-synced alone is enough: the watermarked backlog carries it too. */
+    if (tags.includes('close-synced') || tags.includes('base44-fulfilled')) {
       report.push({ email: person.email, skipped: 'already processed' });
       continue;
     }
