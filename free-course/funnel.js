@@ -118,15 +118,29 @@ document.querySelectorAll('.ba').forEach(function (ba) {
     err.hidden = true;
     var cc = f.cc ? f.cc.value : '';
     var rawPhone = f.phone.value.trim().replace(/^0+/, '');
+    var ageErr = f.querySelector('.lf-age-err');
+    if (ageErr) ageErr.hidden = true;
+    var age = parseInt(f.age ? f.age.value : '', 10);
+
     var data = {
       name:  f.name.value.trim(),
       email: f.email.value.trim(),
       phone: (cc && rawPhone.indexOf('+') !== 0 ? cc : '') + rawPhone,
+      age: age,
       _gotcha: f._gotcha ? f._gotcha.value : '',
       source: f.dataset.source === 'members' ? 'members' : 'main'
     };
-    if (data.name.length < 2 || data.email.indexOf('@') < 1 || data.phone.replace(/\D/g, '').length < 7) {
+    if (data.name.length < 2 || data.email.indexOf('@') < 1 || data.phone.replace(/\D/g, '').length < 7
+        || !age || isNaN(age)) {
       err.hidden = false; return;
+    }
+    /* AGE GATE, BEFORE ANYTHING IS SENT. Nothing is POSTed for an under-16,
+       so no name, email or phone for a child ever reaches our server or the
+       partner's. The server checks again independently, because this one
+       lives in the browser and can be bypassed. */
+    if (age < 16) {
+      if (ageErr) ageErr.hidden = false;
+      return;
     }
     btn.disabled = true; btn.innerHTML = 'SENDING&hellip;';
     fetch('/api/lead', {
