@@ -139,7 +139,13 @@ document.querySelectorAll('.ba').forEach(function (ba) {
        partner's. The server checks again independently, because this one
        lives in the browser and can be bypassed. */
     if (age < 16) {
-      if (ageErr) ageErr.hidden = false;
+      /* A page, not an inline error. An inline message sits next to a form
+         still holding their details and reads as "try a different number".
+         This cannot verify anyone's age, and nothing on a web form can, but
+         it states the rule properly rather than inviting a retry. */
+      var p = location.pathname;
+      if (/\.html$/.test(p)) location.href = 'under-16.html';
+      else location.href = '/free-course-16';
       return;
     }
     btn.disabled = true; btn.innerHTML = 'SENDING&hellip;';
