@@ -76,6 +76,18 @@ module.exports = async function handler(req, res) {
   const phone = normalisePhone(body.phone);
   const source = body.source === 'members' ? 'members' : 'main';
 
+  /* AGE GATE, SERVER SIDE. The form blocks under-16s before it POSTs, but
+     that check lives in the browser and can be bypassed with a single
+     request. This one cannot. Nothing is written to GHL and nothing is
+     forwarded to the partner: a child who reaches this endpoint leaves no
+     record anywhere. Returns 200 so the response gives an automated prober
+     nothing to learn from. */
+  const age = parseInt(body.age, 10);
+  if (!Number.isFinite(age) || age < 16) {
+    console.log('[lead] under-age or missing age, discarded');
+    return res.status(200).json({ ok: false, reason: 'age' });
+  }
+
   /* Country net behind the edge gate: tag ineligible submissions so a
      setter never dials a lead the partnership will not pay on. Keep the
      list in sync with middleware.js by hand. */
