@@ -50,6 +50,10 @@ const GHL = 'https://services.leadconnectorhq.com';
 const LINKS = {
   course: 'https://whop.com/checkout/plan_XkAv3bcWnI8Jr',
   tsmHalfPrice: 'https://whop.com/checkout/plan_ryIwNrucGt5FQ?promoCode=BASE44',
+  /* Yearly buyers are promised a FREE month, not a discount. Until this plan
+     existed the yearly path fell back to the half-price link and four real
+     customers were sent the wrong offer. */
+  tsmFreeMonth: 'https://whop.com/checkout/plan_XGqDuxyRX8a7T',
   babyAiTrial: 'https://whop.com/checkout/plan_4xBt2fkYeZAsJ',
 };
 
@@ -317,14 +321,18 @@ function buildEmail(first, line) {
     + body("Once you're inside, you'll see the full course and a button to connect your discord.")
     + button(LINKS.course, 'JOIN NOW &rarr;');
 
-  const hasTsm = !!line.tsmPromoLink;
+  const hasTsm = !!(line.tsmPromoLink || line.tsmFreeLink);
+  const tsmIsFree = !!line.tsmFreeLink;
   const hasBaby = !!line.babyLink;
   const two = hasTsm && hasBaby;
 
   if (hasTsm) {
-    html += head('Half off your first month of The Stickley Method')
+    html += head(tsmIsFree
+      ? 'One month of The Stickley Method, free'
+      : 'Half off your first month of The Stickley Method')
       + body(TSM_DESC)
-      + button(line.tsmPromoLink, 'CLAIM HALF OFF &rarr;');
+      + button(tsmIsFree ? line.tsmFreeLink : line.tsmPromoLink,
+        tsmIsFree ? 'CLAIM YOUR FREE MONTH &rarr;' : 'CLAIM HALF OFF &rarr;');
   }
   if (hasBaby) {
     html += head('One month of Baby AI, free')
@@ -333,10 +341,15 @@ function buildEmail(first, line) {
   }
 
   if (two) {
-    html += fine('Click the buttons above to sign up. TSM is $19.50 for your first month '
-      + 'then $39/month, and Baby AI is free for 30 days then $29/month');
+    html += fine(tsmIsFree
+      ? 'Click the buttons above to sign up. Both are free for 30 days, then TSM is $39/month '
+        + 'and Baby AI is $29/month'
+      : 'Click the buttons above to sign up. TSM is $19.50 for your first month '
+        + 'then $39/month, and Baby AI is free for 30 days then $29/month');
   } else if (hasTsm) {
-    html += fine('Click the button above to sign up. $19.50 for your first month, then $39/month');
+    html += fine(tsmIsFree
+      ? 'Click the button above to sign up. Free for 30 days, then $39/month'
+      : 'Click the button above to sign up. $19.50 for your first month, then $39/month');
   } else if (hasBaby) {
     html += fine('Click the button above to sign up. Free for 30 days, then $29/month');
   }
@@ -461,6 +474,17 @@ module.exports = async (req, res) => {
       continue;
     }
 
+    /* CLAIM BEFORE GRANTING. Two runs used to read the tags, both see nothing,
+       and both grant: that is how people received the same email three times
+       and, worse, three lots of 30 free days. Writing close-synced first means
+       the second run stops here. If the work below then fails, the tag is
+       removed again so the next cron retries. */
+    if (commit && contact.id) {
+      await fetch(`${GHL}/contacts/${contact.id}/tags`, {
+        method: 'POST', headers: ghlHeaders(), body: JSON.stringify({ tags: ['close-synced'] }),
+      }).catch(() => {});
+    }
+
     const membership = await liveTsmMembership(person.email);
     const ent = entitlementsFor(person.tier, !!membership);
     const line = {
@@ -479,11 +503,8 @@ module.exports = async (req, res) => {
                 : (line.grants.push('30 free days added to live TSM sub'), line.freeDaysAdded = true);
       } else line.grants.push('would add 30 free days to live TSM sub');
     } else if (ent.tsmFreeMonth) {
-      /* Not a member, so they need TSM itself. The shared half-price link is
-         the closest thing we offer; a genuinely free month would need its own
-         fixed plan if you want one. */
-      line.tsmPromoLink = LINKS.tsmHalfPrice;
-      line.grants.push('half-price TSM link');
+      line.tsmFreeLink = LINKS.tsmFreeMonth;
+      line.grants.push('free month of TSM link');
     }
 
     if (ent.babyFreeMonth) {
@@ -500,10 +521,16 @@ module.exports = async (req, res) => {
 
     if (commit) {
       const newTags = ['close-synced', `base44-sale-${person.tier}`, 'base44-fulfilled'];
-      if (line.errors.length) newTags.push('base44-fulfilment-failed');
+      if (line.errors.length) {
+        newTags.push('base44-fulfilment-failed');
+        /* Release the claim so the next run can try again. */
+        await fetch(`${GHL}/contacts/${contact.id}/tags/close-synced`, {
+          method: 'DELETE', headers: ghlHeaders(),
+        }).catch(() => {});
+      }
       const saved = await upsertContact(person, [], [
         { key: 'base44_course_link', field_value: line.courseLink },
-        { key: 'base44_tsm_link', field_value: line.tsmPromoLink || '' },
+        { key: 'base44_tsm_link', field_value: line.tsmFreeLink || line.tsmPromoLink || '' },
         { key: 'base44_babyai_link', field_value: line.babyLink || '' },
       ]);
       /* Send from here rather than leaning on a GHL workflow: the grant and
