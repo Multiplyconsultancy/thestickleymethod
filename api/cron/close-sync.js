@@ -521,6 +521,10 @@ module.exports = async (req, res) => {
 
     if (commit) {
       const newTags = ['close-synced', `base44-sale-${person.tier}`, 'base44-fulfilled'];
+      /* Entitlement to the free video audit. Yearly only, and written from
+         the bonus launch (2026-09-03) forward, so the historical yearly
+         buyers who bought before it existed are never made eligible. */
+      if (person.tier === 'yearly') newTags.push('base44-audit-eligible');
       if (line.errors.length) {
         newTags.push('base44-fulfilment-failed');
         /* Release the claim so the next run can try again. */
