@@ -73,7 +73,7 @@
     },
     {
       "path": "/api/cron/close-sync?commit=1",
-      "schedule": "*/5 * * * *"
+      "schedule": "*/30 * * * *"
     },
     {
       "path": "/api/cron/base44-board?commit=1",
