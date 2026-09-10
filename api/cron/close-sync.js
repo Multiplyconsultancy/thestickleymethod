@@ -57,6 +57,20 @@ const LINKS = {
   babyAiTrial: 'https://whop.com/checkout/plan_4xBt2fkYeZAsJ',
 };
 
+/* EMAILS ARE OFF.
+
+   Setters send the access links themselves by SMS from SendBlue now, with the
+   four Close templates as the fallback, so an automated email on top of that
+   is a second copy of the same links to the same person. This job's remaining
+   job is the GHL sync: create/update the contact, write the tags, store the
+   links on the record.
+
+   Set BASE44_EMAILS_ENABLED=1 to turn sending back on. Deliberately a flag
+   rather than deleted code: the send path is still the only thing that can
+   guarantee the grant and the email cannot drift apart, and we may want it
+   back if manual sending slips. */
+const EMAILS_ENABLED = String(process.env.BASE44_EMAILS_ENABLED) === '1';
+
 const TSM_PRODUCTS = ['prod_pF8nU8AqdAO1U', 'prod_QcVWRgKOCZH9U', 'prod_by2oiuCX0pVu6',
                       'prod_dnB3ROMALqsAR', 'prod_KHHplKsGSxPNL'];
 
@@ -545,7 +559,11 @@ module.exports = async (req, res) => {
           method: 'POST', headers: ghlHeaders(), body: JSON.stringify({ tags: newTags }),
         }).catch(() => {});
       }
-      if (contactId && !line.errors.length) {
+      if (contactId && !line.errors.length && !EMAILS_ENABLED) {
+        /* The contact, the tags and the links are already written above. The
+           person still gets everything — from their setter, not from here. */
+        line.emailSuppressed = true;
+      } else if (contactId && !line.errors.length) {
         const first = (person.name || '').trim().split(/\s+/)[0] || 'there';
         const sent = await sendEmail(contactId, first.charAt(0).toUpperCase() + first.slice(1), line);
         if (sent.error) {
