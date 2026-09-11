@@ -2,7 +2,7 @@
    GEO GATE for the Base44 funnel (Vercel Edge Middleware).
 
    The partnership only pays on activations from the countries below, so
-   visitors anywhere else are redirected to /free-course-unavailable
+   visitors anywhere else are redirected to an unavailable page
    before the funnel ever renders. Runs at the edge: no flash of the
    wrong page, works with JavaScript off.
 
@@ -29,7 +29,7 @@ const ELIGIBLE = new Set([
 ]);
 
 export const config = {
-  matcher: ['/free-course', '/free-course/members', '/geo-debug'],
+  matcher: ['/free-course', '/free-course/members', '/member/free-course', '/geo-debug'],
 };
 
 export default function middleware(request) {
@@ -57,7 +57,12 @@ export default function middleware(request) {
   if (!country || ELIGIBLE.has(country.toUpperCase())) {
     return; // eligible or unknown: serve the funnel
   }
-  url.pathname = '/free-course-unavailable';
+  /* The member funnel gets its own ineligible page. The public one signs off
+     by offering them The Stickley Method, which everybody landing here from
+     /member already pays for. */
+  url.pathname = url.pathname.startsWith('/member/')
+    ? '/member/free-course-unavailable'
+    : '/free-course-unavailable';
   url.search = '';
   return Response.redirect(url, 302);
 }
