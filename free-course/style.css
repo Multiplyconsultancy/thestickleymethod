@@ -616,3 +616,13 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
 .bmodal-load{color:var(--muted);font-size:.95rem;padding:60px 0}
 @media(max-width:480px){.bmodal-panel{padding:46px 10px 12px}
   .bmodal-panel iframe{min-height:560px}}
+
+
+/* The booking modal is hidden with visibility rather than display, because
+   the calendar is now loaded up front instead of on click. An iframe inside
+   display:none has no layout, so GoHighLevel's embed script measures it as
+   zero and it comes back the wrong height the first time it is shown.
+   The id beats .lmodal{display:none} on specificity, so no !important. */
+#bmodal{display:flex;visibility:hidden;opacity:0;pointer-events:none;
+  transition:opacity .18s ease}
+#bmodal.open{visibility:visible;opacity:1;pointer-events:auto}

@@ -22,6 +22,9 @@ try{posthog.init('phc_pcBknaZJZYx8CrCbguMRD8Aod3uTv4U9aSnKocGyS2oV',
   {api_host:'https://r.scaled.llc',ui_host:'https://us.posthog.com',
    defaults:'2026-05-30',person_profiles:'always'},'partner');}catch(e){}
 </script>
+<link rel="preconnect" href="https://api.leadconnectorhq.com" crossorigin>
+<link rel="preconnect" href="https://link.msgsndr.com" crossorigin>
+<link rel="dns-prefetch" href="https://api.leadconnectorhq.com">
 </head>
 <body>
 
@@ -104,10 +107,11 @@ try{posthog.init('phc_pcBknaZJZYx8CrCbguMRD8Aod3uTv4U9aSnKocGyS2oV',
       <div class="stack-row"><span>Your own Looks System, yours to keep</span><b>$1,500</b></div>
       <div class="stack-row"><span>Personal AI accountability coach</span><b>$1,000</b></div>
       <div class="stack-row"><span>Weekly live group calls with me</span><b>$1,000</b></div>
+      <div class="stack-row"><span>Personalised video audit from Baby</span><b>$300</b></div>
       <div class="stack-row"><span>Nightfall lectures: Looksmaxxing The Right Way</span><b>$600</b></div>
       <div class="stack-row"><span>Your photo system, plus the 30/60/90 milestones</span><b>$500</b></div>
       <div class="stack-row"><span>The community, guys running the same thing right now</span><b>$500</b></div>
-      <div class="stack-row stack-total"><span>Total value</span><b>$4,600</b></div>
+      <div class="stack-row stack-total"><span>Total value</span><b>$5,400</b></div>
       <div class="stack-bonus-band">
         <span class="sb-plus">+</span>
         <span>PLUS <b>BABY AI</b> FREE, ON TOP OF YOUR TSM ACCESS</span>
@@ -514,7 +518,15 @@ try{posthog.init('phc_pcBknaZJZYx8CrCbguMRD8Aod3uTv4U9aSnKocGyS2oV',
   }
   document.querySelectorAll('.book-open').forEach(function (el) {
     el.addEventListener('click', open);
+    /* Belt and braces: if the idle build has not run yet, start it the moment
+       the pointer lands on a CTA rather than waiting for the click. */
+    el.addEventListener('pointerenter', build);
   });
+
+  /* Load the calendar up front so the modal opens instantly. Deferred to idle
+     so it never competes with the hero video for bandwidth. */
+  if ('requestIdleCallback' in window) requestIdleCallback(build, { timeout: 2500 });
+  else addEventListener('load', function () { setTimeout(build, 800); });
   modal.querySelector('.lmodal-x').addEventListener('click', close);
   modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
   addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
