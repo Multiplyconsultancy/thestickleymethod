@@ -626,3 +626,19 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
 #bmodal{display:flex;visibility:hidden;opacity:0;pointer-events:none;
   transition:opacity .18s ease}
 #bmodal.open{visibility:visible;opacity:1;pointer-events:auto}
+
+
+/* ── WHATSAPP ALERT (member confirmation) ─────────────────────────────────
+   The call itself happens on WhatsApp, so this is not a nice-to-know: a
+   booked lead with no WhatsApp, or notifications off, simply misses it.
+   Sized to be the first thing read on the page, above everything else. */
+.wa-alert{margin:26px auto 0;max-width:730px;background:rgba(14,196,230,.07);
+  border:1px solid rgba(14,196,230,.38);border-radius:18px;padding:32px 26px;
+  text-align:center;box-shadow:0 0 70px -26px rgba(14,196,230,.55)}
+.wa-kicker{font-family:var(--display);text-transform:uppercase;letter-spacing:.09em;
+  font-size:.95rem;font-weight:700;color:var(--accent);margin:0 0 12px}
+.wa-main{font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(1.55rem,4.6vw,2.7rem);line-height:1.05;margin:0 0 16px;color:var(--text)}
+.wa-note{color:var(--muted);font-size:1.02rem;line-height:1.55;margin:0 auto;max-width:54ch}
+@media(max-width:480px){.wa-alert{padding:26px 18px;border-radius:14px}}
+[data-theme="light"] .wa-alert{background:rgba(10,124,155,.07);border-color:rgba(10,124,155,.32)}
