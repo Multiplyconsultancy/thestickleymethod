@@ -623,9 +623,17 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
    display:none has no layout, so GoHighLevel's embed script measures it as
    zero and it comes back the wrong height the first time it is shown.
    The id beats .lmodal{display:none} on specificity, so no !important. */
-#bmodal{display:flex;visibility:hidden;opacity:0;pointer-events:none;
+#bmodal{display:flex;opacity:0;pointer-events:none;transform:translateX(-200vw);
   transition:opacity .18s ease}
-#bmodal.open{visibility:visible;opacity:1;pointer-events:auto}
+#bmodal.open{opacity:1;pointer-events:auto;transform:none}
+/* GoHighLevel's embed script writes inline styles on the iframe and overrides
+   an inherited visibility:hidden and pointer-events:none, so a closed modal
+   left an 878x891 invisible but clickable iframe lying across the hero and
+   every CTA under it stopped working. Moving the closed modal off-viewport
+   fixes it without hiding the iframe, which still has to keep its layout so
+   the embed script can measure it. The !important below is the belt to that
+   brace: inline styles lose to it. */
+#bmodal:not(.open) iframe{pointer-events:none!important}
 
 
 /* ── WHATSAPP ALERT (member confirmation) ─────────────────────────────────
