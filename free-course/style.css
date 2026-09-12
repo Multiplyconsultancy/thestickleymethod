@@ -650,3 +650,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 70px;text-align:center;ba
 .wa-note{color:var(--muted);font-size:1.02rem;line-height:1.55;margin:0 auto;max-width:54ch}
 @media(max-width:480px){.wa-alert{padding:26px 18px;border-radius:14px}}
 [data-theme="light"] .wa-alert{background:rgba(10,124,155,.07);border-color:rgba(10,124,155,.32)}
+
+
+/* The call-is-coming line on the confirmation page. Deliberately between the
+   headline and body copy in size: it is the instruction the whole page exists
+   to deliver, so it must not read as a caption. */
+.hero-call{color:var(--text);font-weight:700;margin:0 auto;max-width:24ch;
+  font-size:clamp(1.35rem,3.1vw,2.05rem);line-height:1.22}
