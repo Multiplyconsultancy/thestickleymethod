@@ -65,6 +65,10 @@ const LINKS = {
    job is the GHL sync: create/update the contact, write the tags, store the
    links on the record.
 
+   STANDING RULE (Luca, 2026-09-17): Base44 buyers get exactly one email
+   from us, the one delivering their recorded video audit. So this flag
+   stays unset. It is kept only so the send path is not lost.
+
    Set BASE44_EMAILS_ENABLED=1 to turn sending back on. Deliberately a flag
    rather than deleted code: the send path is still the only thing that can
    guarantee the grant and the email cannot drift apart, and we may want it
