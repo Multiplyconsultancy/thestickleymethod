@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Build Your AI Looksmaxxing System | Baby Stickley</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="/free-course/img/hero-mobile.webp" media="(max-width: 760px)">
+<script src="/js/posthog.js"></script>
+
+<style>
+/* ══════════════════════════════════════════════════════════════════════
+   AI LOOKSMAXXING SIGNUP · STARTER YEARLY · DESIGN BUILD
+   One of three planned variants (yearly / builder monthly / choice).
+   Content that changes per variant is marked [SWAP] in the markup; it
+   becomes a template once this design is signed off.
+   Self-contained on purpose: nothing here touches the live funnel CSS.
+══════════════════════════════════════════════════════════════════════ */
+:root{
+  --bg:#0A0B0D; --surface:#121417; --surface-2:#171A1F; --line:#232830;
+  --text:#F4F6F8; --muted:#98A2AE; --dim:#6C7784;
+  --accent:#0EC4E6; --accent-2:#0894B4;
+  --cta:linear-gradient(180deg,#22D3EE 0%,#0894B4 100%);
+  --warn:#FF6B5E; --ok:#3DDC97;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --read:720px; --wide:1100px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font:400 17px/1.6 var(--body);
+  -webkit-font-smoothing:antialiased;padding-inline:18px}
+img{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3{font-family:var(--display);font-weight:800;margin:0;line-height:1.02;text-wrap:balance}
+h2{font-size:clamp(2rem,6.5vw,3.1rem);text-transform:uppercase;letter-spacing:-.01em}
+h3{font-size:1.3rem;text-transform:uppercase}
+p{margin:0}
+.read{max-width:var(--read);margin-inline:auto}
+.wide{max-width:var(--wide);margin-inline:auto}
+section{padding-block:64px}
+.eyebrow{font:700 .72rem/1 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.sec-head{text-align:center;display:grid;gap:10px;margin-bottom:30px}
+.sec-head p.sub{color:var(--muted)}
+.tbc{display:inline-block;font:700 .78rem/1.3 var(--body);color:#F0C050;background:rgba(240,192,80,.1);
+  border:1px dashed rgba(240,192,80,.45);border-radius:6px;padding:2px 7px}
+.ph{color:var(--dim);font-style:italic}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+
+/* build banner */
+.buildbar{margin-inline:-18px;padding:8px 18px;background:#1A1405;border-bottom:1px solid #4A3A10;
+  color:#F0C050;font-size:.8rem;text-align:center}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;cursor:pointer;
+  font:800 1.12rem/1 var(--display);letter-spacing:.05em;text-transform:uppercase;text-decoration:none;
+  color:#04202A;background:var(--cta);padding:17px 26px;border-radius:999px;
+  box-shadow:0 10px 30px -12px rgba(14,196,230,.7)}
+.btn:active{transform:translateY(1px)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line);box-shadow:none}
+.link-arrow{color:var(--accent);font-weight:700;text-decoration:none}
+
+/* ── 1 · HERO ───────────────────────────────────────────────────────── */
+.brand{font:800 1.2rem var(--display);letter-spacing:.08em;text-transform:uppercase}
+.brand span{color:var(--accent)}
+.hero{position:relative;isolation:isolate;padding-block:18px 8px;text-align:center}
+.hero .brand{margin-bottom:26px}
+.hero::before{content:"";position:absolute;inset:0 -18px;z-index:-1;
+  background:linear-gradient(180deg,rgba(10,11,13,.55),var(--bg) 92%),url(/free-course/img/hero-mobile.webp) center/cover no-repeat;opacity:.55}
+@media(min-width:761px){.hero::before{background-image:linear-gradient(180deg,rgba(10,11,13,.5),var(--bg) 92%),url(/free-course/img/hero.webp)}}
+.hero h1{font-size:clamp(2.35rem,9.5vw,4.4rem);text-transform:uppercase;letter-spacing:-.015em;max-width:15ch;margin-inline:auto}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .subhead{margin:16px auto 0;max-width:34ch;font-size:clamp(1.05rem,3.6vw,1.25rem);color:var(--muted)}
+.hero .subhead b{color:var(--text);font-weight:600}
+
+/* ── 2 · VIDEO ──────────────────────────────────────────────────────── */
+#video{padding-block:22px 40px;text-align:center}
+.video-label{font:800 clamp(1.15rem,4.4vw,1.45rem)/1.15 var(--display);text-transform:uppercase;margin-bottom:12px}
+.video-label span{color:var(--accent)}
+.video{position:relative;aspect-ratio:16/9;max-width:var(--read);margin-inline:auto;border-radius:16px;overflow:hidden;
+  background:radial-gradient(120% 90% at 50% 20%,#14303a,#0b1014 70%);border:1px solid #1d3a44;
+  display:grid;place-items:center;cursor:pointer}
+.video .play{width:78px;height:78px;border-radius:50%;background:var(--cta);display:grid;place-items:center;
+  box-shadow:0 0 0 10px rgba(14,196,230,.14)}
+.video .play svg{width:28px;height:28px;fill:#04202A;margin-left:5px}
+.video .vnote{position:absolute;bottom:12px;left:0;right:0;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:700}
+.video-after{margin-top:12px;color:var(--muted)}
+
+/* ── 3 · PROOF STRIP ────────────────────────────────────────────────── */
+#proof{padding-top:8px}
+.statbar{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
+.stat{padding:20px 16px;text-align:center}
+.stat+.stat{border-left:1px solid var(--line)}
+.stat b{display:block;font:800 clamp(2rem,8vw,2.8rem)/1 var(--display);color:var(--text)}
+.stat span{display:block;margin-top:8px;font-size:.9rem;color:var(--muted);line-height:1.35}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.ba figure{margin:0;position:relative;aspect-ratio:4/5;border-radius:14px;overflow:hidden;
+  background:linear-gradient(160deg,#1a1f26,#101317);border:1px dashed #2c3440;display:grid;place-items:center}
+.ba figcaption{position:absolute;top:10px;left:10px;font:700 .7rem/1 var(--body);letter-spacing:.14em;text-transform:uppercase;
+  background:rgba(0,0,0,.55);padding:6px 9px;border-radius:999px}
+.ba .ph{font-size:.85rem;text-align:center;padding:12px}
+
+/* ── 4 · STUDENT WINS ───────────────────────────────────────────────── */
+.win{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;break-inside:avoid;margin:0 0 12px}
+.win-tag{display:inline-block;font:700 .66rem/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.win-featured{border-color:rgba(14,196,230,.4);background:linear-gradient(165deg,rgba(14,196,230,.09),var(--surface) 55%);padding:24px}
+.win-featured .q{font:700 clamp(1.3rem,4.8vw,1.75rem)/1.2 var(--display);text-transform:none}
+.q{font-size:1.08rem;line-height:1.45;color:var(--text)}
+.q::before{content:"\201C";display:block;font:800 3rem/0.6 var(--display);color:var(--accent);margin-bottom:8px}
+.who{margin-top:12px;font-size:.88rem;color:var(--muted)}
+.who b{color:var(--text);font-weight:600}
+.who .member{display:inline-block;margin-left:6px;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--accent);border:1px solid rgba(14,196,230,.35);border-radius:999px;padding:2px 7px}
+/* chat screenshot look */
+.chat{background:#0B141A;border-color:#1F2C34;padding:14px}
+.chat .bar{display:flex;align-items:center;gap:9px;padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid #1F2C34;font-size:.85rem;color:#E9EDEF}
+.chat .av{width:26px;height:26px;border-radius:50%;background:#2A3942}
+.bubble{background:#202C33;color:#E9EDEF;border-radius:10px 10px 10px 2px;padding:9px 11px;font-size:.95rem;line-height:1.4;max-width:92%}
+.bubble+.bubble{margin-top:6px}
+.bubble small{display:block;text-align:right;color:#8696A0;font-size:.7rem;margin-top:3px}
+.discord{background:#313338;border-color:#3F4147}
+.discord .bubble{background:transparent;padding:0;border-radius:0}
+.discord .bar{border-color:#3F4147;color:#F2F3F5}
+/* system screenshot + progress */
+.shot{aspect-ratio:9/16;max-height:340px;margin:0 auto 12px;border-radius:14px;border:1px dashed #2c3440;
+  background:linear-gradient(170deg,#161b21,#0e1115);display:grid;place-items:center;text-align:center;padding:10px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.pair div{aspect-ratio:3/4;border-radius:12px;border:1px dashed #2c3440;background:#12161b;display:grid;place-items:center;
+  font:700 .68rem/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.cap{font-size:.95rem;color:var(--muted)}
+
+.wins-swipe{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -18px 12px;padding:0 18px 4px;
+  scrollbar-width:none}
+.wins-swipe::-webkit-scrollbar{display:none}
+.wins-swipe .win{flex:0 0 78%;scroll-snap-align:start;margin:0}
+.wins-grid{columns:1;column-gap:12px}
+.win.more{display:none}
+.wins-open .win.more{display:block}
+.wins-foot{display:grid;justify-items:center;gap:22px;margin-top:10px}
+@media(min-width:820px){
+  .wins-swipe{display:grid;grid-template-columns:repeat(3,1fr);overflow:visible;margin:0 0 12px;padding:0}
+  .wins-swipe .win{flex:none}
+  .wins-grid{columns:3}
+}
+
+/* ── 5 · HOW THIS WORKS ─────────────────────────────────────────────── */
+.how{list-style:none;padding:0;margin:0;display:grid;gap:14px}
+.how>li{display:grid;grid-template-columns:40px 1fr;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px}
+.how .n{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--cta);color:#04202A;font:800 1.2rem var(--display)}
+.how h3{font-size:1.28rem;margin:6px 0 8px;text-transform:none;font-weight:800;letter-spacing:0}
+.how p{color:var(--muted)}
+.how p b{color:var(--text)}
+.how ul{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.how ul li{display:grid;grid-template-columns:18px 1fr;gap:8px;color:var(--muted)}
+.how ul li b{color:var(--text)}
+.tick{width:16px;height:16px;margin-top:4px;fill:none;stroke:var(--accent);stroke-width:3}
+.how .extra{margin-top:10px}
+.closing{margin-top:14px;padding:16px 18px;border-radius:14px;background:rgba(14,196,230,.07);border:1px solid rgba(14,196,230,.3);color:var(--text)}
+
+/* ── 6 · WHAT YOU GET ───────────────────────────────────────────────── */
+.gets{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.get{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:8px;align-content:start}
+.get .gi{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:rgba(14,196,230,.1);color:var(--accent)}
+.get .gi svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.get h3{font-size:1.25rem;text-transform:none;letter-spacing:0}
+.get p{color:var(--muted);font-size:.95rem}
+.get-featured{border-color:rgba(14,196,230,.45);background:linear-gradient(160deg,rgba(14,196,230,.12),var(--surface) 60%);padding:26px}
+.get-featured h3{font-size:clamp(1.7rem,6vw,2.3rem);text-transform:uppercase}
+.get-featured .badge{justify-self:start;font:700 .68rem/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:#04202A;background:var(--accent);padding:6px 9px;border-radius:999px}
+.get-bonus .badge{justify-self:start;font:700 .66rem/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(14,196,230,.4);padding:5px 8px;border-radius:999px}
+@media(min-width:820px){
+  .gets{grid-template-columns:repeat(3,1fr)}
+  .get-featured{grid-column:span 2;grid-row:span 2;align-content:center}
+}
+
+/* ── 7 · WHAT THE SYSTEM DOES ───────────────────────────────────────── */
+.feats{display:grid;gap:14px}
+.feat{display:grid;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;align-items:center}
+.feat .phone{aspect-ratio:9/16;max-height:420px;width:100%;max-width:240px;margin-inline:auto;border-radius:26px;
+  border:6px solid #1c2128;background:linear-gradient(170deg,#141920,#0c0f13);display:grid;place-items:center;text-align:center;padding:14px}
+.feat h3{font-size:1.5rem}
+.feat p{color:var(--muted);margin-top:6px}
+@media(min-width:820px){
+  .feats{grid-template-columns:repeat(3,1fr)}
+}
+
+/* ── 8 · SIGNUP STEPS ───────────────────────────────────────────────── */
+.warnbanner{display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start;padding:18px;border-radius:16px;
+  background:rgba(255,107,94,.1);border:2px solid var(--warn);margin-bottom:16px}
+.warnbanner svg{width:28px;height:28px;fill:none;stroke:var(--warn);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.warnbanner p{color:var(--text)}
+.warnbanner b{font-weight:700}
+.steps{list-style:none;padding:0;margin:0;display:grid;gap:12px;counter-reset:s}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;grid-template-columns:42px 1fr;gap:14px}
+.step .n{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);border:1px solid var(--line);font:800 1.2rem var(--display)}
+.step h3{font-size:1.25rem;text-transform:none;letter-spacing:0;margin:8px 0 6px}
+.step p{color:var(--muted)}
+.step p+p,.step .why,.step .check,.step .row{margin-top:10px}
+.step .why{font-size:.92rem;color:var(--muted)}
+.step .why b{color:var(--text)}
+.step .check{display:grid;grid-template-columns:20px 1fr;gap:8px;font-size:.92rem;color:var(--text)}
+.step .check svg{width:18px;height:18px;margin-top:3px;fill:none;stroke:var(--ok);stroke-width:3}
+.step-danger{border:2px solid var(--warn);background:linear-gradient(165deg,rgba(255,107,94,.08),var(--surface) 50%)}
+.step-danger .n{background:var(--warn);border-color:var(--warn);color:#240604}
+.flag{display:inline-block;font:700 .66rem/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--warn);
+  border:1px solid var(--warn);border-radius:999px;padding:4px 8px;margin-bottom:2px}
+.copyrow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:stretch}
+.copyrow code{display:block;overflow-x:auto;white-space:nowrap;font:500 .88rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;
+  background:#0B0D10;border:1px solid var(--line);border-radius:12px;padding:14px 12px;color:var(--text)}
+.copybtn{font:800 1rem/1 var(--display);letter-spacing:.05em;text-transform:uppercase;border:0;border-radius:12px;padding:0 18px;
+  cursor:pointer;color:#04202A;background:var(--cta);min-width:104px}
+.copybtn.done{background:var(--ok)}
+.keys{margin-top:10px;display:grid;gap:6px;font-size:.92rem;color:var(--muted)}
+.keys div{display:grid;grid-template-columns:78px 1fr;gap:8px}
+.keys b{color:var(--text);font-weight:600}
+kbd{font:600 .8rem ui-monospace,Menlo,monospace;background:#0B0D10;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 5px;color:var(--text)}
+.stepshot{margin-top:12px;aspect-ratio:16/10;border-radius:12px;border:1px dashed #2c3440;background:#0e1115;display:grid;place-items:center;text-align:center;padding:10px}
+
+/* ── 9 · UPLOAD FORM ────────────────────────────────────────────────── */
+.form{background:var(--surface);border:1px solid rgba(14,196,230,.35);border-radius:18px;padding:22px;display:grid;gap:16px}
+.field{display:grid;gap:7px}
+.field label,.field .lab{font-weight:600;font-size:.96rem}
+.input{width:100%;font:500 1rem var(--body);color:var(--text);background:#0B0D10;border:1px solid var(--line);border-radius:12px;padding:15px 14px;min-height:52px}
+.input:focus{outline:none;border-color:rgba(14,196,230,.7)}
+.field.bad .input,.field.bad .drop{border-color:var(--warn)}
+.err{display:none;font-size:.86rem;color:var(--warn)}
+.field.bad .err{display:block}
+.phonerow{display:grid;grid-template-columns:auto 1fr;gap:8px}
+.cc{position:relative;display:flex;align-items:center;gap:6px;background:#0B0D10;border:1px solid var(--line);border-radius:12px;padding:0 12px;min-height:52px;font-weight:600;white-space:nowrap}
+.cc select{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer;font-size:16px}
+.cc .car{color:var(--dim);font-size:.8rem}
+.drop{position:relative;display:grid;place-items:center;gap:6px;text-align:center;min-height:150px;padding:18px;border-radius:14px;
+  border:1.5px dashed rgba(14,196,230,.45);background:rgba(14,196,230,.04);cursor:pointer}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.drop b{font-size:1rem}
+.drop span{font-size:.86rem;color:var(--muted)}
+.drop img{max-height:240px;border-radius:10px}
+.filemeta{font-size:.9rem;color:var(--text)}
+.submit{width:100%;font-size:1.25rem;padding:19px}
+.fineprint{font-size:.82rem;color:var(--dim);text-align:center}
+
+/* ── 10 · NEXT, 11 · FAQ, 12 · FOOTER ───────────────────────────────── */
+.next{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.next li{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;padding:16px;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--muted)}
+.next .n{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(14,196,230,.45);color:var(--accent);font:800 1.05rem var(--display)}
+.next b{color:var(--text)}
+.faq{border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr 24px;gap:12px;align-items:center;padding:18px 2px;font-weight:600;font-size:1.02rem}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font:400 1.6rem/1 var(--body);color:var(--accent);text-align:center;transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{padding:0 2px 18px;color:var(--muted)}
+.final{text-align:center;display:grid;gap:18px;justify-items:center}
+.support{color:var(--muted)}
+footer{border-top:1px solid var(--line);margin-inline:-18px;padding:26px 18px calc(110px + env(safe-area-inset-bottom,0px));text-align:center;color:var(--dim);font-size:.85rem;display:grid;gap:10px}
+footer nav{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+footer nav a{color:var(--muted)}
+@media(min-width:761px){footer{padding-bottom:30px}}
+
+/* ── STICKY MOBILE BUTTON ───────────────────────────────────────────── */
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(180deg,rgba(10,11,13,0),rgba(10,11,13,.92) 35%);transform:translateY(110%);visibility:hidden;
+  transition:transform .25s ease,visibility 0s linear .25s}
+.sticky.on{transform:none;visibility:visible;transition:transform .25s ease,visibility 0s}
+.sticky .btn{width:100%;padding:16px}
+@media(min-width:761px){.sticky{display:none}}
+
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.sticky,.faq summary::after{transition:none}}
+</style>
+</head>
+<body data-variant="yearly">
+
+<div class="buildbar">Design build · starter yearly · the form isn&rsquo;t connected yet</div>
+
+<!-- ═══ 1 · HERO ═══════════════════════════════════════════════════════ -->
+<section class="hero" id="hero">
+  <div class="read">
+    <div class="brand">Baby <span>Stickley</span></div>
+    <h1>Build your own <em>AI Looksmaxxing System</em>, taught step by step by Baby Stickley</h1>
+    <!-- [SWAP] subheadline -->
+    <p class="subhead">Plus <b>weekly live calls with Baby</b>, and a free month of TSM and Baby AI</p>
+  </div>
+</section>
+
+<!-- ═══ 2 · VIDEO ══════════════════════════════════════════════════════ -->
+<section id="video">
+  <p class="video-label">Watch this first. <span>It explains exactly how this works.</span></p>
+  <!-- [SWAP] one video per variant -->
+  <div class="video" id="video-frame" role="button" tabindex="0" aria-label="Play the video">
+    <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+    <p class="vnote">Starter yearly video goes here</p>
+  </div>
+  <p class="video-after">Watch first, then follow the steps below &darr;</p>
+</section>
+
+<!-- ═══ 3 · PROOF STRIP ════════════════════════════════════════════════ -->
+<section id="proof">
+  <div class="read">
+    <div class="statbar">
+      <div class="stat"><b>15,000+</b><span>paid students across 2 years</span></div>
+      <div class="stat"><b>180,000+</b><span>member Discord, the largest looksmaxxing Discord in the world</span></div>
+    </div>
+    <div class="ba">
+      <figure><figcaption>Before</figcaption><p class="ph">Baby&rsquo;s natural before photo</p></figure>
+      <figure><figcaption>After</figcaption><p class="ph">Baby&rsquo;s natural after photo</p></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 4 · STUDENT WINS ═══════════════════════════════════════════════ -->
+<section id="wins">
+  <div class="wide">
+    <div class="sec-head read">
+      <h2>What students are saying about their AI Looksmaxxing System</h2>
+      <p class="sub">Real messages from students already using it alongside TSM.</p>
+    </div>
+
+    <article class="win win-featured">
+      <span class="win-tag">Featured</span>
+      <p class="q ph">Longest, strongest real student win goes here. A few sentences, pinned at the top.</p>
+      <p class="who"><b>[First name]</b><span class="member">TSM member</span></p>
+    </article>
+
+    <div class="wins-swipe" aria-label="Featured wins">
+      <article class="win">
+        <span class="win-tag">Progress</span>
+        <div class="pair"><div>Earlier</div><div>Now</div></div>
+        <p class="cap ph">One-line caption from the student</p>
+      </article>
+      <article class="win">
+        <span class="win-tag">Their system</span>
+        <div class="shot"><p class="ph">Screenshot of a student&rsquo;s built system</p></div>
+        <p class="cap ph">Their comment about it underneath</p>
+      </article>
+      <article class="win chat">
+        <div class="bar"><span class="av"></span>WhatsApp</div>
+        <p class="bubble ph">Real WhatsApp message about the system<small>21:14</small></p>
+      </article>
+    </div>
+
+    <div class="wins-grid" id="wins-grid">
+      <article class="win"><p class="q ph">Short pull quote from a real student.</p><p class="who"><b>[First name]</b><span class="member">TSM member</span></p></article>
+      <article class="win discord">
+        <div class="bar"><span class="av chat-av" style="width:26px;height:26px;border-radius:50%;background:#5865F2"></span>Discord</div>
+        <p class="bubble ph">Real Discord message about how it fits alongside TSM</p>
+      </article>
+      <article class="win">
+        <span class="win-tag">Their system</span>
+        <div class="shot"><p class="ph">Tracker or task list screenshot</p></div>
+        <p class="cap ph">Caption from the student</p>
+      </article>
+      <article class="win chat">
+        <div class="bar"><span class="av"></span>WhatsApp</div>
+        <p class="bubble ph">Message about finally sticking to their routine<small>08:02</small></p>
+        <p class="bubble ph">Follow-up message<small>08:03</small></p>
+      </article>
+      <article class="win"><p class="q ph">Pull quote about not being techy and building it anyway.</p><p class="who"><b>[Initial]</b><span class="member">TSM member</span></p></article>
+      <article class="win">
+        <span class="win-tag">Progress</span>
+        <div class="pair"><div>Earlier</div><div>Now</div></div>
+        <p class="cap ph">One-line caption</p>
+      </article>
+
+      <!-- revealed by "See more wins" -->
+      <article class="win more"><p class="q ph">Pull quote about using it every day.</p><p class="who"><b>[First name]</b><span class="member">TSM member</span></p></article>
+      <article class="win chat more">
+        <div class="bar"><span class="av"></span>WhatsApp</div>
+        <p class="bubble ph">Message about turning TSM into a daily plan<small>19:40</small></p>
+      </article>
+      <article class="win more">
+        <span class="win-tag">Their system</span>
+        <div class="shot"><p class="ph">Progress-photo view screenshot</p></div>
+        <p class="cap ph">Caption</p>
+      </article>
+      <article class="win discord more">
+        <div class="bar"><span class="av" style="width:26px;height:26px;border-radius:50%;background:#5865F2"></span>Discord</div>
+        <p class="bubble ph">Discord message</p>
+      </article>
+      <article class="win more"><p class="q ph">Pull quote about consistency.</p><p class="who"><b>[First name]</b><span class="member">TSM member</span></p></article>
+      <article class="win more">
+        <span class="win-tag">Progress</span>
+        <div class="pair"><div>Earlier</div><div>Now</div></div>
+        <p class="cap ph">One-line caption</p>
+      </article>
+    </div>
+
+    <div class="wins-foot">
+      <button type="button" class="btn btn-ghost" id="more-wins">See more wins</button>
+      <a class="link-arrow" href="#how">Join them. Here&rsquo;s how it works &darr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 5 · HOW THIS WORKS ═════════════════════════════════════════════ -->
+<section id="how">
+  <div class="read">
+    <div class="sec-head"><h2>Here&rsquo;s how this works</h2></div>
+    <ol class="how">
+      <li><span class="n">1</span><div>
+        <h3>You build your own AI Looksmaxxing System.</h3>
+        <p>Most guys already know roughly what to do. They just don&rsquo;t do it consistently, and they can&rsquo;t see whether it&rsquo;s working. Your system fixes both:</p>
+        <ul>
+          <li><svg class="tick" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span><b>Tells you exactly what to do</b> every day and every week, so you&rsquo;re never guessing</span></li>
+          <li><svg class="tick" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span><b>Tracks your consistency</b>, so you always know if you&rsquo;re actually locked in</span></li>
+          <li><svg class="tick" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span><b>Compares your progress photos</b> over time, so you see real changes</span></li>
+          <li><svg class="tick" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span><b>Keeps you accountable</b> long after the motivation wears off</span></li>
+        </ul>
+        <p class="extra">Baby walks you through building it step by step. No coding or tech experience needed.</p>
+      </div></li>
+      <li><span class="n">2</span><div>
+        <h3>You get coached by Baby live, every week.</h3>
+        <p>Every week, you jump on a live video call with Baby. Ask him anything, get his looksmaxxing advice directly, and know exactly what to focus on next. This is the same guy who&rsquo;s coached 15,000+ paid students.</p>
+      </div></li>
+      <li><span class="n">3</span><div>
+        <h3>Base44 is paying for all of it.</h3>
+        <p>Base44 is the AI platform your system runs on, and we&rsquo;ve partnered with them. <b>Base44 covers the cost of your weekly coaching calls, your bonuses, and the private community.</b></p>
+      </div></li>
+      <li><span class="n">4</span><div>
+        <h3>All you pay for is your Base44 membership.</h3>
+        <p>That&rsquo;s the software your system runs on. You pay Base44 directly, not us, and your system lives in your own account, so it&rsquo;s yours.</p>
+      </div></li>
+    </ol>
+    <!-- [SWAP] closing line -->
+    <p class="closing">You&rsquo;ll pick Base44&rsquo;s <b>Starter membership, billed yearly</b>. That&rsquo;s what unlocks your free month of TSM and Baby AI.</p>
+  </div>
+</section>
+
+<!-- ═══ 6 · WHAT YOU GET [SWAP: yearly = six cards] ════════════════════ -->
+<section id="get">
+  <div class="wide">
+    <div class="sec-head read"><h2>What you get</h2></div>
+    <ul class="gets">
+      <li class="get get-featured">
+        <span class="badge">The main event</span>
+        <span class="gi"><svg viewBox="0 0 24 24"><path d="M15 10l5-3v10l-5-3"/><rect x="3" y="6" width="12" height="12" rx="2"/></svg></span>
+        <h3>Weekly live coaching calls with Baby</h3>
+        <p>Every week, live on video. Ask him anything and leave knowing exactly what to focus on next.</p>
+      </li>
+      <li class="get">
+        <span class="gi"><svg viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></svg></span>
+        <h3>AI Looksmaxxing System build course</h3>
+        <p>Baby walks you through the whole build, step by step.</p>
+      </li>
+      <li class="get">
+        <span class="gi"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></span>
+        <h3>Your own AI Looksmaxxing System</h3>
+        <p>Lives in your own account. Yours to keep.</p>
+      </li>
+      <li class="get">
+        <span class="gi"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.2L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></span>
+        <h3>Private WhatsApp group</h3>
+        <p>With Adam, Baby and every other student.</p>
+      </li>
+      <li class="get get-bonus">
+        <span class="badge">Yearly bonus</span>
+        <span class="gi"><svg viewBox="0 0 24 24"><path d="M4 19V6a2 2 0 0 1 2-2h12v15H6a2 2 0 0 0-2 2"/><path d="M8 8h6"/></svg></span>
+        <h3>1 free month of TSM</h3>
+        <p>Baby&rsquo;s full Looksmaxxing course.</p>
+      </li>
+      <li class="get get-bonus">
+        <span class="badge">Yearly bonus</span>
+        <span class="gi"><svg viewBox="0 0 24 24"><path d="M12 3a7 7 0 0 1 7 7c0 3-2 5-4 6v3H9v-3c-2-1-4-3-4-6a7 7 0 0 1 7-7z"/><path d="M10 22h4"/></svg></span>
+        <h3>1 free month of Baby AI</h3>
+        <p>The chatbot trained on everything Baby teaches.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══ 7 · WHAT THE SYSTEM DOES ═══════════════════════════════════════ -->
+<section id="does">
+  <div class="wide">
+    <div class="sec-head read"><h2>What the system does</h2></div>
+    <div class="feats">
+      <div class="feat"><div class="phone"><p class="ph">Daily &amp; weekly tasks screenshot or GIF</p></div>
+        <div><h3>Daily and weekly tasks</h3><p>Know exactly what to do, every day.</p></div></div>
+      <div class="feat"><div class="phone"><p class="ph">Consistency tracking screenshot or GIF</p></div>
+        <div><h3>Consistency tracking</h3><p>See whether you&rsquo;re actually locked in.</p></div></div>
+      <div class="feat"><div class="phone"><p class="ph">Progress photo comparison screenshot or GIF</p></div>
+        <div><h3>Progress photo comparison</h3><p>Watch your transformation over time.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 8 · STEP-BY-STEP SIGNUP ════════════════════════════════════════ -->
+<section id="steps">
+  <div class="read">
+    <div class="sec-head"><h2>Sign up in 7 steps</h2></div>
+
+    <div class="warnbanner" role="note">
+      <svg viewBox="0 0 24 24"><path d="M12 3 2 21h20L12 3z"/><path d="M12 10v5"/><path d="M12 18h.01"/></svg>
+      <p><b>Follow these steps exactly, in order.</b> It takes about 5 minutes, and a laptop is easiest. Skip a step and your signup won&rsquo;t link to our partnership, so we can&rsquo;t give you access.</p>
+    </div>
+
+    <ol class="steps">
+      <li class="step"><span class="n">1</span><div>
+        <h3>Copy your access link</h3>
+        <div class="row copyrow">
+          <code id="access-link">https://b44.scaled.llc/nightfall-lifestyle-coaching-services/Looksmaxxing</code>
+          <button type="button" class="copybtn" id="copy-link">Copy</button>
+        </div>
+        <p class="why"><b>Why:</b> this link is how Base44 knows you came through our partnership.</p>
+      </div></li>
+
+      <li class="step step-danger"><span class="n">2</span><div>
+        <span class="flag">Most common mistake</span>
+        <h3>Open a private/incognito window and paste the link in</h3>
+        <div class="keys">
+          <div><b>Chrome</b><span><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd> &nbsp;(Mac: <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd>)</span></div>
+          <div><b>Safari</b><span>File &rarr; New Private Window</span></div>
+          <div><b>Phone</b><span>Open a private tab in your browser</span></div>
+        </div>
+        <p class="why"><b>Why:</b> a normal window can carry old Base44 logins that overwrite the partnership link. This is the #1 reason signups fail.</p>
+        <p class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span>Check: your window is dark or says Private before you continue.</span></p>
+      </div></li>
+
+      <li class="step"><span class="n">3</span><div>
+        <h3>Create a Base44 account with an email that has NEVER been used on Base44</h3>
+        <p class="why"><b>Why:</b> existing accounts can&rsquo;t be linked to the partnership. A brand-new Gmail works fine.</p>
+      </div></li>
+
+      <li class="step"><span class="n">4</span><div>
+        <h3>Click &ldquo;Build Now&rdquo; or &ldquo;View Plans&rdquo;</h3>
+        <div class="stepshot"><p class="ph">Screenshot of the button</p></div>
+      </div></li>
+
+      <li class="step step-danger"><span class="n">5</span><div>
+        <span class="flag">Check this carefully</span>
+        <!-- [SWAP] plan instruction + screenshot -->
+        <h3>Select Starter, billed Yearly</h3>
+        <div class="stepshot"><p class="ph">Plans page with Starter &middot; Yearly circled</p></div>
+        <p class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span>Check: the plan name and billing period are correct before you pay.</span></p>
+      </div></li>
+
+      <li class="step"><span class="n">6</span><div>
+        <h3>Complete your purchase</h3>
+      </div></li>
+
+      <li class="step"><span class="n">7</span><div>
+        <h3>Screenshot your receipt and upload it below</h3>
+        <p class="why"><b>Why:</b> this is how we verify you and give you access.</p>
+      </div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ═══ 9 · UPLOAD FORM ════════════════════════════════════════════════ -->
+<section id="upload">
+  <div class="read">
+    <div class="sec-head"><h2>Upload your receipt</h2><p class="sub">This is how you claim your access.</p></div>
+
+    <form class="form" id="claim" novalidate>
+      <input type="hidden" name="variant" value="yearly">
+
+      <div class="field" data-f="name">
+        <label for="f-name">Full name</label>
+        <input class="input" id="f-name" name="name" type="text" autocomplete="name">
+        <p class="err">Add your full name.</p>
+      </div>
+
+      <div class="field" data-f="email">
+        <label for="f-email">Email</label>
+        <input class="input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email">
+        <p class="err">That email doesn&rsquo;t look right. Check it and try again.</p>
+      </div>
+
+      <div class="field" data-f="phone">
+        <label for="f-phone">WhatsApp number</label>
+        <div class="phonerow">
+          <label class="cc" for="f-cc"><span id="cc-show">🇺🇸 +1</span><span class="car">&#9662;</span>
+            <select id="f-cc" name="cc" aria-label="Country code"><option value="+1" data-iso="US">United States (+1)</option></select>
+          </label>
+          <input class="input" id="f-phone" name="phone" type="tel" autocomplete="tel-national" inputmode="tel" placeholder="Phone number">
+        </div>
+        <p class="err">Add your WhatsApp number, without the country code.</p>
+      </div>
+
+      <div class="field" data-f="file">
+        <span class="lab" id="f-file-lab">Receipt screenshot</span>
+        <label class="drop" for="f-file" id="drop">
+          <input id="f-file" name="receipt" type="file" accept="image/jpeg,image/png,image/heic,image/heif,.heic,.heif" aria-labelledby="f-file-lab">
+          <span id="drop-empty"><b>Tap to add your receipt screenshot</b><br><span>JPG, PNG or HEIC &middot; max 4.5MB</span></span>
+          <img id="drop-preview" alt="Your receipt screenshot" hidden>
+          <span class="filemeta" id="drop-meta" hidden></span>
+        </label>
+        <p class="err" id="file-err">Add a screenshot of your Base44 receipt.</p>
+      </div>
+
+      <button type="submit" class="btn submit">Submit &amp; Claim My Access</button>
+      <p class="fineprint">Design build: this checks your details but doesn&rsquo;t send anything yet.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ═══ 10 · WHAT HAPPENS NEXT ═════════════════════════════════════════ -->
+<section id="next">
+  <div class="read">
+    <div class="sec-head"><h2>What happens next</h2></div>
+    <ol class="next">
+      <li><span class="n">1</span><span><b>Receipts are reviewed twice a day.</b></span></li>
+      <li><span class="n">2</span><span><b>Once approved, we message you the link to the private WhatsApp group</b>, with your build course and the link and schedule for the weekly calls with Baby.</span></li>
+      <!-- [SWAP] yearly + choice only -->
+      <li><span class="n">3</span><span><b>Your free months of TSM and Baby AI arrive by email.</b></span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ═══ 11 · FAQ (yearly set) ══════════════════════════════════════════ -->
+<section id="faq">
+  <div class="read">
+    <div class="sec-head"><h2>Questions</h2></div>
+    <div class="faq">
+      <details><summary>What am I actually paying for?</summary><p>Only your Base44 membership, the software your AI system runs on. Through our partnership, Base44 pays for your weekly coaching calls with Baby, the private group, and your bonuses.</p></details>
+      <details><summary>What is Base44?</summary><p>An AI platform that lets you build your own apps without coding. It&rsquo;s what your Looksmaxxing System runs on.</p></details>
+      <details><summary>How do the weekly calls work?</summary><p>Every <span class="tbc">DAY</span> at <span class="tbc">TIME</span>, Baby goes live on a video call with students. Ask questions and get his advice directly. The link is posted in the WhatsApp group.</p></details>
+      <details><summary>What if I can&rsquo;t make the call?</summary><p><span class="tbc">Answer to confirm</span></p></details>
+      <details><summary>Is the coaching really free?</summary><p>Yes. Base44 pays for it through our partnership. You only pay for your Base44 membership.</p></details>
+      <details><summary>I already have a Base44 account. Can I use it?</summary><p>No. Create a new account with a brand-new email in a private/incognito window, or the partnership can&rsquo;t see your signup.</p></details>
+      <details><summary>I did it in a normal window by mistake.</summary><p><span class="tbc">Answer to confirm</span></p></details>
+      <details><summary>I bought the wrong plan.</summary><p><span class="tbc">Answer to confirm</span></p></details>
+      <details><summary>Can I get a refund?</summary><p><span class="tbc">Answer to confirm</span></p></details>
+      <details><summary>Can I do this on my phone?</summary><p>Yes, in a private tab, but a laptop is easier for building.</p></details>
+      <details><summary>How long until I get access?</summary><p>Receipts are reviewed twice a day. Once approved, you&rsquo;re sent the link to the WhatsApp group.</p></details>
+      <details><summary>Do I own the system?</summary><p>Yes. It lives in your own Base44 account.</p></details>
+      <!-- [SWAP] answer differs per variant -->
+      <details><summary>Is the full Looksmaxxing course included?</summary><p>Yes, your free month of TSM includes it.</p></details>
+      <!-- [SWAP] yearly + choice only -->
+      <details><summary>I&rsquo;m already in TSM. Do I still get the free month?</summary><p>Yes, it&rsquo;s added on top of your current membership.</p></details>
+      <details><summary>Is anything in this dangerous?</summary><p>No. No peptides, steroids, surgery or bone smashing. Everything Baby teaches is natural.</p></details>
+      <details><summary>I don&rsquo;t have a card.</summary><p>Ask a parent and show them this page. It explains exactly what you&rsquo;re paying for and who it goes to.</p></details>
+      <details><summary>Is this legit?</summary><p>See the student wins above, plus 15,000+ paid students across 2 years.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 12 · FINAL CTA + FOOTER ════════════════════════════════════════ -->
+<section id="final">
+  <div class="read final">
+    <a class="btn" href="#steps">Ready? Go to Step 1 &uarr;</a>
+    <p class="support">Stuck? Message us at <span class="tbc">SUPPORT CONTACT</span></p>
+  </div>
+</section>
+
+<footer>
+  <nav><a href="#">Terms</a><a href="#">Privacy</a><a href="#disclosure">Partnership disclosure</a></nav>
+  <p id="disclosure">We receive compensation from Base44 when you sign up through our link.</p>
+</footer>
+
+<div class="sticky" id="sticky">
+  <a class="btn" id="sticky-btn" href="#video">Watch the video &uarr;</a>
+</div>
+
+<script src="/free-course/countries.js"></script>
+<script>
+(function () {
+  var VARIANT = document.body.getAttribute('data-variant');
+  var MAX_BYTES = 4.5 * 1024 * 1024;
+
+  function track(name, props) {
+    try { window.posthog && posthog.capture(name, Object.assign({ variant: VARIANT }, props || {})); } catch (e) {}
+  }
+  try { window.posthog && posthog.register({ variant: VARIANT, page: 'looksmaxxing-main' }); } catch (e) {}
+
+  /* ── video (placeholder: counts a play) ── */
+  var vf = document.getElementById('video-frame');
+  function play() { track('video_play'); }
+  vf.addEventListener('click', play);
+  vf.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); play(); } });
+
+  /* ── scroll depth ── */
+  var marks = [25, 50, 75, 100], hit = {};
+  function depth() {
+    var max = document.documentElement.scrollHeight - innerHeight;
+    var pct = max > 0 ? Math.round(scrollY / max * 100) : 100;
+    marks.forEach(function (m) { if (pct >= m && !hit[m]) { hit[m] = 1; track('scroll_depth', { percent: m }); } });
+  }
+
+  /* ── sticky mobile button ──
+     Before Section 5 it points back up to the video; after, down to the
+     steps. It gets out of the way while the video or the steps and form are
+     on screen, so it never covers what it is pointing at. */
+  var sticky = document.getElementById('sticky'), sbtn = document.getElementById('sticky-btn');
+  var video = document.getElementById('video'), how = document.getElementById('how');
+  var steps = document.getElementById('steps'), upload = document.getElementById('upload');
+  function place() {
+    var vh = innerHeight;
+    var v = video.getBoundingClientRect(), h = how.getBoundingClientRect();
+    var s = steps.getBoundingClientRect(), u = upload.getBoundingClientRect();
+    var videoOn = v.bottom > 60 && v.top < vh;
+    var formZone = s.top < vh * 0.9 && u.bottom > vh * 0.1;
+    if (videoOn || formZone) { sticky.classList.remove('on'); return; }
+    if (h.top > vh * 0.5) {
+      sbtn.setAttribute('href', '#video'); sbtn.innerHTML = 'Watch the video &uarr;';
+    } else {
+      sbtn.setAttribute('href', '#steps');
+      sbtn.innerHTML = s.top > 0 ? 'Go to the steps &darr;' : 'Go to the steps &uarr;';
+    }
+    sticky.classList.add('on');
+  }
+  var ticking = false;
+  addEventListener('scroll', function () {
+    if (ticking) return; ticking = true;
+    requestAnimationFrame(function () { ticking = false; place(); depth(); });
+  }, { passive: true });
+  addEventListener('resize', place);
+  place();
+
+  /* ── see more wins ── */
+  var more = document.getElementById('more-wins'), grid = document.getElementById('wins-grid');
+  more.addEventListener('click', function () {
+    grid.classList.add('wins-open');
+    more.hidden = true;
+    track('see_more_wins');
+  });
+
+  /* ── copy link ── */
+  var copyBtn = document.getElementById('copy-link'), linkText = document.getElementById('access-link').textContent.trim();
+  function copied() {
+    copyBtn.textContent = 'Copied ✓'; copyBtn.classList.add('done');
+    track('copy_link_click');
+    setTimeout(function () { copyBtn.textContent = 'Copy'; copyBtn.classList.remove('done'); }, 2200);
+  }
+  copyBtn.addEventListener('click', function () {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(linkText).then(copied, fallback);
+    } else fallback();
+  });
+  function fallback() {
+    var ta = document.createElement('textarea');
+    ta.value = linkText; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); copied(); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  /* ── country code picker: a native select under a small label, so
+     phones get their own picker ── */
+  var sel = document.getElementById('f-cc'), show = document.getElementById('cc-show');
+  function flag(iso) { return String.fromCodePoint.apply(null, iso.toUpperCase().split('').map(function (c) { return 127397 + c.charCodeAt(0); })); }
+  if (typeof LF_COUNTRIES !== 'undefined') {
+    var region = ((navigator.language || '').split('-')[1] || '').toUpperCase();
+    sel.innerHTML = '';
+    var known = LF_COUNTRIES.some(function (c) { return c[1] === region; });
+    var want = known ? region : 'US';
+    LF_COUNTRIES.slice().sort(function (a, b) { return a[0].localeCompare(b[0]); }).forEach(function (c) {
+      var o = document.createElement('option');
+      o.value = c[2]; o.setAttribute('data-iso', c[1]);
+      o.textContent = flag(c[1]) + ' ' + c[0] + ' (' + c[2] + ')';
+      if (c[1] === want) o.selected = true;
+      sel.appendChild(o);
+    });
+  }
+  function syncCc() {
+    var o = sel.options[sel.selectedIndex];
+    if (o) show.textContent = flag(o.getAttribute('data-iso') || 'US') + ' ' + o.value;
+  }
+  sel.addEventListener('change', syncCc); syncCc();
+
+  /* ── receipt file ── */
+  var file = document.getElementById('f-file'), prev = document.getElementById('drop-preview'),
+      empty = document.getElementById('drop-empty'), meta = document.getElementById('drop-meta'),
+      fileErr = document.getElementById('file-err');
+  function okType(f) {
+    return /^image\/(jpeg|png|heic|heif)$/.test(f.type) || /\.(jpe?g|png|heic|heif)$/i.test(f.name);
+  }
+  file.addEventListener('change', function () {
+    var f = file.files && file.files[0];
+    setBad('file', false);
+    if (!f) { prev.hidden = true; meta.hidden = true; empty.hidden = false; return; }
+    empty.hidden = true;
+    meta.hidden = false;
+    meta.textContent = f.name + ' · ' + (f.size / 1048576).toFixed(1) + 'MB';
+    prev.hidden = true;
+    if (!/heic|heif/i.test(f.type + f.name)) {   // most browsers can't draw HEIC, so name + size only
+      prev.onload = function () { prev.hidden = false; };
+      prev.onerror = function () { prev.hidden = true; };
+      prev.src = URL.createObjectURL(f);
+    }
+  });
+
+  /* ── validation + submit (design build: nothing is sent) ── */
+  var form = document.getElementById('claim');
+  function setBad(key, bad) {
+    var el = form.querySelector('[data-f="' + key + '"]');
+    if (el) el.classList.toggle('bad', !!bad);
+  }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = document.getElementById('f-name').value.trim(),
+        email = document.getElementById('f-email').value.trim(),
+        phoneRaw = document.getElementById('f-phone').value.trim(),
+        digits = phoneRaw.replace(/[^\d]/g, ''), f = file.files && file.files[0];
+    var bad = {
+      name: name.length < 2,
+      email: !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email),
+      phone: digits.length < 6 || digits.length > 15,
+      file: false
+    };
+    if (!f) { bad.file = true; fileErr.textContent = 'Add a screenshot of your Base44 receipt.'; }
+    else if (!okType(f)) { bad.file = true; fileErr.textContent = 'That file type won’t work. Use a JPG, PNG or HEIC screenshot.'; }
+    else if (f.size > MAX_BYTES) { bad.file = true; fileErr.textContent = 'That image is ' + (f.size / 1048576).toFixed(1) + 'MB. The limit is 4.5MB. Crop the screenshot or take a new one.'; }
+    Object.keys(bad).forEach(function (k) { setBad(k, bad[k]); });
+    var first = Object.keys(bad).filter(function (k) { return bad[k]; })[0];
+    if (first) {
+      var el = form.querySelector('[data-f="' + first + '"]');
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      var inp = el.querySelector('input:not([type=file])'); if (inp) inp.focus({ preventScroll: true });
+      track('form_error', { field: first });
+      return;
+    }
+    track('form_submit');
+    try { sessionStorage.setItem('lmx_submit', JSON.stringify({ phone: sel.value + ' ' + phoneRaw, variant: VARIANT })); } catch (err) {}
+    location.href = '/looksmaxxing-yearly-confirmed';
+  });
+  ['name', 'email', 'phone'].forEach(function (k) {
+    var inp = form.querySelector('[data-f="' + k + '"] .input');
+    inp.addEventListener('input', function () { setBad(k, false); });
+  });
+})();
+</script>
+</body>
+</html>

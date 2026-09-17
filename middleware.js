@@ -29,7 +29,7 @@ const ELIGIBLE = new Set([
 ]);
 
 export const config = {
-  matcher: ['/free-course', '/free-course/members', '/member/free-course', '/geo-debug'],
+  matcher: ['/free-course', '/free-course/members', '/member/free-course', '/looksmaxxing-yearly', '/geo-debug'],
 };
 
 export default function middleware(request) {

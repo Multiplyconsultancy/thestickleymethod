@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Receipt Received | Baby Stickley</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="/js/posthog.js"></script>
+<style>
+/* Confirmation page for the starter-yearly design build. Same tokens as
+   /looksmaxxing-yearly; kept self-contained like that page. */
+:root{
+  --bg:#0A0B0D; --surface:#121417; --line:#232830;
+  --text:#F4F6F8; --muted:#98A2AE; --dim:#6C7784;
+  --accent:#0EC4E6; --ok:#3DDC97;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font:400 17px/1.6 var(--body);-webkit-font-smoothing:antialiased;padding-inline:18px}
+p{margin:0}
+h1,h2{font-family:var(--display);font-weight:800;margin:0;line-height:1.02;text-transform:uppercase;text-wrap:balance}
+.buildbar{margin-inline:-18px;padding:8px 18px;background:#1A1405;border-bottom:1px solid #4A3A10;color:#F0C050;font-size:.8rem;text-align:center}
+.wrap{max-width:620px;margin:0 auto;padding-block:34px 60px;display:grid;gap:34px}
+.brand{text-align:center;font:800 1.2rem var(--display);letter-spacing:.08em;text-transform:uppercase}
+.brand span{color:var(--accent)}
+.done{text-align:center;display:grid;justify-items:center;gap:14px}
+.tickmark{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;background:rgba(61,220,151,.12);border:2px solid var(--ok)}
+.tickmark svg{width:46px;height:46px;fill:none;stroke:var(--ok);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.done h1{font-size:clamp(2.8rem,12vw,4.2rem)}
+.done p{color:var(--muted);max-width:34ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px}
+.card h2{font-size:1.7rem;margin-bottom:14px}
+.next{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.next li{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;color:var(--muted)}
+.next .n{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(14,196,230,.45);color:var(--accent);font:800 1.05rem var(--display)}
+.next b{color:var(--text)}
+.number{border-color:rgba(14,196,230,.4)}
+.number p{color:var(--muted)}
+.number .val{margin-top:10px;font:800 clamp(1.6rem,7vw,2.1rem)/1.1 var(--display);letter-spacing:.02em;color:var(--text);font-variant-numeric:tabular-nums}
+.number .val.none{font:italic 500 1rem var(--body);color:var(--dim)}
+.support{text-align:center;color:var(--muted)}
+.tbc{display:inline-block;font:700 .78rem/1.3 var(--body);color:#F0C050;background:rgba(240,192,80,.1);border:1px dashed rgba(240,192,80,.45);border-radius:6px;padding:2px 7px}
+</style>
+</head>
+<body data-variant="yearly">
+
+<div class="buildbar">Design build · starter yearly · nothing was actually submitted</div>
+
+<main class="wrap">
+  <div class="brand">Baby <span>Stickley</span></div>
+
+  <div class="done">
+    <div class="tickmark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <h1>Receipt received</h1>
+    <p>You&rsquo;re in the queue. Here&rsquo;s what happens now.</p>
+  </div>
+
+  <section class="card">
+    <h2>What happens next</h2>
+    <ol class="next">
+      <li><span class="n">1</span><span><b>Receipts are reviewed twice a day.</b></span></li>
+      <li><span class="n">2</span><span><b>Once approved, we message you the link to the private WhatsApp group</b>, with your build course and the link and schedule for the weekly calls with Baby.</span></li>
+      <!-- [SWAP] yearly + choice only -->
+      <li><span class="n">3</span><span><b>Your free months of TSM and Baby AI arrive by email.</b></span></li>
+    </ol>
+  </section>
+
+  <section class="card number">
+    <p>Double-check your WhatsApp number, since that&rsquo;s where we send your invite.</p>
+    <p class="val" id="num">&nbsp;</p>
+  </section>
+
+  <p class="support">Stuck? Message us at <span class="tbc">SUPPORT CONTACT</span></p>
+</main>
+
+<script>
+(function () {
+  var el = document.getElementById('num'), data = null;
+  try { data = JSON.parse(sessionStorage.getItem('lmx_submit') || 'null'); } catch (e) {}
+  if (data && data.phone) el.textContent = data.phone;
+  else { el.textContent = 'The number you entered on the form'; el.classList.add('none'); }
+  try { window.posthog && posthog.capture('confirmation_view', { variant: 'yearly' }); } catch (e) {}
+})();
+</script>
+</body>
+</html>
