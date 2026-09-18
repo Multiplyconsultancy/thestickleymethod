@@ -206,40 +206,45 @@ section{padding-block:64px}
    it is sized and contrasted to be read, not skimmed past. */
 .step p{color:#C7D0DA;font-size:1.03rem;line-height:1.55}
 .step p+p,.step .why,.step .row{margin-top:12px}
-.step .why{padding:13px 15px;border-radius:12px;background:rgba(14,196,230,.07);
-  border-left:3px solid var(--accent);font-size:1rem;color:#D6DEE6}
-.step .why b{display:block;margin-bottom:3px;color:var(--accent);font-weight:700;
-  font-size:.74rem;letter-spacing:.16em;text-transform:uppercase}
-.step-key{border-color:rgba(14,196,230,.5);background:linear-gradient(165deg,rgba(14,196,230,.09),var(--surface) 56%)}
+/* Labels are addressed as direct children only. A blanket rule on b turned
+   every inline bold inside these panels into its own uppercase line, which is
+   what made "Private Window" and "Incognito" break mid-sentence. */
+.step .why{padding:2px 0 2px 15px;border-left:2px solid rgba(14,196,230,.55);font-size:1rem;color:#B9C3CE}
+.step .why>b:first-child{display:block;margin-bottom:3px;color:var(--accent);font-weight:700;
+  font-size:.72rem;letter-spacing:.16em;text-transform:uppercase}
+.step .why b{font-weight:700;color:var(--text)}
+.step-key{border-color:rgba(14,196,230,.42)}
 .step-key .n{background:var(--cta);border-color:transparent;color:#04202A}
-.flag{display:inline-block;font:700 .68rem/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
-  border:1px solid rgba(14,196,230,.5);border-radius:999px;padding:5px 9px;margin-bottom:4px}
-/* One instruction per browser, each in its own block: the old three-column
-   key/value rows were the easiest thing on the page to skip. */
-.browsers{margin-top:14px;display:grid;gap:10px}
-.browsers div{padding:13px 15px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line)}
-.browsers b{display:block;color:var(--text);font-weight:700;font-size:1.02rem;margin-bottom:3px}
-.browsers span{display:block;color:#C7D0DA;font-size:.99rem;line-height:1.5}
+/* One instruction per browser. A single bordered list rather than three
+   separate cards inside the step card: boxes inside boxes read as clutter. */
+.browsers{margin-top:14px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.browsers>div{padding:14px 16px}
+.browsers>div+div{border-top:1px solid var(--line)}
+.browsers>div>b{display:block;color:var(--text);font-weight:700;font-size:1rem;margin-bottom:2px}
+.browsers span{display:block;color:#B9C3CE;font-size:.99rem;line-height:1.55}
+.browsers span b{font-weight:700;color:var(--text)}
 /* The "did you actually do it" check, lifted out from under step 2 so it
    cannot be scrolled past. */
-.checkpoint{display:grid;grid-template-columns:32px 1fr;gap:14px;align-items:start;margin:12px 0;padding:18px 20px;
-  border-radius:16px;background:rgba(61,220,151,.09);border:1px solid rgba(61,220,151,.45)}
-.checkpoint svg{width:26px;height:26px;fill:none;stroke:var(--ok);stroke-width:3;margin-top:2px}
-.checkpoint b{display:block;color:var(--ok);font:700 .74rem/1 var(--body);letter-spacing:.16em;text-transform:uppercase;margin-bottom:7px}
-.checkpoint p{color:var(--text);font-size:1.05rem;line-height:1.5}
+.checkpoint{display:grid;grid-template-columns:26px 1fr;gap:14px;align-items:start;margin:12px 0;padding:18px 20px;
+  border-radius:16px;background:rgba(61,220,151,.05);border:1px solid rgba(61,220,151,.3)}
+.checkpoint svg{width:22px;height:22px;fill:none;stroke:var(--ok);stroke-width:3;margin-top:3px}
+.checkpoint>div>b{display:block;color:var(--ok);font:700 .72rem/1 var(--body);letter-spacing:.16em;text-transform:uppercase;margin-bottom:7px}
+.checkpoint p{color:#D6DEE6;font-size:1.03rem;line-height:1.55}
+.checkpoint p b{font-weight:700;color:var(--text)}
 /* The one thing that genuinely cannot be got wrong. Gold, not red: important
    rather than alarming. */
-.must{margin-top:14px;padding:16px 18px;border-radius:14px;background:rgba(240,192,80,.09);border:1px solid rgba(240,192,80,.5)}
-.must b{display:block;color:#F0C050;font-weight:700;font-size:1.03rem;margin-bottom:5px}
-.must p{color:#E4E8ED;font-size:1rem;line-height:1.55;margin:0}
+.must{margin-top:14px;padding:16px 18px;border-radius:14px;background:rgba(240,192,80,.06);border:1px solid rgba(240,192,80,.38)}
+.must>b{display:block;color:#F0C050;font-weight:700;font-size:1.03rem;margin-bottom:5px;line-height:1.4}
+.must p{color:#C7D0DA;font-size:1rem;line-height:1.55;margin:0}
 .must p+p{margin-top:8px}
+.must p b{font-weight:700;color:#F0C050}
 .copyrow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:stretch}
 .copyrow code{display:block;overflow-x:auto;white-space:nowrap;font:500 .88rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;
   background:#0B0D10;border:1px solid var(--line);border-radius:12px;padding:14px 12px;color:var(--text)}
 .copybtn{font:800 1rem/1 var(--display);letter-spacing:.05em;text-transform:uppercase;border:0;border-radius:12px;padding:0 18px;
   cursor:pointer;color:#04202A;background:var(--cta);min-width:104px}
 .copybtn.done{background:var(--ok)}
-kbd{font:600 .8rem ui-monospace,Menlo,monospace;background:#0B0D10;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 5px;color:var(--text)}
+kbd{font:600 .82rem ui-monospace,Menlo,monospace;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:5px;padding:2px 6px;color:var(--text);white-space:nowrap}
 .stepshot{margin-top:12px;aspect-ratio:16/10;border-radius:12px;border:1px dashed #2c3440;background:#0e1115;display:grid;place-items:center;text-align:center;padding:10px}
 
 /* ── 9 · UPLOAD FORM ────────────────────────────────────────────────── */
@@ -302,6 +307,32 @@ footer nav a{color:var(--muted)}
 .topbar a.back{color:var(--muted);text-decoration:none;font-size:.92rem}
 .topbar a.back:hover{color:var(--text)}
 
+/* ── THE STEP-BY-STEP FLOW ───────────────────────────────────────────────
+   One step on screen at a time, with a progress bar. Somebody doing this is
+   switching between us and Base44 in another window, so the page has to say
+   exactly where they are and what the single next action is. Without JS every
+   panel simply shows, in order, and the page still works. */
+.wiz{display:grid;gap:14px}
+.wiz-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);
+  padding:12px 0 14px;display:grid;gap:9px}
+.wiz-meta{display:flex;align-items:baseline;justify-content:space-between;gap:14px}
+.wiz-count{color:var(--accent);font:700 .72rem/1 var(--body);letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
+.wiz-now{color:var(--muted);font-size:.92rem;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wiz-track{height:6px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.wiz-fill{height:100%;width:12.5%;background:var(--cta);border-radius:999px;transition:width .35s ease}
+.panel{display:block;padding:24px 22px}
+.panel[hidden]{display:none}
+.panel h3{margin-top:0}
+.panel .form{background:transparent;border:0;padding:0;gap:14px}
+.wiz-nav{display:flex;gap:10px;align-items:center;margin-top:20px}
+.wiz-nav .btn{flex:1;min-width:0}
+.wiz-back{flex:0 0 auto;background:transparent;border:1px solid var(--line);border-radius:999px;color:var(--muted);
+  font:700 .95rem/1 var(--body);padding:15px 18px;cursor:pointer}
+.wiz-back:hover{color:var(--text);border-color:var(--line-2,#2d3540)}
+.wiz-choice{display:grid;gap:10px;margin-top:20px}
+.wiz-choice .btn{width:100%}
+@media(prefers-reduced-motion:reduce){.wiz-fill{transition:none}}
+
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.sticky,.faq summary::after{transition:none}}
 </style>
 </head>
@@ -320,129 +351,137 @@ footer nav a{color:var(--muted)}
 <!-- ═══ 8 · STEP-BY-STEP SIGNUP ════════════════════════════════════════ -->
 <section id="steps">
   <div class="read">
-    <div class="sec-head"><h2>Sign up in 7 steps</h2></div>
+    <div class="sec-head"><h2>Let&rsquo;s get you set up</h2>
+      <p class="sub">One step at a time. The whole thing takes about five minutes, and a laptop is easiest.</p></div>
 
-    <div class="intro-card">
-      <p><b>You&rsquo;re in the right place.</b> Seven steps, about five minutes, and a laptop is easiest.</p>
-      <p>Do them in the order below and everything unlocks on its own. We&rsquo;ll be watching for your receipt at the end.</p>
-    </div>
+    <div class="wiz" id="wiz">
+      <div class="wiz-bar">
+        <div class="wiz-meta"><span class="wiz-count" id="wiz-count">Step 1 of 8</span><span class="wiz-now" id="wiz-now">Copy your access link</span></div>
+        <div class="wiz-track"><div class="wiz-fill" id="wiz-fill"></div></div>
+      </div>
 
-    <ol class="steps">
-      <li class="step"><span class="n">1</span><div>
+      <article class="step panel" data-title="Copy your access link" tabindex="-1">
         <h3>Copy your access link</h3>
+        <p>This is your own link into Base44. Tap Copy and it&rsquo;s on your clipboard, ready for the next step.</p>
         <div class="row copyrow">
           <code id="access-link">https://b44.scaled.llc/nightfall-lifestyle-coaching-services/Looksmaxxing</code>
           <button type="button" class="copybtn" id="copy-link">Copy</button>
         </div>
         <p class="why"><b>Why this matters</b>This link is how Base44 knows you came through our partnership. It&rsquo;s what makes everything else free.</p>
-      </div></li>
+        <div class="wiz-nav"><button type="button" class="btn wiz-next">Next step &rarr;</button></div>
+      </article>
 
-      <li class="step step-key"><span class="n">2</span><div>
-        <span class="flag">Do this bit carefully</span>
+      <article class="step panel" data-title="Open an incognito browser" tabindex="-1">
         <h3>Open an incognito browser, then paste the link in</h3>
+        <p>Open a fresh private window first, then paste your link into it. Don&rsquo;t open the link in the window you&rsquo;re reading this in.</p>
         <div class="browsers">
           <div><b>Chrome</b><span>Open an incognito browser. If you can&rsquo;t find it in the menu, press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd>, or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd> on a Mac.</span></div>
           <div><b>Safari</b><span>Open a new tab, click <b>Private Window</b>, then open a new tab from there.</span></div>
           <div><b>Any other browser</b><span>Open a private or incognito tab in your browser.</span></div>
         </div>
+        <div class="stepshot"><p class="ph">What an incognito window looks like</p></div>
         <p class="why"><b>Why this matters</b>A normal window can still be signed in to Base44, and that stops your signup being linked to us. It&rsquo;s the single most common reason someone doesn&rsquo;t get their access.</p>
-      </div></li>
-    </ol>
+        <div class="wiz-nav"><button type="button" class="wiz-back">&larr; Back</button><button type="button" class="btn wiz-next">Next step &rarr;</button></div>
+      </article>
 
-    <div class="checkpoint" role="note">
-      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-      <div>
-        <b>Check before you carry on</b>
-        <p>Your new window should say <b>Private</b> or <b>Incognito</b>. If it doesn&rsquo;t, open one now and paste the link in there instead.</p>
-      </div>
-    </div>
+      <article class="step panel" data-title="Check your window" tabindex="-1">
+        <div class="checkpoint" role="note">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <div>
+            <b>Quick check</b>
+            <p>Your new window should say <b>Private</b> or <b>Incognito</b> somewhere on it, and it usually looks darker than a normal window.</p>
+          </div>
+        </div>
+        <p style="margin-top:16px">Is your link open in that window?</p>
+        <div class="wiz-choice">
+          <button type="button" class="btn wiz-next">Yes, it says private &rarr;</button>
+          <button type="button" class="wiz-back">No &mdash; show me how again</button>
+        </div>
+      </article>
 
-    <ol class="steps" start="3">
-      <li class="step"><span class="n">3</span><div>
+      <article class="step panel" data-title="Make your Base44 account" tabindex="-1">
         <h3>Make a Base44 account with an email you&rsquo;ve never used on Base44</h3>
-        <p class="why"><b>Why this matters</b>An account that already exists can&rsquo;t be linked to the partnership. A brand-new Gmail takes a minute and works perfectly.</p>
-      </div></li>
+        <p>Sign up inside that private window using a brand-new email address. A fresh Gmail takes a minute to make and works perfectly.</p>
+        <p class="why"><b>Why this matters</b>An account that already exists can&rsquo;t be linked to the partnership, and there&rsquo;s no way to fix it afterwards from your end.</p>
+        <div class="wiz-nav"><button type="button" class="wiz-back">&larr; Back</button><button type="button" class="btn wiz-next">Next step &rarr;</button></div>
+      </article>
 
-      <li class="step"><span class="n">4</span><div>
+      <article class="step panel" data-title="Click the orange bar" tabindex="-1">
         <h3>Click the orange bar at the top of the screen</h3>
-        <p>It says <b>&ldquo;Claim Limited Time Offer &mdash; 30% off yearly plans&rdquo;</b>. Clicking it takes you straight to the plans.</p>
+        <p>Once you&rsquo;re in, there&rsquo;s an orange bar across the top that says <b>&ldquo;Claim Limited Time Offer &mdash; 30% off yearly plans&rdquo;</b>. Click it and it takes you straight to the plans.</p>
         <div class="stepshot"><p class="ph">Screenshot of the orange offer bar</p></div>
-      </div></li>
+        <div class="wiz-nav"><button type="button" class="wiz-back">&larr; Back</button><button type="button" class="btn wiz-next">Next step &rarr;</button></div>
+      </article>
 
-      <li class="step step-key"><span class="n">5</span><div>
-        <span class="flag">The one that matters most</span>
+      <article class="step panel" data-title="Select Starter Yearly" tabindex="-1">
         <!-- [SWAP] plan instruction + screenshot -->
         <h3>Select Starter Yearly</h3>
+        <p>On the plans page, choose <b>Starter</b> and switch the billing to <b>Yearly</b>.</p>
         <div class="stepshot"><p class="ph">Plans page with Starter &middot; Yearly circled</p></div>
         <div class="must">
           <b>It has to be Starter Yearly, paid for the full year up front.</b>
           <p>Starter Monthly does not come with any of the bonuses, and it does not get you into the course.</p>
           <p>Before you pay, check the plan says <b>Yearly</b>.</p>
         </div>
-      </div></li>
+        <div class="wiz-nav"><button type="button" class="wiz-back">&larr; Back</button><button type="button" class="btn wiz-next">Next step &rarr;</button></div>
+      </article>
 
-      <li class="step"><span class="n">6</span><div>
+      <article class="step panel" data-title="Complete your purchase" tabindex="-1">
         <h3>Complete your purchase</h3>
-        <p>You&rsquo;ll get a receipt on screen and by email.</p>
-      </div></li>
+        <p>Pay for the year. You&rsquo;ll get a receipt on screen straight away, and another one by email from Base44.</p>
+        <div class="stepshot"><p class="ph">What the receipt looks like</p></div>
+        <div class="wiz-nav"><button type="button" class="wiz-back">&larr; Back</button><button type="button" class="btn wiz-next">I&rsquo;ve paid &rarr;</button></div>
+      </article>
 
-      <li class="step"><span class="n">7</span><div>
-        <h3>Screenshot your receipt and upload it below</h3>
-        <p class="why"><b>Why this matters</b>It&rsquo;s how we match you to your signup and unlock everything on your account.</p>
-      </div></li>
-    </ol>
-  </div>
-</section>
-
-<!-- ═══ 9 · UPLOAD FORM ════════════════════════════════════════════════ -->
-<section id="upload">
-  <div class="read">
-    <div class="sec-head"><h2>Upload your receipt</h2><p class="sub">This is how you claim your access.</p></div>
-
+      <article class="step panel" data-title="Upload your receipt" tabindex="-1">
+        <h3>Screenshot your receipt and upload it</h3>
+        <p>Last step. Send us the receipt and we&rsquo;ll match it to your signup and unlock everything.</p>
     <form class="form" id="claim" novalidate>
-      <input type="hidden" name="variant" value="yearly">
+          <input type="hidden" name="variant" value="yearly">
 
-      <div class="field" data-f="name">
-        <label for="f-name">Full name</label>
-        <input class="input" id="f-name" name="name" type="text" autocomplete="name">
-        <p class="err">Add your full name.</p>
-      </div>
+          <div class="field" data-f="name">
+            <label for="f-name">Full name</label>
+            <input class="input" id="f-name" name="name" type="text" autocomplete="name">
+            <p class="err">Add your full name.</p>
+          </div>
 
-      <div class="field" data-f="email">
-        <label for="f-email">Email</label>
-        <input class="input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email">
-        <p class="err">That email doesn&rsquo;t look right. Check it and try again.</p>
-      </div>
+          <div class="field" data-f="email">
+            <label for="f-email">Email</label>
+            <input class="input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email">
+            <p class="err">That email doesn&rsquo;t look right. Check it and try again.</p>
+          </div>
 
-      <div class="field" data-f="phone">
-        <label for="f-phone">WhatsApp number</label>
-        <div class="phonerow">
-          <label class="cc" for="f-cc"><span id="cc-show">🇺🇸 +1</span><span class="car">&#9662;</span>
-            <select id="f-cc" name="cc" aria-label="Country code"><option value="+1" data-iso="US">United States (+1)</option></select>
-          </label>
-          <input class="input" id="f-phone" name="phone" type="tel" autocomplete="tel-national" inputmode="tel" placeholder="Phone number">
-        </div>
-        <p class="err">Add your WhatsApp number, without the country code.</p>
-      </div>
+          <div class="field" data-f="phone">
+            <label for="f-phone">WhatsApp number</label>
+            <div class="phonerow">
+              <label class="cc" for="f-cc"><span id="cc-show">🇺🇸 +1</span><span class="car">&#9662;</span>
+                <select id="f-cc" name="cc" aria-label="Country code"><option value="+1" data-iso="US">United States (+1)</option></select>
+              </label>
+              <input class="input" id="f-phone" name="phone" type="tel" autocomplete="tel-national" inputmode="tel" placeholder="Phone number">
+            </div>
+            <p class="err">Add your WhatsApp number, without the country code.</p>
+          </div>
 
-      <div class="field" data-f="file">
-        <span class="lab" id="f-file-lab">Receipt screenshot</span>
-        <label class="drop" for="f-file" id="drop">
-          <input id="f-file" name="receipt" type="file" accept="image/jpeg,image/png,image/heic,image/heif,.heic,.heif" aria-labelledby="f-file-lab">
-          <span id="drop-empty"><b>Tap to add your receipt screenshot</b><br><span>JPG, PNG or HEIC &middot; max 4.5MB</span></span>
-          <img id="drop-preview" alt="Your receipt screenshot" hidden>
-          <span class="filemeta" id="drop-meta" hidden></span>
-        </label>
-        <p class="err" id="file-err">Add a screenshot of your Base44 receipt.</p>
-      </div>
+          <div class="field" data-f="file">
+            <span class="lab" id="f-file-lab">Receipt screenshot</span>
+            <label class="drop" for="f-file" id="drop">
+              <input id="f-file" name="receipt" type="file" accept="image/jpeg,image/png,image/heic,image/heif,.heic,.heif" aria-labelledby="f-file-lab">
+              <span id="drop-empty"><b>Tap to add your receipt screenshot</b><br><span>JPG, PNG or HEIC &middot; max 4.5MB</span></span>
+              <img id="drop-preview" alt="Your receipt screenshot" hidden>
+              <span class="filemeta" id="drop-meta" hidden></span>
+            </label>
+            <p class="err" id="file-err">Add a screenshot of your Base44 receipt.</p>
+          </div>
 
-      <button type="submit" class="btn submit">Submit &amp; Claim My Access</button>
-      <p class="fineprint">Design build: this checks your details but doesn&rsquo;t send anything yet.</p>
-    </form>
+          <button type="submit" class="btn submit">Submit &amp; Claim My Access</button>
+          <p class="fineprint">Design build: this checks your details but doesn&rsquo;t send anything yet.</p>
+        </form>
+        <div class="wiz-nav" style="margin-top:14px"><button type="button" class="wiz-back">&larr; Back</button></div>
+      </article>
+    </div>
   </div>
 </section>
 
-<!-- ═══ 10 · WHAT HAPPENS NEXT ═════════════════════════════════════════ -->
 <section id="next">
   <div class="read">
     <div class="sec-head"><h2>What happens next</h2></div>
@@ -595,6 +634,48 @@ footer nav a{color:var(--muted)}
     var inp = form.querySelector('[data-f="' + k + '"] .input');
     inp.addEventListener('input', function () { setBad(k, false); });
   });
+
+  /* ── the step flow ──
+     One panel at a time, with the progress bar. Position is remembered for the
+     session, because people leave to do the actual signing up and come back.
+     Panels are only hidden once this runs, so with JS off the page is still a
+     plain list of every step in order. */
+  (function () {
+    var wiz = document.getElementById('wiz');
+    if (!wiz) return;
+    var panels = [].slice.call(wiz.querySelectorAll('.panel'));
+    var fill = document.getElementById('wiz-fill');
+    var count = document.getElementById('wiz-count');
+    var now = document.getElementById('wiz-now');
+    if (!panels.length || !fill) return;
+    var KEY = 'lmx_step', i = 0, smooth = 'smooth';
+    try { if (matchMedia('(prefers-reduced-motion: reduce)').matches) smooth = 'auto'; } catch (e) {}
+    try {
+      var saved = parseInt(sessionStorage.getItem(KEY), 10);
+      if (saved >= 0 && saved < panels.length) i = saved;
+    } catch (e) {}
+
+    function show(n, move) {
+      i = Math.max(0, Math.min(panels.length - 1, n));
+      panels.forEach(function (p, idx) { p.hidden = idx !== i; });
+      fill.style.width = ((i + 1) / panels.length * 100) + '%';
+      count.textContent = 'Step ' + (i + 1) + ' of ' + panels.length;
+      now.textContent = panels[i].getAttribute('data-title') || '';
+      try { sessionStorage.setItem(KEY, String(i)); } catch (e) {}
+      track('step_view', { step: i + 1, title: panels[i].getAttribute('data-title') || '' });
+      if (move) {
+        var top = wiz.getBoundingClientRect().top + scrollY - 76;
+        try { scrollTo({ top: top, behavior: smooth }); } catch (e) { scrollTo(0, top); }
+        panels[i].focus({ preventScroll: true });
+      }
+    }
+    wiz.addEventListener('click', function (e) {
+      var t = e.target;
+      if (t.closest('.wiz-next')) show(i + 1, true);
+      else if (t.closest('.wiz-back')) show(i - 1, true);
+    });
+    show(i, false);
+  })();
 })();
 </script>
 </body>
