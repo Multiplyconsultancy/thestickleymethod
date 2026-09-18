@@ -183,11 +183,18 @@ section{padding-block:64px}
 .feats{display:grid;gap:14px}
 .feat{display:grid;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;align-items:center}
 .feat .phone{aspect-ratio:9/16;max-height:420px;width:100%;max-width:240px;margin-inline:auto;border-radius:26px;
-  border:6px solid #1c2128;background:linear-gradient(170deg,#141920,#0c0f13);display:grid;place-items:center;text-align:center;padding:14px}
+  border:6px solid #1c2128;background:linear-gradient(170deg,#141920,#0c0f13);display:grid;place-items:center;text-align:center;padding:14px;overflow:hidden}
+.feat .phone:has(img){padding:0}
+.feat .phone img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;border-radius:20px}
 .feat h3{font-size:1.5rem}
 .feat p{color:var(--muted);margin-top:6px}
+.inside{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.inside figure{margin:0}
+.inside img{width:100%;aspect-ratio:9/16;object-fit:cover;object-position:top;display:block;border-radius:14px;border:1px solid var(--line)}
+.inside figcaption{margin-top:8px;font-size:.9rem;color:var(--muted);text-align:center}
 @media(min-width:820px){
   .feats{grid-template-columns:repeat(3,1fr)}
+  .inside{max-width:620px;margin-inline:auto}
 }
 
 /* ── 8 · SIGNUP STEPS ───────────────────────────────────────────────── */
@@ -498,12 +505,18 @@ footer nav a{color:var(--muted)}
   <div class="wide">
     <div class="sec-head read"><h2>What the system does</h2></div>
     <div class="feats">
-      <div class="feat"><div class="phone"><p class="ph">Daily &amp; weekly tasks screenshot or GIF</p></div>
+      <div class="feat"><div class="phone"><img src="/testautomationbase44funnel/img/app-today.jpg" alt="The app&rsquo;s daily check-in screen, showing 9 of 12 tasks done today" loading="lazy" width="720" height="1280"></div>
         <div><h3>Daily and weekly tasks</h3><p>Know exactly what to do, every day.</p></div></div>
-      <div class="feat"><div class="phone"><p class="ph">Consistency tracking screenshot or GIF</p></div>
+      <div class="feat"><div class="phone"><img src="/testautomationbase44funnel/img/app-consistency.jpg" alt="The consistency screen, showing 100% this week and 360 tasks completed" loading="lazy" width="702" height="1280"></div>
         <div><h3>Consistency tracking</h3><p>See whether you&rsquo;re actually locked in.</p></div></div>
-      <div class="feat"><div class="phone"><p class="ph">Progress photo comparison screenshot or GIF</p></div>
+      <div class="feat"><div class="phone"><img src="/testautomationbase44funnel/img/app-home.jpg" alt="The home screen, showing the latest progress photo and days since baseline" loading="lazy" width="710" height="1280"></div>
         <div><h3>Progress photo comparison</h3><p>Watch your transformation over time.</p></div></div>
+    </div>
+
+    <div class="inside">
+      <figure><img src="/testautomationbase44funnel/img/app-protocols.jpg" alt="The protocols screen" loading="lazy" width="724" height="1280"><figcaption>Your protocols, in one place</figcaption></figure>
+      <figure><img src="/testautomationbase44funnel/img/app-streaks.jpg" alt="The streaks screen, showing a 35 day streak" loading="lazy" width="724" height="1280"><figcaption>Streaks that make you show up</figcaption></figure>
+      <figure><img src="/testautomationbase44funnel/img/app-voice.jpg" alt="The voice log screen" loading="lazy" width="708" height="1280"><figcaption>Log the day with your voice</figcaption></figure>
     </div>
   </div>
 </section>
