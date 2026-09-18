@@ -191,34 +191,54 @@ section{padding-block:64px}
 }
 
 /* ── 8 · SIGNUP STEPS ───────────────────────────────────────────────── */
-.warnbanner{display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start;padding:18px;border-radius:16px;
-  background:rgba(255,107,94,.1);border:2px solid var(--warn);margin-bottom:16px}
-.warnbanner svg{width:28px;height:28px;fill:none;stroke:var(--warn);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.warnbanner p{color:var(--text)}
-.warnbanner b{font-weight:700}
+/* No red, no hazard triangles. Somebody arriving here has done nothing
+   wrong and is about to pay us money: the page should feel like being shown
+   the way, not like a warning notice. */
+.intro-card{padding:20px 22px;border-radius:16px;margin-bottom:18px;
+  background:linear-gradient(165deg,rgba(14,196,230,.11),var(--surface) 62%);border:1px solid rgba(14,196,230,.34)}
+.intro-card p{color:var(--text);font-size:1.06rem}
+.intro-card p+p{margin-top:8px;color:#C7D0DA;font-size:1rem}
 .steps{list-style:none;padding:0;margin:0;display:grid;gap:12px;counter-reset:s}
 .step{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;grid-template-columns:42px 1fr;gap:14px}
 .step .n{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);border:1px solid var(--line);font:800 1.2rem var(--display)}
-.step h3{font-size:1.25rem;text-transform:none;letter-spacing:0;margin:8px 0 6px}
-.step p{color:var(--muted)}
-.step p+p,.step .why,.step .check,.step .row{margin-top:10px}
-.step .why{font-size:.92rem;color:var(--muted)}
-.step .why b{color:var(--text)}
-.step .check{display:grid;grid-template-columns:20px 1fr;gap:8px;font-size:.92rem;color:var(--text)}
-.step .check svg{width:18px;height:18px;margin-top:3px;fill:none;stroke:var(--ok);stroke-width:3}
-.step-danger{border:2px solid var(--warn);background:linear-gradient(165deg,rgba(255,107,94,.08),var(--surface) 50%)}
-.step-danger .n{background:var(--warn);border-color:var(--warn);color:#240604}
-.flag{display:inline-block;font:700 .66rem/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--warn);
-  border:1px solid var(--warn);border-radius:999px;padding:4px 8px;margin-bottom:2px}
+.step h3{font-size:1.3rem;text-transform:none;letter-spacing:0;margin:8px 0 8px;line-height:1.2}
+/* Body copy here is instructions people follow while doing something else, so
+   it is sized and contrasted to be read, not skimmed past. */
+.step p{color:#C7D0DA;font-size:1.03rem;line-height:1.55}
+.step p+p,.step .why,.step .row{margin-top:12px}
+.step .why{padding:13px 15px;border-radius:12px;background:rgba(14,196,230,.07);
+  border-left:3px solid var(--accent);font-size:1rem;color:#D6DEE6}
+.step .why b{display:block;margin-bottom:3px;color:var(--accent);font-weight:700;
+  font-size:.74rem;letter-spacing:.16em;text-transform:uppercase}
+.step-key{border-color:rgba(14,196,230,.5);background:linear-gradient(165deg,rgba(14,196,230,.09),var(--surface) 56%)}
+.step-key .n{background:var(--cta);border-color:transparent;color:#04202A}
+.flag{display:inline-block;font:700 .68rem/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+  border:1px solid rgba(14,196,230,.5);border-radius:999px;padding:5px 9px;margin-bottom:4px}
+/* One instruction per browser, each in its own block: the old three-column
+   key/value rows were the easiest thing on the page to skip. */
+.browsers{margin-top:14px;display:grid;gap:10px}
+.browsers div{padding:13px 15px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line)}
+.browsers b{display:block;color:var(--text);font-weight:700;font-size:1.02rem;margin-bottom:3px}
+.browsers span{display:block;color:#C7D0DA;font-size:.99rem;line-height:1.5}
+/* The "did you actually do it" check, lifted out from under step 2 so it
+   cannot be scrolled past. */
+.checkpoint{display:grid;grid-template-columns:32px 1fr;gap:14px;align-items:start;margin:12px 0;padding:18px 20px;
+  border-radius:16px;background:rgba(61,220,151,.09);border:1px solid rgba(61,220,151,.45)}
+.checkpoint svg{width:26px;height:26px;fill:none;stroke:var(--ok);stroke-width:3;margin-top:2px}
+.checkpoint b{display:block;color:var(--ok);font:700 .74rem/1 var(--body);letter-spacing:.16em;text-transform:uppercase;margin-bottom:7px}
+.checkpoint p{color:var(--text);font-size:1.05rem;line-height:1.5}
+/* The one thing that genuinely cannot be got wrong. Gold, not red: important
+   rather than alarming. */
+.must{margin-top:14px;padding:16px 18px;border-radius:14px;background:rgba(240,192,80,.09);border:1px solid rgba(240,192,80,.5)}
+.must b{display:block;color:#F0C050;font-weight:700;font-size:1.03rem;margin-bottom:5px}
+.must p{color:#E4E8ED;font-size:1rem;line-height:1.55;margin:0}
+.must p+p{margin-top:8px}
 .copyrow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:stretch}
 .copyrow code{display:block;overflow-x:auto;white-space:nowrap;font:500 .88rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;
   background:#0B0D10;border:1px solid var(--line);border-radius:12px;padding:14px 12px;color:var(--text)}
 .copybtn{font:800 1rem/1 var(--display);letter-spacing:.05em;text-transform:uppercase;border:0;border-radius:12px;padding:0 18px;
   cursor:pointer;color:#04202A;background:var(--cta);min-width:104px}
 .copybtn.done{background:var(--ok)}
-.keys{margin-top:10px;display:grid;gap:6px;font-size:.92rem;color:var(--muted)}
-.keys div{display:grid;grid-template-columns:78px 1fr;gap:8px}
-.keys b{color:var(--text);font-weight:600}
 kbd{font:600 .8rem ui-monospace,Menlo,monospace;background:#0B0D10;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 5px;color:var(--text)}
 .stepshot{margin-top:12px;aspect-ratio:16/10;border-radius:12px;border:1px dashed #2c3440;background:#0e1115;display:grid;place-items:center;text-align:center;padding:10px}
 
@@ -302,9 +322,9 @@ footer nav a{color:var(--muted)}
   <div class="read">
     <div class="sec-head"><h2>Sign up in 7 steps</h2></div>
 
-    <div class="warnbanner" role="note">
-      <svg viewBox="0 0 24 24"><path d="M12 3 2 21h20L12 3z"/><path d="M12 10v5"/><path d="M12 18h.01"/></svg>
-      <p><b>Follow these steps exactly, in order.</b> It takes about 5 minutes, and a laptop is easiest. Skip a step and your signup won&rsquo;t link to our partnership, so we can&rsquo;t give you access.</p>
+    <div class="intro-card">
+      <p><b>You&rsquo;re in the right place.</b> Seven steps, about five minutes, and a laptop is easiest.</p>
+      <p>Do them in the order below and everything unlocks on its own. We&rsquo;ll be watching for your receipt at the end.</p>
     </div>
 
     <ol class="steps">
@@ -314,46 +334,61 @@ footer nav a{color:var(--muted)}
           <code id="access-link">https://b44.scaled.llc/nightfall-lifestyle-coaching-services/Looksmaxxing</code>
           <button type="button" class="copybtn" id="copy-link">Copy</button>
         </div>
-        <p class="why"><b>Why:</b> this link is how Base44 knows you came through our partnership.</p>
+        <p class="why"><b>Why this matters</b>This link is how Base44 knows you came through our partnership. It&rsquo;s what makes everything else free.</p>
       </div></li>
 
-      <li class="step step-danger"><span class="n">2</span><div>
-        <span class="flag">Most common mistake</span>
-        <h3>Open a private/incognito window and paste the link in</h3>
-        <div class="keys">
-          <div><b>Chrome</b><span><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd> &nbsp;(Mac: <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd>)</span></div>
-          <div><b>Safari</b><span>File &rarr; New Private Window</span></div>
-          <div><b>Phone</b><span>Open a private tab in your browser</span></div>
+      <li class="step step-key"><span class="n">2</span><div>
+        <span class="flag">Do this bit carefully</span>
+        <h3>Open an incognito browser, then paste the link in</h3>
+        <div class="browsers">
+          <div><b>Chrome</b><span>Open an incognito browser. If you can&rsquo;t find it in the menu, press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd>, or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd> on a Mac.</span></div>
+          <div><b>Safari</b><span>Open a new tab, click <b>Private Window</b>, then open a new tab from there.</span></div>
+          <div><b>Any other browser</b><span>Open a private or incognito tab in your browser.</span></div>
         </div>
-        <p class="why"><b>Why:</b> a normal window can carry old Base44 logins that overwrite the partnership link. This is the #1 reason signups fail.</p>
-        <p class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span>Check: your window is dark or says Private before you continue.</span></p>
+        <p class="why"><b>Why this matters</b>A normal window can still be signed in to Base44, and that stops your signup being linked to us. It&rsquo;s the single most common reason someone doesn&rsquo;t get their access.</p>
       </div></li>
+    </ol>
 
+    <div class="checkpoint" role="note">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      <div>
+        <b>Check before you carry on</b>
+        <p>Your new window should say <b>Private</b> or <b>Incognito</b>. If it doesn&rsquo;t, open one now and paste the link in there instead.</p>
+      </div>
+    </div>
+
+    <ol class="steps" start="3">
       <li class="step"><span class="n">3</span><div>
-        <h3>Create a Base44 account with an email that has NEVER been used on Base44</h3>
-        <p class="why"><b>Why:</b> existing accounts can&rsquo;t be linked to the partnership. A brand-new Gmail works fine.</p>
+        <h3>Make a Base44 account with an email you&rsquo;ve never used on Base44</h3>
+        <p class="why"><b>Why this matters</b>An account that already exists can&rsquo;t be linked to the partnership. A brand-new Gmail takes a minute and works perfectly.</p>
       </div></li>
 
       <li class="step"><span class="n">4</span><div>
-        <h3>Click &ldquo;Build Now&rdquo; or &ldquo;View Plans&rdquo;</h3>
-        <div class="stepshot"><p class="ph">Screenshot of the button</p></div>
+        <h3>Click the orange bar at the top of the screen</h3>
+        <p>It says <b>&ldquo;Claim Limited Time Offer &mdash; 30% off yearly plans&rdquo;</b>. Clicking it takes you straight to the plans.</p>
+        <div class="stepshot"><p class="ph">Screenshot of the orange offer bar</p></div>
       </div></li>
 
-      <li class="step step-danger"><span class="n">5</span><div>
-        <span class="flag">Check this carefully</span>
+      <li class="step step-key"><span class="n">5</span><div>
+        <span class="flag">The one that matters most</span>
         <!-- [SWAP] plan instruction + screenshot -->
-        <h3>Select Starter, billed Yearly</h3>
+        <h3>Select Starter Yearly</h3>
         <div class="stepshot"><p class="ph">Plans page with Starter &middot; Yearly circled</p></div>
-        <p class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span>Check: the plan name and billing period are correct before you pay.</span></p>
+        <div class="must">
+          <b>It has to be Starter Yearly, paid for the full year up front.</b>
+          <p>Starter Monthly does not come with any of the bonuses, and it does not get you into the course.</p>
+          <p>Before you pay, check the plan says <b>Yearly</b>.</p>
+        </div>
       </div></li>
 
       <li class="step"><span class="n">6</span><div>
         <h3>Complete your purchase</h3>
+        <p>You&rsquo;ll get a receipt on screen and by email.</p>
       </div></li>
 
       <li class="step"><span class="n">7</span><div>
         <h3>Screenshot your receipt and upload it below</h3>
-        <p class="why"><b>Why:</b> this is how we verify you and give you access.</p>
+        <p class="why"><b>Why this matters</b>It&rsquo;s how we match you to your signup and unlock everything on your account.</p>
       </div></li>
     </ol>
   </div>
