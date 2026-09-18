@@ -77,7 +77,7 @@
     },
     {
       "path": "/api/cron/base44-board?commit=1",
-      "schedule": "*/30 * * * *"
+      "schedule": "7 */4 * * *"
     }
   ]
 }
