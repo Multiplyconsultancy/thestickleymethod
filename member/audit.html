@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your Free Video Audit | Baby Stickley</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://ai.thestickleymethod.com" crossorigin>
+<script src="/js/posthog.js"></script>
+
+<style>
+/* ══════════════════════════════════════════════════════════════════════
+   SIX-MONTH MEMBER'S FREE VIDEO AUDIT
+   The link is unlocked inside Whop after six months. This page checks the
+   membership again, because a URL spreads the moment it is posted once.
+   Same visual system as the signup funnel; self-contained on purpose.
+══════════════════════════════════════════════════════════════════════ */
+:root{
+  --bg:#0A0B0D; --surface:#121417; --surface-2:#171A1F; --line:#232830;
+  --text:#F4F6F8; --muted:#98A2AE; --dim:#6C7784;
+  --accent:#0EC4E6; --cta:linear-gradient(180deg,#22D3EE 0%,#0894B4 100%);
+  --warn:#FF6B5E; --ok:#3DDC97;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font:400 17px/1.6 var(--body);
+  -webkit-font-smoothing:antialiased;padding:0 18px env(safe-area-inset-bottom)}
+img{max-width:100%;display:block}
+h1,h2,h3{font-family:var(--display);font-weight:800;margin:0;line-height:1.04;text-wrap:balance}
+p{margin:0}
+.shell{max-width:640px;margin-inline:auto}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+
+.top{padding:28px 0 8px;text-align:center}
+.brand{font:800 1.2rem var(--display);letter-spacing:.08em;text-transform:uppercase}
+.brand span{color:var(--accent)}
+
+.hero{padding:26px 0 10px;text-align:center}
+.tag{display:inline-block;font:700 .7rem/1 var(--body);letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent);border:1px solid rgba(14,196,230,.35);border-radius:999px;padding:7px 13px;margin-bottom:16px}
+h1{font-size:clamp(2.1rem,8vw,3.2rem);text-transform:uppercase;letter-spacing:-.015em}
+h1 em{font-style:normal;color:var(--accent)}
+.sub{margin:14px auto 0;max-width:38ch;color:var(--muted);font-size:1.05rem}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:24px}
+.card h2{font-size:1.45rem;text-transform:uppercase;margin-bottom:6px}
+.card .lede{color:var(--muted);margin-bottom:18px}
+
+.field{margin-bottom:16px}
+label{display:block;font:600 .85rem/1.3 var(--body);letter-spacing:.04em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:7px}
+.input,textarea{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:11px;
+  color:var(--text);font:400 17px/1.5 var(--body);padding:14px 15px}
+textarea{min-height:104px;resize:vertical}
+.input:focus,textarea:focus{border-color:var(--accent);outline:none}
+.hint{margin-top:7px;font-size:.86rem;color:var(--dim)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+.btn{display:flex;width:100%;align-items:center;justify-content:center;gap:10px;border:0;cursor:pointer;
+  font:800 1.12rem/1 var(--display);letter-spacing:.05em;text-transform:uppercase;
+  color:#04202A;background:var(--cta);padding:18px 26px;border-radius:999px;
+  box-shadow:0 10px 30px -12px rgba(14,196,230,.7)}
+.btn:active{transform:translateY(1px)}
+.btn[disabled]{opacity:.55;cursor:progress;box-shadow:none}
+
+.msg{margin-top:14px;padding:14px 16px;border-radius:12px;font-size:.96rem;display:none}
+.msg.show{display:block}
+.msg.bad{background:rgba(255,107,94,.1);border:1px solid rgba(255,107,94,.4);color:#FFC9C3}
+.msg.good{background:rgba(61,220,151,.1);border:1px solid rgba(61,220,151,.4);color:#B6F0D6}
+
+/* photo picker */
+.drop{display:grid;place-items:center;gap:6px;text-align:center;padding:26px 18px;cursor:pointer;
+  border:1.5px dashed #2c3440;border-radius:14px;background:var(--surface-2);color:var(--muted)}
+.drop:hover{border-color:var(--accent);color:var(--text)}
+.drop b{font-weight:700;color:var(--text)}
+.drop input{position:absolute;left:-9999px}
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.thumbs figure{margin:0;position:relative;aspect-ratio:3/4;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.thumbs img{width:100%;height:100%;object-fit:cover}
+.thumbs button{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;border:0;
+  background:rgba(0,0,0,.66);color:#fff;font-size:15px;line-height:1;cursor:pointer}
+
+.shots{display:grid;gap:10px;margin-top:16px}
+.shots li{display:grid;grid-template-columns:26px 1fr;gap:11px;font-size:.98rem;color:var(--muted);list-style:none}
+.shots svg{width:20px;height:20px;margin-top:3px;fill:none;stroke:var(--accent);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+ul{margin:0;padding:0}
+
+.done{text-align:center;padding:14px 0 4px}
+.done .ok{width:64px;height:64px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(61,220,151,.12);border:1px solid rgba(61,220,151,.4)}
+.done .ok svg{width:30px;height:30px;fill:none;stroke:var(--ok);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+
+footer{padding:40px 0 48px;text-align:center;color:var(--dim);font-size:.85rem}
+[hidden]{display:none!important}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <div class="top"><span class="brand">Baby <span>Stickley</span></span></div>
+
+  <header class="hero">
+    <span class="tag">Six months in</span>
+    <h1>Your free <em>video audit</em></h1>
+    <p class="sub">You have been in The Stickley Method six months. Send three photos and Baby will record you a personal audit.</p>
+  </header>
+
+  <!-- ── STEP 1 · who are you ─────────────────────────────────────────── -->
+  <section class="card" id="step-check">
+    <h2>Check your membership</h2>
+    <p class="lede">So we know it is you. Use the email you pay with.</p>
+
+    <form id="check-form" novalidate>
+      <div class="field">
+        <label for="c-email">Email</label>
+        <input class="input" id="c-email" name="email" type="email" autocomplete="email" inputmode="email" required>
+      </div>
+      <div class="field">
+        <label for="c-phone">Phone number</label>
+        <input class="input" id="c-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel">
+        <p class="hint">Only used if we cannot find your email. Include your country code.</p>
+      </div>
+      <div class="hp"><label for="c-web">Leave this empty</label><input id="c-web" name="website" tabindex="-1" autocomplete="off"></div>
+      <button class="btn" type="submit" id="check-btn">Check my membership</button>
+    </form>
+    <div class="msg" id="check-msg" role="status" aria-live="polite"></div>
+  </section>
+
+  <!-- ── STEP 2 · the photos ──────────────────────────────────────────── -->
+  <section class="card" id="step-send" hidden>
+    <h2>Send your photos</h2>
+    <p class="lede" id="send-lede">Three photos is ideal. Good light, no filter, no smile.</p>
+
+    <ul class="shots">
+      <li><svg viewBox="0 0 24 24"><path d="M4 20v-2a5 5 0 0 1 5-5h6a5 5 0 0 1 5 5v2"/><circle cx="12" cy="7" r="4"/></svg><span><b>Straight on.</b> Camera at eye level, face relaxed.</span></li>
+      <li><svg viewBox="0 0 24 24"><path d="M9 3v18"/><path d="M15 6l-4 6 4 6"/></svg><span><b>Side profile.</b> Turn fully to one side.</span></li>
+      <li><svg viewBox="0 0 24 24"><path d="M12 3v7"/><path d="M5 10h14l-2 11H7z"/></svg><span><b>Looking slightly up.</b> Shows the jaw and neck.</span></li>
+    </ul>
+
+    <form id="send-form" novalidate style="margin-top:20px">
+      <div class="field">
+        <label for="s-name">Name</label>
+        <input class="input" id="s-name" name="name" type="text" autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="s-age">Age</label>
+        <input class="input" id="s-age" name="age" type="text" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label for="s-goals">What do you want out of this?</label>
+        <textarea id="s-goals" name="goals" placeholder="What you are working on, what you are stuck on, what you want Baby to look at."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Your photos</label>
+        <label class="drop" for="s-files" id="drop">
+          <b>Tap to add photos</b>
+          <span id="drop-note">Up to 3. JPG, PNG or HEIC.</span>
+          <input id="s-files" name="photos" type="file" accept="image/jpeg,image/png,image/heic,image/heif,.heic,.heif" multiple>
+        </label>
+        <div class="thumbs" id="thumbs"></div>
+      </div>
+
+      <button class="btn" type="submit" id="send-btn">Send to Baby</button>
+    </form>
+    <div class="msg" id="send-msg" role="status" aria-live="polite"></div>
+  </section>
+
+  <!-- ── STEP 3 · done ────────────────────────────────────────────────── -->
+  <section class="card done" id="step-done" hidden>
+    <div class="ok"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <h2>That is in</h2>
+    <p class="lede" style="margin:10px 0 0">Baby records these in batches. Yours will be emailed over within the next few days.</p>
+  </section>
+
+  <footer>The Stickley Method &middot; members only</footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var API = 'https://ai.thestickleymethod.com';
+  var MAX_PHOTOS = 3;
+  /* Vercel rejects a request body over 4.5MB, so photos are shrunk in the
+     browser before they ever leave it. A modern phone photo is 3-6MB and
+     three of them would never arrive. */
+  var MAX_EDGE = 1600, JPEG_Q = 0.85, MAX_TOTAL = 4.2 * 1024 * 1024;
+
+  function track(n, p) { try { window.posthog && posthog.capture(n, p || {}); } catch (e) {} }
+  function $(id) { return document.getElementById(id); }
+  function say(el, text, kind) {
+    el.textContent = text;
+    el.className = 'msg show ' + (kind || 'bad');
+  }
+  function clear(el) { el.className = 'msg'; el.textContent = ''; }
+
+  /* ── step 1: the membership check ── */
+  var checkForm = $('check-form'), checkMsg = $('check-msg'), checkBtn = $('check-btn');
+  var verified = { email: '', phone: '' };
+
+  checkForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    clear(checkMsg);
+    var email = $('c-email').value.trim(), phone = $('c-phone').value.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      say(checkMsg, 'Enter the email you pay with.'); return;
+    }
+    checkBtn.disabled = true; checkBtn.textContent = 'Checking…';
+    track('member_audit_check');
+
+    fetch(API + '/api/member-audit/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, phone: phone, website: $('c-web').value })
+    })
+      .then(function (r) { return r.json().catch(function () { return {}; }); })
+      .then(function (d) {
+        checkBtn.disabled = false; checkBtn.textContent = 'Check my membership';
+        if (d && d.ok) {
+          verified.email = email; verified.phone = phone;
+          track('member_audit_eligible', { days: d.days });
+          $('step-check').hidden = true;
+          $('step-send').hidden = false;
+          if (d.months) {
+            $('send-lede').textContent =
+              d.months + ' months in. Three photos is ideal — good light, no filter, no smile.';
+          }
+          $('step-send').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+        track('member_audit_refused', { reason: (d && d.reason) || 'unknown' });
+        say(checkMsg, (d && d.error) || 'We could not check that just now. Try again in a minute.');
+      })
+      .catch(function () {
+        checkBtn.disabled = false; checkBtn.textContent = 'Check my membership';
+        say(checkMsg, 'We could not check that just now. Try again in a minute.');
+      });
+  });
+
+  /* ── step 2: photos ── */
+  var picked = [], fileInput = $('s-files'), thumbs = $('thumbs'), dropNote = $('drop-note');
+
+  /* Draw to a canvas at a sane size and re-encode as JPEG. Also normalises
+     HEIC from iPhones, which the backend would otherwise have to handle. */
+  function shrink(file) {
+    return new Promise(function (resolve) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        var w = img.naturalWidth, h = img.naturalHeight;
+        var s = Math.min(1, MAX_EDGE / Math.max(w, h));
+        var c = document.createElement('canvas');
+        c.width = Math.round(w * s); c.height = Math.round(h * s);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        c.toBlob(function (b) {
+          resolve(b ? new File([b], (file.name || 'photo').replace(/\.\w+$/, '') + '.jpg',
+            { type: 'image/jpeg' }) : file);
+        }, 'image/jpeg', JPEG_Q);
+      };
+      // HEIC that the browser cannot decode: send the original and let the
+      // size check catch it rather than silently dropping the photo.
+      img.onerror = function () { URL.revokeObjectURL(url); resolve(file); };
+      img.src = url;
+    });
+  }
+
+  function paint() {
+    thumbs.innerHTML = '';
+    picked.forEach(function (f, i) {
+      var fig = document.createElement('figure');
+      var im = document.createElement('img');
+      im.alt = 'Photo ' + (i + 1);
+      im.src = URL.createObjectURL(f);
+      im.onload = function () { URL.revokeObjectURL(im.src); };
+      var x = document.createElement('button');
+      x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove photo ' + (i + 1));
+      x.onclick = function () { picked.splice(i, 1); paint(); };
+      fig.appendChild(im); fig.appendChild(x); thumbs.appendChild(fig);
+    });
+    dropNote.textContent = picked.length
+      ? picked.length + ' of ' + MAX_PHOTOS + ' added'
+      : 'Up to 3. JPG, PNG or HEIC.';
+  }
+
+  fileInput.addEventListener('change', function () {
+    var incoming = [].slice.call(fileInput.files || []);
+    fileInput.value = '';
+    if (!incoming.length) return;
+    clear($('send-msg'));
+    var room = MAX_PHOTOS - picked.length;
+    if (room <= 0) { say($('send-msg'), 'Three photos is the limit.'); return; }
+    Promise.all(incoming.slice(0, room).map(shrink)).then(function (files) {
+      picked = picked.concat(files);
+      paint();
+    });
+  });
+
+  /* ── submit ── */
+  var sendForm = $('send-form'), sendMsg = $('send-msg'), sendBtn = $('send-btn');
+
+  sendForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    clear(sendMsg);
+    var goals = $('s-goals').value.trim();
+    if (!goals) { say(sendMsg, 'Tell Baby what you want out of this.'); return; }
+    if (!picked.length) { say(sendMsg, 'Add at least one photo.'); return; }
+    var total = picked.reduce(function (n, f) { return n + f.size; }, 0);
+    if (total > MAX_TOTAL) {
+      say(sendMsg, 'Those photos come to ' + (total / 1048576).toFixed(1) + 'MB, which is too much to send at once. Remove one and try again.');
+      return;
+    }
+
+    var fd = new FormData();
+    fd.append('source', 'tsm-6month');
+    fd.append('email', verified.email);
+    fd.append('phone', verified.phone);
+    fd.append('name', $('s-name').value.trim());
+    fd.append('age', $('s-age').value.trim());
+    fd.append('goals', goals);
+    picked.forEach(function (f) { fd.append('photos', f); });
+
+    sendBtn.disabled = true; sendBtn.textContent = 'Sending…';
+    track('member_audit_submit', { photos: picked.length });
+
+    fetch(API + '/api/audit/submit', { method: 'POST', body: fd })
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (d) { return { s: r.status, d: d }; });
+      })
+      .then(function (res) {
+        if (res.d && res.d.ok) {
+          track('member_audit_done');
+          $('step-send').hidden = true;
+          $('step-done').hidden = false;
+          $('step-done').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+        sendBtn.disabled = false; sendBtn.textContent = 'Send to Baby';
+        say(sendMsg, (res.d && res.d.error) || 'That did not send. Try again in a minute.');
+      })
+      .catch(function () {
+        sendBtn.disabled = false; sendBtn.textContent = 'Send to Baby';
+        say(sendMsg, 'That did not send. Check your signal and try again.');
+      });
+  });
+})();
+</script>
+</body>
+</html>
