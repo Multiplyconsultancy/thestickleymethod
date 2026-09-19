@@ -245,14 +245,13 @@ section{padding-block:64px}
   cursor:pointer;color:#04202A;background:var(--cta);min-width:104px}
 .copybtn.done{background:var(--ok)}
 kbd{font:600 .82rem ui-monospace,Menlo,monospace;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:5px;padding:2px 6px;color:var(--text);white-space:nowrap}
-.stepshot{margin-top:12px;aspect-ratio:16/10;border-radius:12px;border:1px dashed #2c3440;background:#0e1115;display:grid;place-items:center;text-align:center;padding:10px}
-.shots{display:grid;gap:16px;margin-top:16px}
+.shots{display:grid;gap:18px;margin-top:16px}
 .shots figure{margin:0}
-.shots img{display:block;width:100%;max-width:300px;margin-inline:auto;border-radius:14px;border:1px solid var(--line)}
-.shots figcaption{margin-top:8px;text-align:center;font-size:.92rem;color:var(--muted)}
-@media(min-width:600px){
-  .shots.two{grid-template-columns:1fr 1fr}
-  .shots.two img{max-width:250px}
+.shots img{display:block;width:100%;max-width:460px;margin-inline:auto;border-radius:12px;border:1px solid var(--line);background:#fff}
+.shots figcaption{margin-top:10px;text-align:center;font-size:.92rem;color:var(--muted)}
+@media(min-width:620px){
+  .shots.two{grid-template-columns:1fr 1fr;gap:20px}
+  .shots.two img{max-width:100%}
 }
 
 /* ── 9 · UPLOAD FORM ────────────────────────────────────────────────── */
@@ -376,7 +375,6 @@ footer nav a{color:var(--muted)}
           <div><b>Safari</b><span>Open a new tab, click <b>Private Window</b>, then open a new tab from there.</span></div>
           <div><b>Any other browser</b><span>Open a private or incognito tab in your browser.</span></div>
         </div>
-        <div class="stepshot"><p class="ph">What an incognito window looks like</p></div>
         <p class="why"><b>Why this matters</b>A normal window can still be signed in to Base44, and that stops your signup being linked to us. It&rsquo;s the single most common reason someone doesn&rsquo;t get their access.</p>
         <div class="wiz-nav"><button type="button" class="btn wiz-next">Next step &rarr;</button></div>
       </article>
@@ -418,7 +416,7 @@ footer nav a{color:var(--muted)}
         <h3>Click the orange bar at the top of the screen</h3>
         <p>Once you&rsquo;re in, there&rsquo;s an orange bar across the top that says <b>&ldquo;Limited time welcome offer&rdquo;</b> with a countdown. Tap <b>Get 30% off yearly plans</b> and it takes you straight to the plans.</p>
         <div class="shots">
-          <figure><img src="/testautomationbase44funnel/img/step-offer-bar.jpg" alt="The Base44 dashboard with the orange welcome offer bar across the top" loading="lazy" width="589" height="1112"><figcaption>The orange bar sits right at the top, under the Base44 logo.</figcaption></figure>
+          <figure><img src="/testautomationbase44funnel/img/step-offer-bar.jpg" alt="The Base44 dashboard with the orange welcome offer bar across the top" loading="lazy" width="589" height="440"><figcaption>The orange bar sits right at the top, under the Base44 logo.</figcaption></figure>
         </div>
         <div class="wiz-nav"><button type="button" class="wiz-back">&larr; Back</button><button type="button" class="btn wiz-next">Next step &rarr;</button></div>
       </article>
@@ -428,8 +426,8 @@ footer nav a{color:var(--muted)}
         <h3>Select Starter Yearly</h3>
         <p>On the plans page, choose <b>Starter</b> &mdash; the plain white card on the left, not the orange &ldquo;Most popular&rdquo; one. Then pick <b>Yearly</b> on the next screen.</p>
         <div class="shots two">
-          <figure><img src="/testautomationbase44funnel/img/step-plans-starter.jpg" alt="The Base44 plans page with the Starter plan card and its Get Starter button" loading="lazy" width="589" height="1112"><figcaption>Tap <b>Get Starter</b> on the Starter card.</figcaption></figure>
-          <figure><img src="/testautomationbase44funnel/img/step-billing-yearly.jpg" alt="The billing cycle screen with Yearly selected at $20 x 12 months" loading="lazy" width="589" height="1112"><figcaption>Then select <b>Yearly</b> &mdash; $20 &times; 12 months.</figcaption></figure>
+          <figure><img src="/testautomationbase44funnel/img/step-plans-starter.jpg" alt="The Base44 plans page with the Starter plan card and its Get Starter button" loading="lazy" width="462" height="560"><figcaption>Tap <b>Get Starter</b> on the Starter card.</figcaption></figure>
+          <figure><img src="/testautomationbase44funnel/img/step-billing-yearly.jpg" alt="The billing cycle screen with Yearly selected at $20 x 12 months" loading="lazy" width="570" height="570"><figcaption>Then select <b>Yearly</b> &mdash; $20 &times; 12 months.</figcaption></figure>
         </div>
         <div class="must">
           <b>It has to be Starter Yearly, paid for the full year up front.</b>
@@ -443,8 +441,8 @@ footer nav a{color:var(--muted)}
         <h3>Complete your purchase</h3>
         <p>Pay for the year. You&rsquo;ll get a receipt on screen straight away, and another one by email from Base44.</p>
         <div class="shots two">
-          <figure><img src="/testautomationbase44funnel/img/step-continue-checkout.jpg" alt="The billing screen with Yearly selected and the Continue to checkout button" loading="lazy" width="589" height="1112"><figcaption>Check the black dot is on <b>Yearly</b>, then <b>Continue to checkout</b>.</figcaption></figure>
-          <figure><img src="/testautomationbase44funnel/img/step-submit-purchase.jpg" alt="The checkout summary showing Starter, $20 x 12 months, $240 total, and the Submit Purchase button" loading="lazy" width="589" height="1010"><figcaption>The summary should say <b>Starter</b>, <b>$20 x 12 months</b>, <b>$240</b> total.</figcaption></figure>
+          <figure><img src="/testautomationbase44funnel/img/step-continue-checkout.jpg" alt="The billing screen with Yearly selected and the Continue to checkout button" loading="lazy" width="589" height="840"><figcaption>Check the black dot is on <b>Yearly</b>, then <b>Continue to checkout</b>.</figcaption></figure>
+          <figure><img src="/testautomationbase44funnel/img/step-submit-purchase.jpg" alt="The checkout summary showing Starter, $20 x 12 months, $240 total, and the Submit Purchase button" loading="lazy" width="589" height="475"><figcaption>The summary should say <b>Starter</b>, <b>$20 x 12 months</b>, <b>$240</b> total.</figcaption></figure>
         </div>
         <div class="wiz-nav"><button type="button" class="wiz-back">&larr; Back</button><button type="button" class="btn wiz-next">I&rsquo;ve paid &rarr;</button></div>
       </article>
