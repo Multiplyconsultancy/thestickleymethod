@@ -99,12 +99,40 @@ section{padding-block:64px}
 .stat+.stat{border-left:1px solid var(--line)}
 .stat b{display:block;font:800 clamp(2rem,8vw,2.8rem)/1 var(--display);color:var(--text)}
 .stat span{display:block;margin-top:8px;font-size:.9rem;color:var(--muted);line-height:1.35}
-.ba{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-.ba figure{margin:0;position:relative;aspect-ratio:4/5;border-radius:14px;overflow:hidden;
-  background:linear-gradient(160deg,#1a1f26,#101317);border:1px dashed #2c3440;display:grid;place-items:center}
-.ba figcaption{position:absolute;top:10px;left:10px;font:700 .7rem/1 var(--body);letter-spacing:.14em;text-transform:uppercase;
-  background:rgba(0,0,0,.55);padding:6px 9px;border-radius:999px}
-.ba .ph{font-size:.85rem;text-align:center;padding:12px}
+/* Before / after rail, ported from the free-course funnel so both pages
+   show the same transformations. `.ba` is the CARD here, not a container:
+   the old two-box placeholder grid used the same name and is gone. */
+.ba-lede{text-align:center;color:var(--muted);margin-top:22px}
+.ba-rail{display:flex;gap:18px;overflow-x:auto;padding:24px 0 12px;scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;scrollbar-width:none}
+.ba-rail::-webkit-scrollbar{display:none}
+.ba{position:relative;flex:none;width:330px;aspect-ratio:3/4;border-radius:15px;overflow:hidden;
+  border:1px solid var(--line);scroll-snap-align:center;user-select:none;background:#0E1013}
+.ba-half{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:22px}
+.ba-img{background-size:cover;background-position:center;padding:0}
+.ba-after{clip-path:inset(0 0 0 50%)}
+.ba-div{position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--accent);
+  box-shadow:0 0 22px rgba(14,196,230,.75);pointer-events:none}
+/* Only the knob owns the drag gesture; a drag anywhere else scrolls the
+   rail, which is what stops the two fighting on touch screens. */
+.ba-knob{position:absolute;top:50%;left:50%;translate:-50% -50%;width:42px;height:42px;border-radius:50%;
+  background:var(--bg) url(/free-course/img/eagle.png) center/72% no-repeat;border:2px solid var(--accent);
+  display:grid;place-items:center;cursor:ew-resize;touch-action:none;
+  box-shadow:0 0 26px rgba(14,196,230,.5)}
+.ba-knob svg{display:none}
+.ba-knob::after{content:"";position:absolute;inset:-26px;border-radius:50%}
+.ba-tag{position:absolute;top:12px;font:700 .64rem/1 var(--body);letter-spacing:.13em;text-transform:uppercase;
+  background:rgba(10,11,13,.86);border:1px solid var(--line);border-radius:999px;padding:7px 12px;color:var(--muted)}
+.ba-tag.l{left:12px}.ba-tag.r{right:12px}
+.ba-nav{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:20px}
+.ba-arrow{width:46px;height:46px;flex:none;border-radius:50%;cursor:pointer;
+  background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;
+  transition:border-color .18s, transform .18s}
+.ba-arrow:hover{border-color:var(--accent);transform:translateY(-2px)}
+.ba-arrow svg{width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2.4;
+  stroke-linecap:round;stroke-linejoin:round}
+.ba-hint{margin:0;color:var(--dim);font-size:.86rem}
+@media(max-width:600px){.ba{width:270px}}
 
 /* ── 4 · STUDENT WINS ───────────────────────────────────────────────── */
 .win{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;break-inside:avoid;margin:0 0 12px}
@@ -329,9 +357,63 @@ footer nav a{color:var(--muted)}
       <div class="stat"><b>15,000+</b><span>paid students across 2 years</span></div>
       <div class="stat"><b>180,000+</b><span>member Discord, the largest looksmaxxing Discord in the world</span></div>
     </div>
-    <div class="ba">
-      <figure><figcaption>Before</figcaption><p class="ph">Baby&rsquo;s natural before photo</p></figure>
-      <figure><figcaption>After</figcaption><p class="ph">Baby&rsquo;s natural after photo</p></figure>
+    <p class="ba-lede">Drag the line to see the change.</p>
+    <div class="ba-rail">
+      <div class="ba">
+        <div class="ba-half ba-img" style="background-image:url(/free-course/img/results/1-before.webp)"></div>
+        <div class="ba-half ba-img ba-after" style="background-image:url(/free-course/img/results/1-after.webp)"></div>
+        <span class="ba-tag l">Before</span><span class="ba-tag r">After</span>
+        <div class="ba-div"></div>
+        <div class="ba-knob"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/><polyline points="9 6 15 12 9 18"/></svg></div></div>
+      <div class="ba">
+        <div class="ba-half ba-img" style="background-image:url(/free-course/img/results/2-before.webp)"></div>
+        <div class="ba-half ba-img ba-after" style="background-image:url(/free-course/img/results/2-after.webp)"></div>
+        <span class="ba-tag l">Before</span><span class="ba-tag r">After</span>
+        <div class="ba-div"></div>
+        <div class="ba-knob"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/><polyline points="9 6 15 12 9 18"/></svg></div></div>
+      <div class="ba">
+        <div class="ba-half ba-img" style="background-image:url(/free-course/img/results/diego-before.webp)"></div>
+        <div class="ba-half ba-img ba-after" style="background-image:url(/free-course/img/results/diego-after.webp)"></div>
+        <span class="ba-tag l">Before</span><span class="ba-tag r">After</span>
+        <div class="ba-div"></div>
+        <div class="ba-knob"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/><polyline points="9 6 15 12 9 18"/></svg></div></div>
+      <div class="ba">
+        <div class="ba-half ba-img" style="background-image:url(/free-course/img/results/luca-before.webp)"></div>
+        <div class="ba-half ba-img ba-after" style="background-image:url(/free-course/img/results/luca-after.webp)"></div>
+        <span class="ba-tag l">Before</span><span class="ba-tag r">After</span>
+        <div class="ba-div"></div>
+        <div class="ba-knob"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/><polyline points="9 6 15 12 9 18"/></svg></div></div>
+      <div class="ba">
+        <div class="ba-half ba-img" style="background-image:url(/free-course/img/results/perry-face-before.webp)"></div>
+        <div class="ba-half ba-img ba-after" style="background-image:url(/free-course/img/results/perry-face-after.webp)"></div>
+        <span class="ba-tag l">Before</span><span class="ba-tag r">After</span>
+        <div class="ba-div"></div>
+        <div class="ba-knob"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/><polyline points="9 6 15 12 9 18"/></svg></div></div>
+      <div class="ba">
+        <div class="ba-half ba-img" style="background-image:url(/free-course/img/results/perry-physique-before.webp)"></div>
+        <div class="ba-half ba-img ba-after" style="background-image:url(/free-course/img/results/perry-physique-after.webp)"></div>
+        <span class="ba-tag l">Before</span><span class="ba-tag r">After</span>
+        <div class="ba-div"></div>
+        <div class="ba-knob"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/><polyline points="9 6 15 12 9 18"/></svg></div></div>
+      <div class="ba">
+        <div class="ba-half ba-img" style="background-image:url(/free-course/img/results/rsb-before.webp)"></div>
+        <div class="ba-half ba-img ba-after" style="background-image:url(/free-course/img/results/rsb-after.webp)"></div>
+        <span class="ba-tag l">Before</span><span class="ba-tag r">After</span>
+        <div class="ba-div"></div>
+        <div class="ba-knob"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/><polyline points="9 6 15 12 9 18"/></svg></div></div>
+      <div class="ba">
+        <div class="ba-half ba-img" style="background-image:url(/free-course/img/results/zach-before.webp)"></div>
+        <div class="ba-half ba-img ba-after" style="background-image:url(/free-course/img/results/zach-after.webp)"></div>
+        <span class="ba-tag l">Before</span><span class="ba-tag r">After</span>
+        <div class="ba-div"></div>
+        <div class="ba-knob"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/><polyline points="9 6 15 12 9 18"/></svg></div></div>
+    </div>
+    <div class="ba-nav">
+      <button class="ba-arrow" id="baPrev" type="button" aria-label="Previous transformation">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <p class="ba-hint">Drag the circle on a photo</p>
+      <button class="ba-arrow" id="baNext" type="button" aria-label="Next transformation">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
     </div>
   </div>
 </section>
@@ -363,7 +445,8 @@ footer nav a{color:var(--muted)}
       </article>
       <article class="win chat">
         <div class="bar"><span class="av"></span>WhatsApp</div>
-        <p class="bubble ph">Real WhatsApp message about the system<small>21:14</small></p>
+        <p class="bubble">Hey @Baby and @Adam Stickley. I&rsquo;ve just finished the build, this is going to be game changing!! Can&rsquo;t wait to see my transformation. Thanks so much guys &#128293;<small>14:22</small></p>
+        <p class="who"><b>Peter</b><span class="member">AI Looksmaxxing member</span></p>
       </article>
     </div>
 
@@ -380,8 +463,8 @@ footer nav a{color:var(--muted)}
       </article>
       <article class="win chat">
         <div class="bar"><span class="av"></span>WhatsApp</div>
-        <p class="bubble ph">Message about finally sticking to their routine<small>08:02</small></p>
-        <p class="bubble ph">Follow-up message<small>08:03</small></p>
+        <p class="bubble">Yo @Baby and @Adam Stickley making my way through this course and community, so fucking hype man. My app is virtually finished and didn&rsquo;t realise just how much optimisation I was missing out on. Progress feels easy for once, can&rsquo;t wait to keep it going &#129309;<small>14:23</small></p>
+        <p class="who"><b>Tom</b><span class="member">AI Looksmaxxing member</span></p>
       </article>
       <article class="win"><p class="q ph">Pull quote about not being techy and building it anyway.</p><p class="who"><b>[Initial]</b><span class="member">TSM member</span></p></article>
       <article class="win">
@@ -626,6 +709,49 @@ footer nav a{color:var(--muted)}
     document.querySelectorAll('[data-cta]').forEach(function (el) {
     el.addEventListener('click', function () { track('cta_click', { position: el.getAttribute('data-cta') }); });
   });
+
+  /* Before / after. THE KNOB is the only slider handle: dragging it, or the
+     generous invisible halo around it, moves the divider. A drag anywhere
+     else on the card is left alone so it scrolls the rail to the next
+     transformation. Splitting the gestures is what stops the two fighting
+     each other on touch screens. */
+  document.querySelectorAll('.ba').forEach(function (ba) {
+    var after = ba.querySelector('.ba-after'),
+        div   = ba.querySelector('.ba-div'),
+        knob  = ba.querySelector('.ba-knob');
+    if (!after || !div || !knob) return;
+
+    function set(clientX) {
+      var r = ba.getBoundingClientRect(),
+          p = Math.min(100, Math.max(0, ((clientX - r.left) / r.width) * 100));
+      after.style.clipPath = 'inset(0 0 0 ' + p + '%)';
+      div.style.left = p + '%';
+      knob.style.left = p + '%';
+    }
+    knob.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      knob.setPointerCapture(e.pointerId);
+      set(e.clientX);
+    });
+    knob.addEventListener('pointermove', function (e) {
+      if (knob.hasPointerCapture && knob.hasPointerCapture(e.pointerId)) set(e.clientX);
+    });
+  });
+
+  /* Dragging a card moves its divider, so paging between transformations
+     needs its own control rather than a swipe. */
+  (function () {
+    var rail = document.querySelector('.ba-rail');
+    if (!rail) return;
+    function step(dir) {
+      var card = rail.querySelector('.ba');
+      if (!card) return;
+      rail.scrollBy({ left: dir * (card.getBoundingClientRect().width + 18), behavior: 'smooth' });
+    }
+    var p = document.getElementById('baPrev'), n = document.getElementById('baNext');
+    if (p) p.addEventListener('click', function () { step(-1); });
+    if (n) n.addEventListener('click', function () { step(1); });
+  })();
 })();
 </script>
 </body>
