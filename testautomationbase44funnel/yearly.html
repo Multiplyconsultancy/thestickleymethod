@@ -133,6 +133,21 @@ section{padding-block:64px}
   stroke-linecap:round;stroke-linejoin:round}
 .ba-hint{margin:0;color:var(--dim);font-size:.86rem}
 @media(max-width:600px){.ba{width:270px}}
+/* On a wide screen the rail escapes the 1100px column and runs the full
+   width of the page, so more than two and a half faces are in view. The
+   18px matches the body's side padding, which keeps the whole thing inside
+   the viewport: a 100vw child of a padded body is what causes a stray
+   horizontal scrollbar. Padding puts the first card back on the text edge,
+   so the rail is wider without looking misaligned with the stats above. */
+@media(min-width:900px){
+  .ba-rail{
+    margin-inline:calc(50% - 50vw + 18px);
+    padding-inline:calc(50vw - 50% - 18px);
+    scroll-padding-inline:calc(50vw - 50% - 18px);
+  }
+  .ba{width:380px}
+  .ba{scroll-snap-align:start}
+}
 
 /* ── 4 · STUDENT WINS ───────────────────────────────────────────────── */
 .win{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;break-inside:avoid;margin:0 0 12px}
