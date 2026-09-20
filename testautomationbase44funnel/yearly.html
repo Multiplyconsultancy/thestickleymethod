@@ -196,19 +196,36 @@ section{padding-block:64px}
   .wins-grid{columns:3}
 }
 
-/* ── 5 · HOW THIS WORKS ─────────────────────────────────────────────── */
-.how{list-style:none;padding:0;margin:0;display:grid;gap:14px}
-.how>li{display:grid;grid-template-columns:40px 1fr;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px}
-.how .n{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--cta);color:#04202A;font:800 1.2rem var(--display)}
-.how h3{font-size:1.28rem;margin:6px 0 8px;text-transform:none;font-weight:800;letter-spacing:0}
-.how p{color:var(--muted)}
-.how p b{color:var(--text)}
-.how ul{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:8px}
-.how ul li{display:grid;grid-template-columns:18px 1fr;gap:8px;color:var(--muted)}
-.how ul li b{color:var(--text)}
-.tick{width:16px;height:16px;margin-top:4px;fill:none;stroke:var(--accent);stroke-width:3}
-.how .extra{margin-top:10px}
+/* ── 5 · HOW THIS WORKS ─────────────────────────────────────────────────
+   Same card language as "What you get" below, because that section reads
+   well and this one used to be four paragraphs of prose. Step one carries
+   most of the weight, so it leads full width and its four claims are
+   tiles rather than a bulleted paragraph. */
+.how{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.how-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;
+  display:grid;gap:9px;align-content:start}
+.how-card .step{justify-self:start;font:700 .66rem/1 var(--body);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);border:1px solid rgba(14,196,230,.4);padding:5px 8px;border-radius:999px}
+.how-card .gi{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;
+  background:rgba(14,196,230,.1);color:var(--accent)}
+.how-card .gi svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.how-card h3{font-size:1.25rem;text-transform:none;letter-spacing:0;line-height:1.2}
+.how-card p{color:var(--muted);font-size:.95rem}
+.how-card p b{color:var(--text)}
+.how-lead{border-color:rgba(14,196,230,.45);background:linear-gradient(160deg,rgba(14,196,230,.12),var(--surface) 60%);padding:26px}
+.how-lead h3{font-size:clamp(1.6rem,5.5vw,2.2rem);text-transform:uppercase;line-height:1.04}
+.how-lead .step{color:#04202A;background:var(--accent);border-color:transparent}
+.caps{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:10px}
+.caps li{display:grid;gap:5px;padding:14px;border-radius:12px;background:rgba(255,255,255,.025);border:1px solid var(--line)}
+.caps svg{width:19px;height:19px;fill:none;stroke:var(--accent);stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+.caps b{color:var(--text);font-weight:700;font-size:1rem}
+.caps span{color:var(--muted);font-size:.9rem;line-height:1.45}
 .closing{margin-top:14px;padding:16px 18px;border-radius:14px;background:rgba(14,196,230,.07);border:1px solid rgba(14,196,230,.3);color:var(--text)}
+@media(min-width:820px){
+  .how{grid-template-columns:repeat(3,1fr)}
+  .how-lead{grid-column:1 / -1}
+  .how-lead .caps{grid-template-columns:repeat(4,1fr)}
+}
 
 /* ── 6 · WHAT YOU GET ───────────────────────────────────────────────── */
 .gets{list-style:none;padding:0;margin:0;display:grid;gap:12px}
@@ -524,35 +541,53 @@ footer nav a{color:var(--muted)}
 
 <!-- ═══ 5 · HOW THIS WORKS ═════════════════════════════════════════════ -->
 <section id="how">
-  <div class="read">
-    <div class="sec-head"><h2>Here&rsquo;s how this works</h2></div>
+  <div class="wide">
+    <div class="sec-head read"><h2>Here&rsquo;s how this works</h2></div>
     <ol class="how">
-      <li><span class="n">1</span><div>
-        <h3>You build your own AI Looksmaxxing System.</h3>
-        <p>Most guys already know roughly what to do. They just don&rsquo;t do it consistently, and they can&rsquo;t see whether it&rsquo;s working. Your system fixes both:</p>
-        <ul>
-          <li><svg class="tick" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span><b>Tells you exactly what to do</b> every day and every week, so you&rsquo;re never guessing</span></li>
-          <li><svg class="tick" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span><b>Tracks your consistency</b>, so you always know if you&rsquo;re actually locked in</span></li>
-          <li><svg class="tick" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span><b>Compares your progress photos</b> over time, so you see real changes</span></li>
-          <li><svg class="tick" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span><b>Keeps you accountable</b> long after the motivation wears off</span></li>
+      <li class="how-card how-lead">
+        <span class="step">Step 1</span>
+        <h3>You build your own system</h3>
+        <p>Baby walks you through it, step by step. <b>No coding. No tech experience.</b></p>
+        <ul class="caps">
+          <li>
+            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M8 13l2 2 4-4"/></svg>
+            <b>Tells you what to do</b><span>Every day and every week. No guessing.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 4 5-7 4 5"/></svg>
+            <b>Tracks your consistency</b><span>You always know if you&rsquo;re actually locked in.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="12" r="3.2"/></svg>
+            <b>Compares your photos</b><span>You see the change instead of guessing at it.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M10.5 21a2 2 0 0 0 3 0"/></svg>
+            <b>Keeps you accountable</b><span>Long after the motivation wears off.</span>
+          </li>
         </ul>
-        <p class="extra">Baby walks you through building it step by step. No coding or tech experience needed.</p>
-      </div></li>
-      <li><span class="n">2</span><div>
-        <h3>You get coached by Baby live, every week.</h3>
-        <p>Every week, you jump on a live video call with Baby. Ask him anything, get his looksmaxxing advice directly, and know exactly what to focus on next. This is the same guy who&rsquo;s coached 15,000+ paid students.</p>
-      </div></li>
-      <li><span class="n">3</span><div>
-        <h3>Base44 is paying for all of it.</h3>
-        <p>Base44 is the AI platform your system runs on, and we&rsquo;ve partnered with them. <b>Base44 covers the cost of your weekly coaching calls, your bonuses, and the private community.</b></p>
-      </div></li>
-      <li><span class="n">4</span><div>
-        <h3>All you pay for is your Base44 membership.</h3>
-        <p>That&rsquo;s the software your system runs on. You pay Base44 directly, not us, and your system lives in your own account, so it&rsquo;s yours.</p>
-      </div></li>
+      </li>
+      <li class="how-card">
+        <span class="step">Step 2</span>
+        <span class="gi"><svg viewBox="0 0 24 24"><path d="M15 10l5-3v10l-5-3"/><rect x="3" y="6" width="12" height="12" rx="2"/></svg></span>
+        <h3>Baby coaches you live, every week</h3>
+        <p>A live video call, every week. Ask him anything. He&rsquo;s coached <b>15,000+ paid students</b>.</p>
+      </li>
+      <li class="how-card">
+        <span class="step">Step 3</span>
+        <span class="gi"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></span>
+        <h3>Base44 pays for all of it</h3>
+        <p>We partnered with the AI platform your system runs on. <b>They cover your calls, your bonuses and the community.</b></p>
+      </li>
+      <li class="how-card">
+        <span class="step">Step 4</span>
+        <span class="gi"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
+        <h3>You only pay Base44</h3>
+        <p>Direct to them, not us. Your system lives in <b>your own account</b>, so it&rsquo;s yours.</p>
+      </li>
     </ol>
     <!-- [SWAP] closing line -->
-    <p class="closing">You&rsquo;ll pick Base44&rsquo;s <b>Starter membership, billed yearly</b>. That&rsquo;s what unlocks your free month of TSM and Baby AI.</p>
+    <p class="closing read">You&rsquo;ll pick Base44&rsquo;s <b>Starter membership, billed yearly</b>. That&rsquo;s what unlocks your free month of TSM and Baby AI.</p>
   </div>
 </section>
 
