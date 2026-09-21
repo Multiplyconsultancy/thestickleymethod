@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/member/start/start.css">
 </head>
 <body>
@@ -23,56 +23,58 @@
 <script src="/member/start/data/path.js"></script>
 <script src="/member/start/start.js"></script>
 <script>
-/* The completion moment. Meaningful and premium rather than confetti:
-   one statement, the numbers, one next step. */
 (function () {
   S.boot('modules');
   var P = window.PATH, n = parseInt(S.qs('d') || '1', 10);
   var d = P.day(n), next = P.day(n + 1), page = document.getElementById('page');
   var accent = d ? d.accent : 'var(--gold)';
 
-  function wrap(inner) {
-    return '<div style="--day:' + accent + ';padding-top:6vh">' + inner + '</div>';
-  }
-
-  if (n === 1) {
-    page.innerHTML = wrap(
-      '<div class="lhero"><span class="lhero__eyebrow">Day One &middot; Complete</span>' +
-      '<h2>Your system is live.</h2>' +
-      '<p class="lede">You don’t need to change your entire life today. Start by keeping the promises you make to yourself — that is tomorrow.</p>' +
-      (S.app() ? '<a class="appurl" href="' + S.esc(S.app().url) + '" target="_blank" rel="noopener">' + S.esc(S.app().url) + '</a>' : '') +
-      '<div class="btn-row"><a class="btn btn--primary" href="/member/start/phase?p=seven&l=d2">Day 2 &rarr;</a>' +
-      '<a class="btn btn--ghost" href="/member/start">Home</a></div></div>' +
-      '<p class="hint" style="margin-top:20px;color:var(--faint);font-size:13.5px">Come back tomorrow. The rewards need seven separate days, so racing ahead builds the app faster but does not finish the week sooner.</p>');
-    return;
-  }
+  function shell(inner) { return '<div style="--day:' + accent + ';padding-top:5vh">' + inner + '</div>'; }
 
   if (n === 7) {
-    page.innerHTML = wrap(
+    page.innerHTML = shell(
       '<div class="lhero"><span class="lhero__eyebrow">The seven are done</span>' +
       '<h2>That’s the week.</h2>' +
       '<p class="lede">A working system with your own numbers in it, a coach in your pocket, and seven days of real records. Most people never get past watching.</p></div>' +
       '<div class="phases" style="grid-template-columns:repeat(3,1fr)">' +
         '<div class="pcard" style="--day:var(--gold)"><div class="pcard__top"><span class="chip">' + S.icon('crown') + '</span></div>' +
-          '<h3 style="font-size:30px">7</h3><p style="min-height:0">Days done</p></div>' +
-        '<div class="pcard" style="--day:#34D399"><div class="pcard__top"><span class="chip">' + S.icon('chart') + '</span></div>' +
-          '<h3 style="font-size:30px">' + S.activeDays() + '</h3><p style="min-height:0">Active days</p></div>' +
-        '<div class="pcard" style="--day:#06B6D4"><div class="pcard__top"><span class="chip">' + S.icon('chat') + '</span></div>' +
-          '<h3 style="font-size:30px">' + P.totalPrompts() + '</h3><p style="min-height:0">Builds sent</p></div>' +
-      '</div>' +
+          '<h3 style="font-size:28px">7</h3><p>Days done</p></div>' +
+        '<div class="pcard" style="--day:#4FA97A"><div class="pcard__top"><span class="chip">' + S.icon('chart') + '</span></div>' +
+          '<h3 style="font-size:28px">' + S.activeDays() + '</h3><p>Active days</p></div>' +
+        '<div class="pcard" style="--day:#3FA5B8"><div class="pcard__top"><span class="chip">' + S.icon('chat') + '</span></div>' +
+          '<h3 style="font-size:28px">' + P.totalPrompts() + '</h3><p>Prompts sent</p></div></div>' +
       '<div class="btn-row"><a class="btn btn--primary" href="/member/start/bonus">See what opened &rarr;</a>' +
-      '<a class="btn btn--ghost" href="/member/start/my-system">My system</a></div>');
+      '<a class="btn btn--ghost" href="/member/start/library">The Library</a></div>');
     return;
   }
 
-  page.innerHTML = wrap(
-    '<div class="lhero"><span class="lhero__eyebrow">' + S.esc(d.eyebrow) + ' &middot; Complete</span>' +
-    '<h2>' + S.esc(d.title) + ' is in.</h2>' +
-    '<p class="lede">' + S.doneCount() + ' of 7 done.' +
-    (next ? ' Next: ' + S.esc(next.title) + ', about ' + next.minutes + ' minutes.' : '') + '</p>' +
-    '<div class="btn-row">' +
-    (next ? '<a class="btn btn--primary" href="/member/start/phase?p=seven&l=d' + (n + 1) + '">Day ' + (n + 1) + ' &rarr;</a>' : '') +
-    '<a class="btn btn--ghost" href="/member/start">Home</a></div></div>' +
-    '<p class="hint" style="margin-top:20px;color:var(--faint);font-size:13.5px">Tell your app what happened today before you close it. That check-in is what keeps the grid honest.</p>');
+  var head = n === 1
+    ? { e: 'Day One &middot; Complete', t: 'Your system is live.',
+        l: 'You don’t need to change your entire life today. Start by keeping the promises you make to yourself — that is tomorrow.' }
+    : { e: S.esc(d.eyebrow) + ' &middot; Complete', t: S.esc(d.title) + ' is in.',
+        l: S.doneCount() + ' of 7 done.' };
+
+  page.innerHTML = shell(
+    '<div class="lhero"><span class="lhero__eyebrow">' + head.e + '</span>' +
+    '<h2>' + head.t + '</h2><p class="lede">' + head.l + '</p>' +
+    (n === 1 && S.app() ? '<a class="appurl" href="' + S.esc(S.app().url) + '" target="_blank" rel="noopener">' + S.esc(S.app().url) + '</a>' : '') +
+    '</div>' +
+    '<div class="gate" id="g"><div><b>Day ' + (n + 1) + ' · ' + S.esc(next.title) + '</b>' +
+    '<span>' + next.parts.length + ' modules · about ' + next.minutes + ' minutes</span></div>' +
+    '<span class="gate__t" id="t"></span></div>' +
+    '<p class="hint" style="margin-top:18px;color:var(--faint);font-size:13px">Seven days is the point. ' +
+    'You cannot cram a week of honest records into one evening — and the board only means something if the days are real.</p>');
+
+  /* Live countdown to the next day, and swap in the button at zero. */
+  S.tick(function () {
+    var ms = S.openIn(n + 1), t = document.getElementById('t'), g = document.getElementById('g');
+    if (!t || !g) return;
+    if (ms <= 0) {
+      g.innerHTML = '<div><b>Day ' + (n + 1) + ' is open</b><span>' + S.esc(next.summary) + '</span></div>' +
+        '<a class="btn btn--primary" style="margin-left:auto" href="/member/start/phase?p=seven&l=d' + (n + 1) + '">Start &rarr;</a>';
+      return;
+    }
+    t.textContent = S.shortLeft(ms);
+  });
 })();
 </script></body></html>

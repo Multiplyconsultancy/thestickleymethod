@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/member/start/start.css">
 </head>
 <body>
@@ -25,25 +25,18 @@
 <script>
 (function () {
   S.boot('bonus');
-  var P = window.PATH, open = S.ladderOpen(), c = S.clock();
-  var done = S.doneCount(), pct = Math.round(done / 7 * 100);
-  var left = Math.max(0, 7 - done);
+  var P = window.PATH, open = S.ladderOpen();
+  var done = S.doneCount(), pct = Math.round(done / 7 * 100), left = Math.max(0, 7 - done);
 
   var html = '<div class="phead"><h1>Fast Start</h1>' +
-    '<p class="sub">Finish the seven days, across seven separate days. That is it.</p></div>';
+    '<p class="sub">Finish all seven days. That is the whole requirement.</p></div>';
 
   html += '<div class="banner"><div class="banner__t">' +
     '<h2>' + (open ? 'All unlocked.' : 'Fast Start Rewards') + '</h2>' +
     '<p>' + (open ? 'You did the week. Everything below is yours.'
-                  : done + '/7 days &middot; ' + S.activeDays() + '/7 active days') + '</p>' +
-    '<div class="bar" style="--day:var(--gold)"><i style="width:' + pct + '%"></i></div></div>';
-  if (!open && c && !c.expired) {
-    html += '<div class="cd" style="flex:0 0 auto;min-width:260px">' +
-      '<div><b>' + c.d + '</b><span>Days</span></div>' +
-      '<div><b>' + c.h + '</b><span>Hours</span></div>' +
-      '<div><b>' + c.m + '</b><span>Mins</span></div></div>';
-  }
-  html += '</div>';
+                  : done + ' of 7 days done &middot; ' + S.activeDays() + ' active days') + '</p>' +
+    '<div class="bar" style="--a:var(--gold)"><i style="width:' + pct + '%"></i></div></div>' +
+    (open ? '' : '<div class="cd" id="cd" style="flex:0 0 auto;min-width:250px"></div>') + '</div>';
 
   P.unlocks.forEach(function (u) {
     html += '<div class="lad' + (open ? ' is-open' : '') + '" style="--a:' + u.accent + '">' +
@@ -52,11 +45,22 @@
       '<span class="lad__s">' + S.icon(open ? 'tick' : 'lock') + '</span></div>';
   });
 
-  html += '<div class="cont"><div><b>' + (left ? left + ' day' + (left > 1 ? 's' : '') + ' left' : 'Done') + '</b>' +
-    '<span>' + (left ? 'Then you unlock all four.' : 'Everything above is open.') + '</span></div>' +
+  html += '<div class="cont"><div><b>' + (left ? left + ' day' + (left > 1 ? 's' : '') + ' left' : 'Everything is open') + '</b>' +
+    '<span>' + (left ? 'Then all four unlock at once.' : 'Nothing left to earn here.') + '</span></div>' +
     '<a class="btn btn--primary" href="' + (open ? '/member/start/library' : '/member/start/phase?p=seven') + '">' +
-    (open ? 'Open the Library' : 'Continue') + ' &rarr;</a></div>';
+    (open ? 'Open the Library' : 'Continue the seven') + ' &rarr;</a></div>';
 
   document.getElementById('page').innerHTML = html;
+
+  /* Live. The old version only moved when the page was refreshed,
+     which is not a countdown. */
+  var el = document.getElementById('cd');
+  if (el) S.tick(function () {
+    var ms = S.clock();
+    if (ms === null) { el.innerHTML = '<div><b>&mdash;</b><span>Starts on Day 1</span></div>'; return; }
+    el.innerHTML = S.clockFace(ms).map(function (u) {
+      return '<div><b>' + u.v + '</b><span>' + u.l + '</span></div>';
+    }).join('');
+  });
 })();
 </script></body></html>

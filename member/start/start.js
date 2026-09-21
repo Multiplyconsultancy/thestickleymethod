@@ -58,15 +58,76 @@ window.S = (function () {
   }
   function save(s) { Store.set('progress', s); return s; }
 
-  /* ── Progress ─────────────────────────────────────────────────── */
+  /* ── Progress ──────────────────────────────────────────────────
+     Days hold MODULES now, so progress is tracked at two levels: which
+     modules of a day are finished, and whether the day itself is closed.
+     ─────────────────────────────────────────────────────────────── */
   function done(n) { return !!state().days[String(n)]; }
   function doneCount() { return Object.keys(state().days).length; }
 
-  /* Day 1 is always open. After that, finish the one before. */
+  function partsDone(n) { return Store.get('parts.' + n, []); }
+  function partDone(n, id) { return partsDone(n).indexOf(id) > -1; }
+  function completePart(n, id) {
+    var l = partsDone(n);
+    if (l.indexOf(id) === -1) { l.push(id); Store.set('parts.' + n, l); }
+    return l;
+  }
+  function uncompletePart(n, id) {
+    Store.set('parts.' + n, partsDone(n).filter(function (x) { return x !== id; }));
+  }
+  function allPartsDone(n) {
+    var d = window.PATH.day(n);
+    if (!d) return false;
+    var done = partsDone(n);
+    return d.parts.every(function (p) { return done.indexOf(p.id) > -1; });
+  }
+
+  /* ── The two gates ─────────────────────────────────────────────────
+     MINIMUM TIME ON A DAY. The complete button stays disabled until the
+     day's own minMinutes have passed since the member first opened it.
+     Day one is 15 minutes; a build that genuinely takes forty-five
+     cannot honestly be submitted ninety seconds after arriving.
+
+     THE NEXT DAY OPENS ON A TIMER. UNLOCK_HOURS after the previous day
+     is closed. Twenty rather than twenty-four so that somebody who
+     worked at 9pm on Monday is not locked out at 8pm on Tuesday. This
+     is the single constant to change if the pacing turns out wrong.
+     ─────────────────────────────────────────────────────────────── */
+  var UNLOCK_HOURS = 20;
+
+  function firstSeen(n) {
+    var k = 'seen.' + n, t = Store.get(k, null);
+    if (!t) { t = Date.now(); Store.set(k, t); }
+    return t;
+  }
+  function seenFor(n) { return Date.now() - firstSeen(n); }
+  function minMs(n) {
+    var d = window.PATH.day(n);
+    return ((d && d.minMinutes) || 0) * 60000;
+  }
+  function submitIn(n) { return Math.max(0, minMs(n) - seenFor(n)); }
+  function canSubmit(n) { return submitIn(n) <= 0; }
+
+  /* When does day n open? Day 1 immediately; anything else is a fixed
+     gap after the day before it was closed. */
+  function unlockAt(n) {
+    n = parseInt(n, 10);
+    if (n <= 1) return 0;
+    var prev = state().days[String(n - 1)];
+    if (!prev) return null;                       // previous day not finished
+    return new Date(prev.doneAt).getTime() + UNLOCK_HOURS * 3600000;
+  }
+  function openIn(n) {
+    var at = unlockAt(n);
+    if (at === null) return null;
+    return Math.max(0, at - Date.now());
+  }
   function unlocked(n) {
     n = parseInt(n, 10);
-    if (n === 1) return true;
-    return done(n - 1);
+    if (n <= 1) return true;
+    if (done(n)) return true;
+    var left = openIn(n);
+    return left !== null && left <= 0;
   }
   function currentDay() {
     for (var i = 1; i <= WEEK; i++) if (!done(i)) return i;
@@ -88,8 +149,6 @@ window.S = (function () {
   }
   function checkedInToday() { return state().checkins.indexOf(today()) > -1; }
 
-  /* Distinct calendar days on which anything happened. This is the
-     number the ladder actually cares about. */
   function activeDays() {
     var s = state(), set = {};
     s.checkins.forEach(function (d) { set[d] = 1; });
@@ -97,7 +156,12 @@ window.S = (function () {
     return Object.keys(set).length;
   }
 
-  function ladderOpen() { return doneCount() >= WEEK && activeDays() >= WEEK; }
+  /* THE LADDER OPENS ON THE SEVENTH DAY BEING CLOSED, full stop.
+     It previously also required seven distinct calendar days, which
+     meant somebody could finish all seven and unlock nothing, with no
+     explanation on screen. The day-unlock timer already guarantees the
+     week takes a week; asking for it twice was a bug, not a rule. */
+  function ladderOpen() { return doneCount() >= WEEK; }
 
   /* ── The clock ────────────────────────────────────────────────────
      Starts when the first app is verified, not at signup: a countdown
@@ -106,15 +170,48 @@ window.S = (function () {
   function clock() {
     var s = state();
     if (!s.startedAt) return null;
-    var ends = new Date(s.startedAt).getTime() + WEEK * 86400000;
-    var left = ends - Date.now();
-    if (left <= 0) return { expired: true, d: 0, h: 0, m: 0 };
+    var ends = new Date(s.startedAt).getTime() + (WEEK + 1) * 86400000;
+    return Math.max(0, ends - Date.now());
+  }
+
+  /* ── Live countdowns ──────────────────────────────────────────────
+     Countdowns previously only moved on a page refresh, which is not a
+     countdown. Every timer on the site registers here and one interval
+     repaints them all each second. Returns a stop function. */
+  var ticks = [], ticking = null;
+  function tick(fn) {
+    fn();
+    ticks.push(fn);
+    if (!ticking) ticking = setInterval(function () {
+      for (var i = 0; i < ticks.length; i++) { try { ticks[i](); } catch (e) {} }
+    }, 1000);
+    return function () { ticks = ticks.filter(function (f) { return f !== fn; }); };
+  }
+
+  /* ms -> the largest sensible units, for a countdown face. */
+  function parts_(ms) {
+    if (ms <= 0) return { d: 0, h: 0, m: 0, s: 0, over: true };
     return {
-      expired: false,
-      d: Math.floor(left / 86400000),
-      h: Math.floor(left / 3600000) % 24,
-      m: Math.floor(left / 60000) % 60,
+      d: Math.floor(ms / 86400000),
+      h: Math.floor(ms / 3600000) % 24,
+      m: Math.floor(ms / 60000) % 60,
+      s: Math.floor(ms / 1000) % 60,
+      over: false,
     };
+  }
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function clockFace(ms) {
+    var p = parts_(ms);
+    return p.d > 0
+      ? [{ v: p.d, l: 'Days' }, { v: pad(p.h), l: 'Hours' }, { v: pad(p.m), l: 'Mins' }]
+      : [{ v: pad(p.h), l: 'Hours' }, { v: pad(p.m), l: 'Mins' }, { v: pad(p.s), l: 'Secs' }];
+  }
+  function shortLeft(ms) {
+    var p = parts_(ms);
+    if (p.over) return 'now';
+    if (p.d) return p.d + 'd ' + p.h + 'h';
+    if (p.h) return p.h + 'h ' + p.m + 'm';
+    return p.m + 'm ' + pad(p.s) + 's';
   }
 
   /* ── The app they built ───────────────────────────────────────── */
@@ -247,19 +344,25 @@ window.S = (function () {
   }
 
 
-  /* ── Progress ring. Plain SVG, no library, stroke-dasharray for the
-     arc so it animates for free if anything ever transitions it. ── */
-  function ring(pct, size, accent) {
+  /* ── Progress ring. Owns its own centre label: pages were
+     positioning it with negative margins, which is what clipped the
+     panel beside it. ── */
+  function ring(pct, size, accent, big, small) {
     size = size || 138;
-    var r = (size / 2) - 9, c = 2 * Math.PI * r;
+    var r = (size / 2) - 8, c = 2 * Math.PI * r;
     var off = c * (1 - Math.max(0, Math.min(1, pct / 100)));
-    return '<div class="ring"><svg width="' + size + '" height="' + size + '">' +
-      '<circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" ' +
-        'stroke="rgba(255,255,255,.07)" stroke-width="9"/>' +
-      '<circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" ' +
-        'stroke="' + (accent || 'var(--gold)') + '" stroke-width="9" stroke-linecap="round" ' +
-        'stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '"/>' +
-      '</svg></div>';
+    return '<div class="ring" style="width:' + size + 'px;height:' + size + 'px">' +
+      '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '">' +
+        '<circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" ' +
+          'stroke="rgba(255,255,255,.06)" stroke-width="8"/>' +
+        '<circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" ' +
+          'stroke="' + (accent || 'var(--gold)') + '" stroke-width="8" stroke-linecap="round" ' +
+          'stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '"/>' +
+      '</svg>' +
+      (big !== undefined
+        ? '<div class="ring__mid"><b>' + big + '</b>' + (small ? '<span>' + small + '</span>' : '') + '</div>'
+        : '') +
+      '</div>';
   }
 
   /* ── Activity heatmap. Twelve weeks back, Monday-first columns, and
@@ -339,6 +442,11 @@ window.S = (function () {
   return {
     Store: Store, state: state, save: save, today: today,
     done: done, doneCount: doneCount, unlocked: unlocked, currentDay: currentDay,
+    partsDone: partsDone, partDone: partDone, completePart: completePart,
+    uncompletePart: uncompletePart, allPartsDone: allPartsDone,
+    unlockAt: unlockAt, openIn: openIn, UNLOCK_HOURS: UNLOCK_HOURS,
+    firstSeen: firstSeen, submitIn: submitIn, canSubmit: canSubmit,
+    tick: tick, clockFace: clockFace, shortLeft: shortLeft,
     completeDay: completeDay, checkIn: checkIn, checkedInToday: checkedInToday,
     activeDays: activeDays, ladderOpen: ladderOpen, clock: clock,
     app: app, saveApp: saveApp, checkUrl: checkUrl,

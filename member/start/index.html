@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/member/start/start.css">
 </head>
 <body>
@@ -25,8 +25,8 @@
 <script>
 (function () {
   S.boot('home');
-  /* One phase card. Accent lives on the element so the tint, the bar
-     and the chip all pick it up from a single custom property. */
+  /* One phase card. The accent lives on the element so the wash, the
+     bar and the chip all read it from a single custom property. */
   function pcard(p) {
     var open = !p.gated || S.ladderOpen();
     var done = p.lessons.filter(function (l) {
@@ -35,13 +35,14 @@
     var tot = p.lessons.length;
     var pct = tot ? Math.round(done / tot * 100) : (open ? 100 : 0);
     var href = p.id === 'library' ? '/member/start/library' : '/member/start/phase?p=' + p.id;
+    var sub = tot ? done + ' / ' + tot + ' lessons' : '24 builds';
+    if (p.id === 'seven') sub += ' &middot; ' + window.PATH.totalPrompts() + ' prompts';
     var inner =
       '<div class="pcard__top"><span class="chip">' + S.icon(p.mark) + '</span>' +
-        '<div><span class="pcard__eyebrow">Phase ' + p.n + '</span></div>' +
+        '<span class="pcard__eyebrow">Phase ' + p.n + '</span>' +
         (open ? '' : '<span class="pcard__lock">' + S.icon('lock') + '</span>') + '</div>' +
       '<h3>' + S.esc(p.title) + '</h3><p>' + S.esc(p.blurb) + '</p>' +
-      '<div class="pcard__foot"><span>' + (tot ? done + ' / ' + tot + ' lessons' : '24 builds') + '</span>' +
-        '<span class="pc">' + pct + '%</span></div>' +
+      '<div class="pcard__foot"><span>' + sub + '</span><span class="pc">' + pct + '%</span></div>' +
       '<div class="bar"><i style="width:' + pct + '%"></i></div>';
     return (open ? '<a class="pcard" href="' + href + '"' : '<div class="pcard is-locked"') +
       ' style="--day:' + p.accent + '">' + inner + (open ? '</a>' : '</div>');
@@ -50,38 +51,52 @@
   var totL = P.totalLessons();
   var doneL = S.doneCount() + (S.Store.get('intro.welcome', false) ? 1 : 0);
   var pct = Math.round(doneL / totL * 100);
+  var cur = S.currentDay();
 
   var html = '<div class="phead"><h1>' + (st.startedAt ? 'Welcome back.' : 'Welcome in.') + '</h1>' +
     '<p class="sub">' + doneL + ' of ' + totL + ' lessons complete &middot; ' +
-    S.activeDays() + '-day streak</p></div>';
+    S.activeDays() + '-day streak &middot; ' + P.totalPrompts() + ' prompts in the path</p></div>';
 
+  /* Ring owns its own centre label now; the old version positioned it
+     with negative margins and that is what clipped the panel beside it. */
   html += '<div class="toprow">' +
     '<div class="panel"><h3>Course Progress</h3><p class="cap">All phases combined</p>' +
-      S.ring(pct, 148) +
-      '<div class="ring__mid" style="position:relative;margin-top:-92px;margin-bottom:46px">' +
-        '<b>' + pct + '%</b><span>' + doneL + ' / ' + totL + '</span></div></div>' +
+      S.ring(pct, 146, 'var(--gold)', pct + '%', doneL + ' / ' + totL) + '</div>' +
     '<div class="panel" style="position:relative"><h3>Activity</h3>' +
       '<p class="cap">' + S.activeDays() + ' active days &middot; last 12 weeks</p>' +
       '<div class="streakbig"><b>' + S.activeDays() + '</b><span>Day streak</span></div>' +
       S.heatmap(12) +
       '<div class="heat__legend"><span>Less</span>' +
         '<i class="heat__d"></i><i class="heat__d l1"></i><i class="heat__d l2"></i><i class="heat__d l3"></i>' +
-        '<span>More</span></div></div>' +
-    '</div>';
+        '<span>More</span></div></div></div>';
 
   html += '<div class="sec" style="margin-top:0"><div class="sec__head"><h2>Your modules</h2>' +
     '<a href="/member/start/modules">All phases &rsaquo;</a></div>' +
-    '<p style="color:var(--faint);font-size:13.5px;margin:-8px 0 14px">Work through them in order.</p>' +
+    '<p style="color:var(--faint);font-size:13px;margin:-6px 0 13px">Work through them in order.</p>' +
     '<div class="phases">' + P.phases.map(pcard).join('') + '</div></div>';
 
-  /* One continue strip at the bottom: always exactly one next action. */
+  /* Exactly one next action, and it knows whether the next day is
+     actually open yet rather than sending people at a locked door. */
   if (!S.ladderOpen()) {
-    var left = 7 - S.doneCount();
-    html += '<div class="cont"><div><b>' + (left ? left + ' day' + (left > 1 ? 's' : '') + ' left' : 'Seven days done') + '</b>' +
-      '<span>' + (left ? 'Then everything below unlocks.' : 'Come back tomorrow to keep the streak.') + '</span></div>' +
-      '<a class="btn btn--primary" href="/member/start/phase?p=seven">Continue &rarr;</a></div>';
+    var d = P.day(cur), waiting = !S.unlocked(cur) ? S.openIn(cur) : 0;
+    html += '<div class="cont" id="cont"><div><b id="contb">' +
+      (waiting > 0 ? 'Day ' + cur + ' opens soon' : 'Day ' + cur + ' · ' + S.esc(d.title)) + '</b>' +
+      '<span id="conts">' + (waiting > 0
+        ? 'Come back and finish the week.'
+        : d.parts.length + ' modules · about ' + d.minutes + ' minutes') + '</span></div>' +
+      (waiting > 0
+        ? '<span class="gate__t" id="contt"></span>'
+        : '<a class="btn btn--primary" href="/member/start/phase?p=seven&l=d' + cur + '">Continue &rarr;</a>') +
+      '</div>';
   }
 
   document.getElementById('page').innerHTML = html;
+
+  var ct = document.getElementById('contt');
+  if (ct) S.tick(function () {
+    var ms = S.openIn(cur);
+    if (ms <= 0) { window.location.reload(); return; }
+    ct.textContent = S.shortLeft(ms);
+  });
 })();
 </script></body></html>

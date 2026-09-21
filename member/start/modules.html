@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/member/start/start.css">
 </head>
 <body>
@@ -25,8 +25,8 @@
 <script>
 (function () {
   S.boot('modules');
-  /* One phase card. Accent lives on the element so the tint, the bar
-     and the chip all pick it up from a single custom property. */
+  /* One phase card. The accent lives on the element so the wash, the
+     bar and the chip all read it from a single custom property. */
   function pcard(p) {
     var open = !p.gated || S.ladderOpen();
     var done = p.lessons.filter(function (l) {
@@ -35,13 +35,14 @@
     var tot = p.lessons.length;
     var pct = tot ? Math.round(done / tot * 100) : (open ? 100 : 0);
     var href = p.id === 'library' ? '/member/start/library' : '/member/start/phase?p=' + p.id;
+    var sub = tot ? done + ' / ' + tot + ' lessons' : '24 builds';
+    if (p.id === 'seven') sub += ' &middot; ' + window.PATH.totalPrompts() + ' prompts';
     var inner =
       '<div class="pcard__top"><span class="chip">' + S.icon(p.mark) + '</span>' +
-        '<div><span class="pcard__eyebrow">Phase ' + p.n + '</span></div>' +
+        '<span class="pcard__eyebrow">Phase ' + p.n + '</span>' +
         (open ? '' : '<span class="pcard__lock">' + S.icon('lock') + '</span>') + '</div>' +
       '<h3>' + S.esc(p.title) + '</h3><p>' + S.esc(p.blurb) + '</p>' +
-      '<div class="pcard__foot"><span>' + (tot ? done + ' / ' + tot + ' lessons' : '24 builds') + '</span>' +
-        '<span class="pc">' + pct + '%</span></div>' +
+      '<div class="pcard__foot"><span>' + sub + '</span><span class="pc">' + pct + '%</span></div>' +
       '<div class="bar"><i style="width:' + pct + '%"></i></div>';
     return (open ? '<a class="pcard" href="' + href + '"' : '<div class="pcard is-locked"') +
       ' style="--day:' + p.accent + '">' + inner + (open ? '</a>' : '</div>');
