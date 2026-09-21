@@ -62,6 +62,9 @@ window.PATH = (function () {
        ═════════════════════════════════════════════════════════════ */
     {
       n: 1,
+      accent: '#FF7A5A',
+      mark: 'grid',
+      theme: 'Foundations',
       eyebrow: 'Day One',
       title: 'The Standard',
       minutes: 45,
@@ -198,6 +201,9 @@ window.PATH = (function () {
        ═════════════════════════════════════════════════════════════ */
     {
       n: 2,
+      accent: '#F43F6E',
+      mark: 'flame',
+      theme: 'Discipline',
       eyebrow: 'Day Two',
       title: 'The Promises',
       minutes: 15,
@@ -237,6 +243,9 @@ window.PATH = (function () {
 
     {
       n: 3,
+      accent: '#A855F7',
+      mark: 'heart',
+      theme: 'Meaning',
       eyebrow: 'Day Three',
       title: 'Your Why',
       minutes: 15,
@@ -271,6 +280,9 @@ window.PATH = (function () {
 
     {
       n: 4,
+      accent: '#3B82F6',
+      mark: 'chart',
+      theme: 'Truth',
       eyebrow: 'Day Four',
       title: 'The Weekly Review',
       minutes: 10,
@@ -302,6 +314,9 @@ window.PATH = (function () {
 
     {
       n: 5,
+      accent: '#06B6D4',
+      mark: 'chat',
+      theme: 'Connection',
       eyebrow: 'Day Five',
       title: 'The Coach',
       minutes: 20,
@@ -346,6 +361,9 @@ window.PATH = (function () {
 
     {
       n: 6,
+      accent: '#22C55E',
+      mark: 'depth',
+      theme: 'Depth',
       eyebrow: 'Day Six',
       title: 'Go Deep',
       minutes: 15,
@@ -378,6 +396,9 @@ window.PATH = (function () {
 
     {
       n: 7,
+      accent: '#FFC24B',
+      mark: 'crown',
+      theme: 'Completion',
       eyebrow: 'Day Seven',
       title: 'The First Review',
       minutes: 10,
@@ -395,6 +416,49 @@ window.PATH = (function () {
     },
   ];
 
+
+  /* ────────────────────────────────────────────────────────────────
+     PHASES.
+
+     The seven days are the content. This is the shelf they sit on, and
+     it is deliberately the same shape as a course portal because that
+     is the shape people already know how to read: phases on the home
+     screen, lessons down the left, the lesson itself on the right, one
+     button at the bottom.
+
+     Phase 2 is the product. Phase 1 exists so nobody lands on a
+     six-prompt build as their first screen, and Phase 3 is the reward
+     for finishing.
+     ──────────────────────────────────────────────────────────────── */
+  var PHASES = [
+    {
+      n: 1, id: 'start', title: 'Start Here', accent: '#FF7A5A', mark: 'play',
+      blurb: 'What this is, how it works, and exactly where to begin. Watch this before anything else.',
+      lessons: [
+        { id: 'welcome', title: 'Welcome from Baby', mins: 4, kind: 'intro' },
+      ],
+    },
+    {
+      n: 2, id: 'seven', title: 'The First Seven', accent: '#F43F6E', mark: 'flame',
+      blurb: 'Seven days. One build a day. At the end you have a system that runs what you actually control.',
+      lessons: DAYS.map(function (d) {
+        return { id: 'd' + d.n, day: d.n, title: d.title, mins: d.minutes, kind: 'day' };
+      }),
+    },
+    {
+      n: 3, id: 'library', title: 'The Library', accent: '#FFC24B', mark: 'grid',
+      blurb: 'Twenty-four more tools you can add to your system. Opens when the seven are done.',
+      gated: true, lessons: [],
+    },
+  ];
+
+  function phase(id) {
+    return PHASES.filter(function (p) { return p.id === id || String(p.n) === String(id); })[0] || null;
+  }
+  function totalLessons() {
+    return PHASES.reduce(function (t, p) { return t + p.lessons.length; }, 0);
+  }
+
   function day(n) {
     n = parseInt(n, 10);
     return DAYS.filter(function (d) { return d.n === n; })[0] || null;
@@ -406,11 +470,12 @@ window.PATH = (function () {
   /* What finishing the week opens. Shown locked from the first screen:
      the ladder is the offer, so it is never hidden. */
   var UNLOCKS = [
-    { id: 'community', title: 'The Community',        sub: 'Private chat with everyone else doing this' },
-    { id: 'calls',     title: 'Weekly call with Baby', sub: 'Live, every week, questions answered' },
-    { id: 'library',   title: 'The Build Library',     sub: 'Every other tool you can add to your system' },
-    { id: 'protocol',  title: "Baby's Protocol",       sub: 'What he actually does right now' },
+    { id: 'community', accent: '#06B6D4', mark: 'chat', title: 'The Community',        sub: 'Private chat with everyone else doing this' },
+    { id: 'calls', accent: '#A855F7', mark: 'live',     title: 'Weekly call with Baby', sub: 'Live, every week, questions answered' },
+    { id: 'library', accent: '#FF7A5A', mark: 'grid',   title: 'The Build Library',     sub: 'Every other tool you can add to your system' },
+    { id: 'protocol', accent: '#22C55E', mark: 'depth',  title: "Baby's Protocol",       sub: 'What he actually does right now' },
   ];
 
-  return { days: DAYS, day: day, totalPrompts: totalPrompts, unlocks: UNLOCKS };
+  return { days: DAYS, day: day, totalPrompts: totalPrompts, unlocks: UNLOCKS,
+           phases: PHASES, phase: phase, totalLessons: totalLessons };
 })();

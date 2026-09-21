@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Home | The Self-Mastery System</title>
+<title>Modules | The Self-Mastery System</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
@@ -24,7 +24,7 @@
 <script src="/member/start/start.js"></script>
 <script>
 (function () {
-  S.boot('home');
+  S.boot('modules');
   /* One phase card. Accent lives on the element so the tint, the bar
      and the chip all pick it up from a single custom property. */
   function pcard(p) {
@@ -46,42 +46,10 @@
     return (open ? '<a class="pcard" href="' + href + '"' : '<div class="pcard is-locked"') +
       ' style="--day:' + p.accent + '">' + inner + (open ? '</a>' : '</div>');
   }
-  var P = window.PATH, st = S.state();
-  var totL = P.totalLessons();
-  var doneL = S.doneCount() + (S.Store.get('intro.welcome', false) ? 1 : 0);
-  var pct = Math.round(doneL / totL * 100);
-
-  var html = '<div class="phead"><h1>' + (st.startedAt ? 'Welcome back.' : 'Welcome in.') + '</h1>' +
-    '<p class="sub">' + doneL + ' of ' + totL + ' lessons complete &middot; ' +
-    S.activeDays() + '-day streak</p></div>';
-
-  html += '<div class="toprow">' +
-    '<div class="panel"><h3>Course Progress</h3><p class="cap">All phases combined</p>' +
-      S.ring(pct, 148) +
-      '<div class="ring__mid" style="position:relative;margin-top:-92px;margin-bottom:46px">' +
-        '<b>' + pct + '%</b><span>' + doneL + ' / ' + totL + '</span></div></div>' +
-    '<div class="panel" style="position:relative"><h3>Activity</h3>' +
-      '<p class="cap">' + S.activeDays() + ' active days &middot; last 12 weeks</p>' +
-      '<div class="streakbig"><b>' + S.activeDays() + '</b><span>Day streak</span></div>' +
-      S.heatmap(12) +
-      '<div class="heat__legend"><span>Less</span>' +
-        '<i class="heat__d"></i><i class="heat__d l1"></i><i class="heat__d l2"></i><i class="heat__d l3"></i>' +
-        '<span>More</span></div></div>' +
-    '</div>';
-
-  html += '<div class="sec" style="margin-top:0"><div class="sec__head"><h2>Your modules</h2>' +
-    '<a href="/member/start/modules">All phases &rsaquo;</a></div>' +
-    '<p style="color:var(--faint);font-size:13.5px;margin:-8px 0 14px">Work through them in order.</p>' +
-    '<div class="phases">' + P.phases.map(pcard).join('') + '</div></div>';
-
-  /* One continue strip at the bottom: always exactly one next action. */
-  if (!S.ladderOpen()) {
-    var left = 7 - S.doneCount();
-    html += '<div class="cont"><div><b>' + (left ? left + ' day' + (left > 1 ? 's' : '') + ' left' : 'Seven days done') + '</b>' +
-      '<span>' + (left ? 'Then everything below unlocks.' : 'Come back tomorrow to keep the streak.') + '</span></div>' +
-      '<a class="btn btn--primary" href="/member/start/phase?p=seven">Continue &rarr;</a></div>';
-  }
-
-  document.getElementById('page').innerHTML = html;
+  var P = window.PATH;
+  document.getElementById('page').innerHTML =
+    '<div class="phead"><h1>Modules</h1>' +
+    '<p class="sub">' + P.phases.length + ' phases. Finish each one to unlock the next.</p></div>' +
+    '<div class="phases">' + P.phases.map(pcard).join('') + '</div>';
 })();
 </script></body></html>

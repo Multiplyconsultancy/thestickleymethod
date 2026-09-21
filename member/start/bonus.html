@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bonus | The Self-Mastery System</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/member/start/start.css">
+</head>
+<body>
+<div class="topbar"></div>
+<div class="shell">
+  <aside class="rail"></aside>
+  <main class="main"><div class="wrap" id="page"></div></main>
+</div>
+<nav class="tabbar"></nav>
+<script src="/member/start/data/path.js"></script>
+<script src="/member/start/start.js"></script>
+<script>
+(function () {
+  S.boot('bonus');
+  var P = window.PATH, open = S.ladderOpen(), c = S.clock();
+  var done = S.doneCount(), pct = Math.round(done / 7 * 100);
+  var left = Math.max(0, 7 - done);
+
+  var html = '<div class="phead"><h1>Fast Start</h1>' +
+    '<p class="sub">Finish the seven days, across seven separate days. That is it.</p></div>';
+
+  html += '<div class="banner"><div class="banner__t">' +
+    '<h2>' + (open ? 'All unlocked.' : 'Fast Start Rewards') + '</h2>' +
+    '<p>' + (open ? 'You did the week. Everything below is yours.'
+                  : done + '/7 days &middot; ' + S.activeDays() + '/7 active days') + '</p>' +
+    '<div class="bar" style="--day:var(--gold)"><i style="width:' + pct + '%"></i></div></div>';
+  if (!open && c && !c.expired) {
+    html += '<div class="cd" style="flex:0 0 auto;min-width:260px">' +
+      '<div><b>' + c.d + '</b><span>Days</span></div>' +
+      '<div><b>' + c.h + '</b><span>Hours</span></div>' +
+      '<div><b>' + c.m + '</b><span>Mins</span></div></div>';
+  }
+  html += '</div>';
+
+  P.unlocks.forEach(function (u) {
+    html += '<div class="lad' + (open ? ' is-open' : '') + '" style="--a:' + u.accent + '">' +
+      '<span class="chip" style="--a:' + u.accent + '">' + S.icon(u.mark) + '</span>' +
+      '<div><h3>' + S.esc(u.title) + '</h3><p>' + S.esc(u.sub) + '</p></div>' +
+      '<span class="lad__s">' + S.icon(open ? 'tick' : 'lock') + '</span></div>';
+  });
+
+  html += '<div class="cont"><div><b>' + (left ? left + ' day' + (left > 1 ? 's' : '') + ' left' : 'Done') + '</b>' +
+    '<span>' + (left ? 'Then you unlock all four.' : 'Everything above is open.') + '</span></div>' +
+    '<a class="btn btn--primary" href="' + (open ? '/member/start/library' : '/member/start/phase?p=seven') + '">' +
+    (open ? 'Open the Library' : 'Continue') + ' &rarr;</a></div>';
+
+  document.getElementById('page').innerHTML = html;
+})();
+</script></body></html>

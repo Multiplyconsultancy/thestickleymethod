@@ -219,55 +219,121 @@ window.S = (function () {
   }
 
   var ICONS = {
-    home: '<path d="M3 9.5 10 4l7 5.5V16a1 1 0 0 1-1 1h-3.5v-4.5h-5V17H4a1 1 0 0 1-1-1z"/>',
-    path: '<path d="M5 16.5v-4a3 3 0 0 1 3-3h4a3 3 0 0 0 3-3v-3"/><circle cx="5" cy="16.5" r="1.6"/><circle cx="15" cy="3.5" r="1.6"/>',
-    system: '<rect x="3" y="3.5" width="6" height="6" rx="1.4"/><rect x="11" y="3.5" width="6" height="6" rx="1.4"/><rect x="3" y="11.5" width="6" height="5" rx="1.4"/><rect x="11" y="11.5" width="6" height="5" rx="1.4"/>',
-    unlocks: '<rect x="4" y="9" width="12" height="8" rx="2"/><path d="M7 9V6.5a3 3 0 0 1 6 0"/>',
-    library: '<path d="M4 4.5h4v11H4zM9.5 4.5h3.5v11H9.5zM14.5 5.2l2.2 10.6"/>',
-    lock: '<rect x="5" y="9" width="10" height="7" rx="1.6"/><path d="M7.5 9V7a2.5 2.5 0 0 1 5 0v2"/>',
-    back: '<path d="M11.5 5 6.5 10l5 5"/>',
-    tick: '<path d="M4.5 10.5l3.5 3.5 7.5-8"/>',
+    home:'<path d="M3 9.5 10 3.5l7 6V17a1 1 0 0 1-1 1h-3.6v-5H7.6v5H4a1 1 0 0 1-1-1z"/>',
+    modules:'<rect x="3" y="3.5" width="14" height="4.2" rx="1.6"/><rect x="3" y="10" width="14" height="6.5" rx="1.6"/>',
+    system:'<rect x="3" y="3.5" width="6" height="6" rx="1.6"/><rect x="11" y="3.5" width="6" height="6" rx="1.6"/><rect x="3" y="11" width="6" height="5.5" rx="1.6"/><rect x="11" y="11" width="6" height="5.5" rx="1.6"/>',
+    bonus:'<path d="M10 3.2 12 7.4l4.6.6-3.4 3.2.9 4.6L10 13.6 5.9 15.8l.9-4.6L3.4 8l4.6-.6z"/>',
+    community:'<circle cx="7.4" cy="8" r="2.4"/><circle cx="13.2" cy="8.6" r="1.9"/><path d="M3.4 16c0-2.2 1.8-3.6 4-3.6s4 1.4 4 3.6M12.4 12.6c2 .1 3.5 1.4 3.5 3.4"/>',
+    announce:'<path d="M4 8.2v3.6h2.6L12 15.4V4.6L6.6 8.2z"/><path d="M14.6 7.4a3.6 3.6 0 0 1 0 5.2"/>',
+    wins:'<path d="M6 3.5h8v3.2a4 4 0 0 1-8 0z"/><path d="M6 4.6H3.8v1.2A2.6 2.6 0 0 0 6.4 8.4M14 4.6h2.2v1.2a2.6 2.6 0 0 1-2.6 2.6"/><path d="M10 10.8v3M7 16.5h6"/>',
+    leaderboard:'<rect x="3.2" y="9" width="3.6" height="7.5" rx="1"/><rect x="8.2" y="4.5" width="3.6" height="12" rx="1"/><rect x="13.2" y="7" width="3.6" height="9.5" rx="1"/>',
+    lock:'<rect x="4.6" y="8.8" width="10.8" height="7.6" rx="2"/><path d="M7.2 8.8V6.6a2.8 2.8 0 0 1 5.6 0v2.2"/>',
+    tick:'<path d="M4.6 10.3l3.4 3.4 7.4-7.6"/>',
+    back:'<path d="M11.6 4.8 6.4 10l5.2 5.2"/>',
+    play:'<path d="M7.4 5.2 14.6 10l-7.2 4.8z"/>',
+    flame:'<path d="M10 3.2s3.6 3.1 3.6 6.4a3.6 3.6 0 0 1-7.2 0c0-1.3.5-2.3.5-2.3s.7 1 1.5 1c.9 0 1.6-.8 1.6-2.3 0-1.2 0-2.8 0-2.8z"/><path d="M6.4 9.6a3.6 3.6 0 0 0 7.2 0c0 4-1.6 6.6-3.6 6.6s-3.6-2.6-3.6-6.6z"/>',
+    heart:'<path d="M10 16.2S3.6 12.4 3.6 8.1A3.3 3.3 0 0 1 10 6.5a3.3 3.3 0 0 1 6.4 1.6c0 4.3-6.4 8.1-6.4 8.1z"/>',
+    chart:'<path d="M3.6 16.4h12.8"/><path d="M6 16.4V9.6M10 16.4V4.8M14 16.4v-4.6"/>',
+    chat:'<path d="M16.4 11.2a2.4 2.4 0 0 1-2.4 2.4H7.2L3.6 16.4V5.6a2.4 2.4 0 0 1 2.4-2.4h8a2.4 2.4 0 0 1 2.4 2.4z"/>',
+    depth:'<circle cx="10" cy="10" r="6.6"/><circle cx="10" cy="10" r="3.4"/><circle cx="10" cy="10" r=".9" fill="currentColor"/>',
+    crown:'<path d="M3.4 6.2 6.2 11l3.8-6 3.8 6 2.8-4.8v8.6a1.4 1.4 0 0 1-1.4 1.4H4.8a1.4 1.4 0 0 1-1.4-1.4z"/>',
+    grid:'<rect x="3.4" y="3.4" width="5.6" height="5.6" rx="1.5"/><rect x="11" y="3.4" width="5.6" height="5.6" rx="1.5"/><rect x="3.4" y="11" width="5.6" height="5.6" rx="1.5"/><rect x="11" y="11" width="5.6" height="5.6" rx="1.5"/>',
+    live:'<circle cx="10" cy="10" r="2.6"/><path d="M6.2 6.2a5.4 5.4 0 0 0 0 7.6M13.8 13.8a5.4 5.4 0 0 0 0-7.6"/>',
   };
+
   function icon(n) {
     return '<svg class="ic" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" ' +
       'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[n] || '') + '</svg>';
+  }
+
+
+  /* ── Progress ring. Plain SVG, no library, stroke-dasharray for the
+     arc so it animates for free if anything ever transitions it. ── */
+  function ring(pct, size, accent) {
+    size = size || 138;
+    var r = (size / 2) - 9, c = 2 * Math.PI * r;
+    var off = c * (1 - Math.max(0, Math.min(1, pct / 100)));
+    return '<div class="ring"><svg width="' + size + '" height="' + size + '">' +
+      '<circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" ' +
+        'stroke="rgba(255,255,255,.07)" stroke-width="9"/>' +
+      '<circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" ' +
+        'stroke="' + (accent || 'var(--gold)') + '" stroke-width="9" stroke-linecap="round" ' +
+        'stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '"/>' +
+      '</svg></div>';
+  }
+
+  /* ── Activity heatmap. Twelve weeks back, Monday-first columns, and
+     today ringed. Reads the same check-in set the ladder counts. ── */
+  function heatmap(weeks) {
+    weeks = weeks || 12;
+    var set = {};
+    state().checkins.forEach(function (d) { set[d] = 1; });
+    Object.keys(state().days).forEach(function (k) {
+      var d = state().days[k]; if (d.date) set[d.date] = (set[d.date] || 0) + 1;
+    });
+
+    var now = new Date(); now.setHours(0, 0, 0, 0);
+    var end = new Date(now); end.setDate(end.getDate() + (7 - ((end.getDay() + 6) % 7) - 1));
+    var startD = new Date(end); startD.setDate(startD.getDate() - (weeks * 7 - 1));
+    var tod = today(), out = '<div class="heat">', cur = new Date(startD);
+
+    for (var w = 0; w < weeks; w++) {
+      out += '<div class="heat__wk">';
+      for (var i = 0; i < 7; i++) {
+        var key = cur.getFullYear() + '-' + String(cur.getMonth() + 1).padStart(2, '0') + '-' + String(cur.getDate()).padStart(2, '0');
+        var v = set[key] || 0;
+        var lvl = v >= 3 ? ' l3' : v === 2 ? ' l2' : v === 1 ? ' l1' : '';
+        out += '<i class="heat__d' + lvl + (key === tod ? ' today' : '') + '" title="' + key + '"></i>';
+        cur.setDate(cur.getDate() + 1);
+      }
+      out += '</div>';
+    }
+    return out + '</div>';
   }
 
   /* ── Navigation. Five items. Never more. ──────────────────────────
      The first build had eleven and that is precisely why it felt like
      a menu instead of a path. */
   var NAV = [
-    { id: 'home',    label: 'Home',      href: '/member/start',           icon: 'home' },
-    { id: 'path',    label: 'The Path',  href: '/member/start/path',      icon: 'path' },
-    { id: 'system',  label: 'My System', href: '/member/start/my-system', icon: 'system' },
-    { id: 'unlocks', label: 'Unlocks',   href: '/member/start/unlocks',   icon: 'unlocks' },
-    { id: 'library', label: 'Library',   href: '/member/start/library',   icon: 'library', gated: true },
+    { id:'home',    label:'Home',          href:'/member/start',               icon:'home' },
+    { id:'modules', label:'Modules',       href:'/member/start/modules',       icon:'modules' },
+    { id:'system',  label:'My System',     href:'/member/start/my-system',     icon:'system' },
+    { id:'bonus',   label:'Bonus',         href:'/member/start/bonus',         icon:'bonus' },
+    { id:'comm',    label:'Community',     href:'/member/start/bonus',         icon:'community',   gated:true },
+    { id:'ann',     label:'Announcements', href:'/member/start/announcements', icon:'announce',    badge:3 },
+    { id:'wins',    label:'Wins',          href:'/member/start/wins',          icon:'wins' },
+    { id:'board',   label:'Leaderboard',   href:'/member/start/bonus',         icon:'leaderboard', gated:true },
   ];
 
   function boot(current) {
     var open = ladderOpen();
+    var logo = '<span class="mark__logo">SM</span>';
 
-    var rail = '<a class="mark" href="/member/start"><span class="dot"></span>' +
-      '<div><b>Self-Mastery</b><span>The First Seven</span></div></a><nav class="nav">';
+    var rail = '<a class="mark" href="/member/start">' + logo +
+      '<div><b>Self-Mastery</b><span>The System</span></div></a><nav class="nav">';
     NAV.forEach(function (i) {
       var cur = i.id === current ? ' aria-current="page"' : '';
-      var lock = (i.gated && !open) ? '<span class="nav__lock">' + icon('lock') + '</span>' : '';
-      rail += '<a href="' + i.href + '"' + cur + '>' + icon(i.icon) + '<span>' + esc(i.label) + '</span>' + lock + '</a>';
+      var tail = '';
+      if (i.gated && !open) tail = '<span class="nav__lock">' + icon('lock') + '</span>';
+      else if (i.badge)     tail = '<span class="nav__badge">' + i.badge + '</span>';
+      rail += '<a href="' + i.href + '"' + cur + '>' + icon(i.icon) +
+              '<span>' + esc(i.label) + '</span>' + tail + '</a>';
     });
-    rail += '</nav>';
-    rail += '<div class="rail__foot"><span>' + doneCount() + ' of 7 done</span></div>';
-
+    rail += '</nav><div class="rail__foot">' + doneCount() + ' of 7 days done</div>';
     var r = document.querySelector('.rail'); if (r) r.innerHTML = rail;
 
     var t = document.querySelector('.topbar');
-    if (t) t.innerHTML = '<span class="dot"></span><b>Self-Mastery</b><span class="sp"></span>' +
+    if (t) t.innerHTML = logo + '<b>Self-Mastery</b><span class="sp"></span>' +
       '<span class="tb-prog">' + doneCount() + '/7</span>';
 
+    /* Five slots on mobile: the ones somebody opens daily. */
+    var TABS = ['home', 'modules', 'system', 'bonus', 'wins'];
     var tb = document.querySelector('.tabbar');
-    if (tb) tb.innerHTML = NAV.map(function (i) {
-      var cur = i.id === current ? ' aria-current="page"' : '';
-      return '<a href="' + i.href + '"' + cur + '>' + icon(i.icon) + '<span>' + esc(i.label) + '</span></a>';
-    }).join('');
+    if (tb) tb.innerHTML = NAV.filter(function (i) { return TABS.indexOf(i.id) > -1; })
+      .map(function (i) {
+        var cur = i.id === current ? ' aria-current="page"' : '';
+        return '<a href="' + i.href + '"' + cur + '>' + icon(i.icon) + '<span>' + esc(i.label) + '</span></a>';
+      }).join('');
   }
 
   return {
@@ -277,6 +343,7 @@ window.S = (function () {
     activeDays: activeDays, ladderOpen: ladderOpen, clock: clock,
     app: app, saveApp: saveApp, checkUrl: checkUrl,
     answers: answers, saveAnswers: saveAnswers, build: build,
+    ring: ring, heatmap: heatmap,
     esc: esc, qs: qs, toast: toast, copy: copy, icon: icon, boot: boot, WEEK: WEEK,
   };
 })();

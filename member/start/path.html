@@ -1,51 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>The Path | The Self-Mastery System</title>
-<meta name="robots" content="noindex, nofollow">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/member/start/start.css">
-</head>
-<body>
-<div class="topbar"></div>
-<div class="shell">
-  <aside class="rail"></aside>
-  <main class="main"><div class="wrap" id="page"></div></main>
-</div>
-<nav class="tabbar"></nav>
-<script src="/member/start/data/path.js"></script>
-<script src="/member/start/start.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow"><title>Redirecting</title></head><body>
 <script>
+/* The path/day routes were replaced by the phase + lesson layout.
+   Kept so any link already shared still lands in the right place. */
 (function () {
-  S.boot('path');
-  var cur = S.currentDay();
-  var html = '<div class="head"><span class="label">The First Seven</span><h1>Seven days.</h1>' +
-    '<p class="lede">One build a day, ten to forty-five minutes each. Finish a day and the next one opens — go as fast as you like. Nothing here expires.</p></div>';
-
-  html += '<ul class="spine">';
-  window.PATH.days.forEach(function (d) {
-    var done = S.done(d.n), open = S.unlocked(d.n), now = !done && open && d.n === cur;
-    var cls = done ? 'is-done' : (now ? 'is-now' : (open ? '' : 'is-locked'));
-    var inner =
-      '<span class="eyebrow">' + S.esc(d.eyebrow) + (now ? ' &middot; You are here' : '') + '</span>' +
-      '<h3>' + S.esc(d.title) + '</h3><p>' + S.esc(d.summary) + '</p>' +
-      '<div class="foot"><span>~' + d.minutes + ' min</span>' +
-      '<span>' + (d.messages.length ? d.messages.length + ' prompt' + (d.messages.length > 1 ? 's' : '') : 'No prompt') + '</span>' +
-      (d.submit ? '<span>Submit your app</span>' : '') + '</div>';
-    html += '<li class="' + cls + '"><span class="pip">' + (done ? S.icon('tick') : d.n) + '</span>' +
-      (open ? '<a class="node" href="/member/start/day?d=' + d.n + '">' + inner + '</a>'
-            : '<div class="node">' + inner + '</div>') + '</li>';
-  });
-  html += '</ul>';
-  document.getElementById('page').innerHTML = html;
+  var d = new URL(location.href).searchParams.get('d');
+  location.replace('/member/start/phase?p=seven' + (d ? '&l=d' + d : ''));
 })();
-</script>
-</body>
-</html>
+</script></body></html>
