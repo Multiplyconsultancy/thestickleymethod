@@ -20,6 +20,9 @@
     },
     "api/cron/base44-board.js": {
       "maxDuration": 300
+    },
+    "api/cron/member-index.js": {
+      "maxDuration": 300
     }
   },
   "crons": [
@@ -78,6 +81,10 @@
     {
       "path": "/api/cron/base44-board?commit=1",
       "schedule": "7 */4 * * *"
+    },
+    {
+      "path": "/api/cron/member-index",
+      "schedule": "11 * * * *"
     }
   ]
 }

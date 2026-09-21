@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sign in | The Self-Mastery System</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/member/start/start.css">
+<style>
+/* The one page in the member area that renders without a session, so it
+   carries its own centred layout rather than the app shell. */
+.auth{min-height:100vh;display:grid;place-items:center;padding:28px 20px}
+.auth__box{width:100%;max-width:430px}
+.auth__mark{display:flex;align-items:center;gap:11px;margin:0 0 30px}
+.auth h1{font-size:clamp(28px,5vw,36px)}
+.auth .lede{color:var(--muted);font-size:15.5px;margin-top:10px}
+.auth__card{margin-top:24px;padding:24px;border:1px solid var(--line-soft);border-radius:var(--r-lg);
+  background:radial-gradient(120% 140% at 92% 0%,rgba(232,180,92,.09) 0%,transparent 60%),var(--surface)}
+.auth__foot{color:var(--faint);font-size:12.5px;margin-top:18px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="auth"><div class="auth__box">
+  <div class="auth__mark"><span class="mark__logo">SM</span>
+    <div><b style="font:600 15px/1 var(--display);display:block">Self-Mastery</b>
+    <span style="font:700 8.5px/1 var(--body);letter-spacing:.2em;color:var(--faint);text-transform:uppercase;display:block;margin-top:5px">The System</span></div>
+  </div>
+
+  <h1>Sign in.</h1>
+  <p class="lede">Use the email address you pay with. No password &mdash; if the address is on a membership, you are in.</p>
+
+  <div class="auth__card">
+    <div class="field">
+      <label for="em">Email</label>
+      <input class="input" id="em" type="email" inputmode="email" autocomplete="email"
+             autocapitalize="off" spellcheck="false" placeholder="you@example.com">
+    </div>
+    <p class="err" id="e"></p>
+    <button class="btn btn--primary btn--block" id="go">Sign in</button>
+  </div>
+
+  <p class="auth__foot">One membership works on up to three devices. If you have changed phone or laptop
+  recently and it will not let you in, message support and we will clear the old ones.</p>
+</div></div>
+
+<script src="/member/start/start.js"></script>
+<script>
+(function () {
+  var em = document.getElementById('em'), go = document.getElementById('go'), err = document.getElementById('e');
+
+  function next() {
+    try {
+      var n = new URL(window.location.href).searchParams.get('next');
+      /* Only ever bounce to a path inside the member area. An open
+         redirect on a login page is how phishing links get their
+         credibility. */
+      return (n && n.indexOf('/member/start') === 0) ? n : '/member/start';
+    } catch (e) { return '/member/start'; }
+  }
+
+  function fail(msg) {
+    err.textContent = msg; err.classList.add('on');
+    go.removeAttribute('disabled'); go.textContent = 'Sign in';
+  }
+
+  function submit() {
+    var v = (em.value || '').trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) { fail('Enter the email address you pay with.'); return; }
+    err.classList.remove('on');
+    go.setAttribute('disabled', 'disabled'); go.textContent = 'Checking…';
+
+    fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: v }),
+    }).then(function (r) {
+      return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+    }).then(function (out) {
+      if (!out.ok || !out.j.ok) { fail(out.j.error || 'That did not work. Try again.'); return; }
+      window.location.href = next();
+    }).catch(function () {
+      fail('Could not reach the server. Check your connection and try again.');
+    });
+  }
+
+  go.addEventListener('click', submit);
+  em.addEventListener('keydown', function (e) { if (e.key === 'Enter') submit(); });
+  em.focus();
+})();
+</script>
+</body>
+</html>

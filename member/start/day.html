@@ -207,9 +207,13 @@
 
     var h = '<div id="close">';
     if (!S.canSubmit(n)) {
-      h += '<div class="gate" id="gate"><div><b>' + (d.submit ? 'Submit opens shortly' : 'Nearly there') + '</b>' +
-        '<span>Day ' + n + ' is meant to take about ' + d.minutes + ' minutes. Go and actually build it.</span></div>' +
-        '<span class="gate__t" id="gt"></span></div>';
+      h += '<div class="gate gate--wait" id="gate">' +
+        '<div class="gw"><span class="gw__i">' + S.icon('lock') + '</span>' +
+        '<span class="gw__t"><b>' + (d.submit ? 'Submit unlocks shortly' : 'Hold on') + '</b>' +
+        '<span>Day ' + n + ' is meant to take about ' + d.minutes + ' minutes. Go and actually build it \u2014 ' +
+        'the button turns on by itself.</span></span>' +
+        '<span class="gw__c"><b id="gt">\u2014</b><span>Until it opens</span></span></div>' +
+        '<span class="gw__bar"><i id="gbar" style="width:0%"></i></span></div>';
     }
     if (d.submit) {
       h += '<h2 style="font-size:24px;margin-top:18px">Paste your app link</h2>' +
@@ -290,11 +294,15 @@
 
     var gt = document.getElementById('gt');
     if (gt) stops.push(S.tick(function () {
+      var total = (d.minMinutes || 0) * 60000;
       var ms = S.submitIn(n);
       gt.textContent = S.shortLeft(ms);
+      var bar = document.getElementById('gbar');
+      if (bar && total) bar.style.width = Math.min(100, (1 - ms / total) * 100).toFixed(1) + '%';
       if (ms <= 0) {
         var g = document.getElementById('gate'); if (g) g.remove();
-        var f = document.getElementById('finish'); if (f) f.removeAttribute('disabled');
+        var f = document.getElementById('finish');
+        if (f) { f.removeAttribute('disabled'); S.toast('Submit is open'); }
       }
     }));
 
