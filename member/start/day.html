@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Day | The Self-Mastery System</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/member/start/start.css">
+</head>
+<body>
+<div class="topbar"></div>
+<div class="shell">
+  <aside class="rail"></aside>
+  <main class="main"><div class="wrap" id="page"></div></main>
+</div>
+<nav class="tabbar"></nav>
+
+<script src="/member/start/data/path.js"></script>
+<script src="/member/start/start.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   A DAY.
+
+   Everything else in this product is navigation. This is the page where
+   a prompt either gets copied into Base44 or does not, so it is built
+   around removing every reason to stall:
+
+   - The member never sees an empty prompt box. They answer plain
+     questions and the message writes itself.
+   - Answers persist, because somebody will fill six fields, wander off
+     to Base44, come back, and must not find a blank form.
+   - Each message can be ticked as sent, because six messages in one
+     sitting is exactly where people lose their place.
+   - Every predictable failure is pre-empted in the copy rather than
+     left to a support email.
+══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var n = parseInt(S.qs('d') || '1', 10);
+  var d = window.PATH.day(n);
+  var page = document.getElementById('page');
+
+  if (!d) {
+    S.boot('path');
+    page.innerHTML = '<a class="back" href="/member/start/path">' + S.icon('back') + 'The Path</a>' +
+      '<div class="head"><h1>No such day</h1></div>' +
+      '<a class="btn btn--primary" href="/member/start/path">Back to the path</a>';
+    return;
+  }
+
+  S.boot('path');
+  document.title = 'Day ' + n + ' — ' + d.title + ' | The Self-Mastery System';
+
+  /* ── Locked ─────────────────────────────────────────────────────── */
+  if (!S.unlocked(n)) {
+    page.innerHTML = '<a class="back" href="/member/start/path">' + S.icon('back') + 'The Path</a>' +
+      '<div class="head"><span class="label">' + S.esc(d.eyebrow) + '</span>' +
+      '<h1>' + S.esc(d.title) + '</h1>' +
+      '<p class="lede">Finish Day ' + (n - 1) + ' first. One thing at a time is the whole idea.</p></div>' +
+      '<a class="btn btn--primary" href="/member/start/day?d=' + (n - 1) + '">Go to Day ' + (n - 1) + ' &rarr;</a>';
+    return;
+  }
+
+  var isDone = S.done(n);
+
+  function msgKey(i) { return n + '.' + i; }
+
+  /* ── Render ─────────────────────────────────────────────────────── */
+  function render() {
+    var html = '<a class="back" href="/member/start/path">' + S.icon('back') + 'The Path</a>' +
+      '<div class="head"><span class="label">' + S.esc(d.eyebrow) +
+        (isDone ? ' &middot; Done' : '') + '</span>' +
+      '<h1>' + S.esc(d.title) + '</h1>' +
+      '<p class="lede">' + S.esc(d.summary) + '</p></div>';
+
+    if (isDone) {
+      html += '<div class="done-box"><h2>Day ' + n + ' is done.</h2>' +
+        '<p class="lede">' + (n < 7
+          ? 'Day ' + (n + 1) + ' is open whenever you are. It does not expire.'
+          : 'That is the seven. Everything is unlocked.') + '</p>' +
+        '<div class="btn-row">' +
+          (n < 7 ? '<a class="btn btn--primary" href="/member/start/day?d=' + (n + 1) + '">Day ' + (n + 1) + ' &rarr;</a>' : '') +
+          '<a class="btn btn--ghost" href="/member/start/path">The path</a>' +
+        '</div></div>' +
+        '<hr class="rule"><p class="label" style="margin-top:34px">The prompts, if you need them again</p>';
+    } else {
+      html += '<p style="color:var(--muted);max-width:58ch">' + S.esc(d.why) + '</p>';
+      html += '<div class="sec"><span class="label">What you are doing</span><ol class="steps">' +
+        d.steps.map(function (s) { return '<li><b>' + S.esc(s.b) + '</b><span>' + S.esc(s.s) + '</span></li>'; }).join('') +
+        '</ol></div>';
+    }
+
+    /* ── Messages ── */
+    if (d.messages.length) {
+      html += '<div class="sec"><span class="label">' +
+        (d.messages.length === 1 ? 'Your prompt' : 'Your ' + d.messages.length + ' prompts, in order') + '</span>';
+
+      d.messages.forEach(function (m, i) {
+        var saved = S.answers(msgKey(i));
+        var hasQ = (m.questions || []).length > 0;
+        var sent = !!saved._sent;
+        var open = !hasQ || Object.keys(saved).filter(function (k) { return k !== '_sent' && saved[k]; }).length > 0;
+
+        html += '<div class="msg' + (sent ? ' is-sent' : '') + '" id="m' + i + '">' +
+          '<div class="msg__bar">' +
+            '<span class="msg__n">Message ' + (i + 1) + ' of ' + d.messages.length + '</span>' +
+            '<span class="msg__mode">' + S.esc(m.mode) + '</span>' +
+            (m.label ? '<span class="msg__n">' + S.esc(m.label) + '</span>' : '') +
+            '<span class="sp"></span>' +
+            '<button class="btn btn--sm' + (sent ? '' : ' btn--primary') + '" data-copy="' + i + '">' +
+              (sent ? 'Copy again' : 'Copy') + '</button>' +
+          '</div>';
+
+        if (hasQ) {
+          html += '<div style="padding:17px 17px 3px" data-qs="' + i + '">';
+          m.questions.forEach(function (q) {
+            var v = S.esc(saved[q.id] || '');
+            html += '<div class="field"><label for="q' + i + '_' + q.id + '">' + S.esc(q.label) + '</label>' +
+              (q.hint ? '<p class="hint">' + S.esc(q.hint) + '</p>' : '') +
+              (q.area
+                ? '<textarea class="input" id="q' + i + '_' + q.id + '" data-m="' + i + '" data-q="' + q.id + '" placeholder="' + S.esc(q.ph || '') + '">' + v + '</textarea>'
+                : '<input class="input" id="q' + i + '_' + q.id + '" data-m="' + i + '" data-q="' + q.id + '" value="' + v + '" placeholder="' + S.esc(q.ph || '') + '">') +
+              '</div>';
+          });
+          html += '<button class="btn btn--block" style="margin:6px 0 17px" data-write="' + i + '">' +
+            (open ? 'Update my prompt' : 'Write my prompt') + '</button></div>';
+        }
+
+        html += '<pre class="msg__body" id="t' + i + '"' + (open ? '' : ' style="display:none"') + '>' +
+          S.esc(open ? S.build(m, saved) : '') + '</pre>';
+
+        if (m.note) html += '<div class="msg__note">' + S.esc(m.note) + '</div>';
+
+        html += '<div style="padding:13px 17px;border-top:1px solid var(--line-soft);display:flex;gap:10px;align-items:center;flex-wrap:wrap">' +
+          '<button class="btn btn--sm btn--ghost" data-sent="' + i + '">' +
+            (sent ? '&#10003; Sent' : 'Mark as sent') + '</button>' +
+          '<span style="color:var(--faint);font-size:13px">' +
+            (sent ? 'Done.' : 'Paste it into Base44 and send it as one message.') + '</span></div>';
+
+        html += '</div>';
+      });
+
+      html += '<div class="btn-row"><a class="btn" href="https://app.base44.com" target="_blank" rel="noopener">Open Base44 &#8599;</a></div>';
+      html += '<p class="hint" style="margin-top:14px">Your app will not look like anybody else’s. Same prompt, different build — that is normal and it is fine. If one thing is broken, tell the builder to fix that one thing. If a build sits there thinking for a few minutes, let it. Do not resend and do not refresh.</p>';
+      html += '</div>';
+    }
+
+    if (isDone) { page.innerHTML = html; wire(); return; }
+
+    /* ── The gate at the bottom ── */
+    html += '<hr class="rule">';
+
+    if (d.submit) {
+      html += '<div class="sec"><span class="label">Last step</span>' +
+        '<h2 style="font-size:27px">Paste your app link</h2>' +
+        '<p style="color:var(--muted);margin:8px 0 20px;max-width:52ch">Publish it in Base44 first and set it to private. Then paste the published link here — that is what opens Day 2.</p>' +
+        '<div class="field"><label for="u">Your Base44 app link</label>' +
+        '<input class="input" id="u" type="url" inputmode="url" spellcheck="false" placeholder="https://your-app.base44.app"></div>' +
+        '<p class="err" id="e"></p>' +
+        '<button class="btn btn--primary btn--block" id="finish">Submit and open Day 2</button></div>';
+    } else if (d.review) {
+      html += '<div class="sec"><span class="label">Last step</span>' +
+        '<h2 style="font-size:27px">What changes next week?</h2>' +
+        '<p style="color:var(--muted);margin:8px 0 20px;max-width:52ch">One thing. Not five. Write it down — it is the only output of the whole week that matters.</p>' +
+        '<div class="field"><textarea class="input" id="chg" placeholder="The one thing I am changing next week is..."></textarea></div>' +
+        '<p class="err" id="e"></p>' +
+        '<button class="btn btn--primary btn--block" id="finish">Finish the seven</button></div>';
+    } else {
+      html += '<div class="sec"><span class="label">Last step</span>' +
+        '<h2 style="font-size:27px">Done for today?</h2>' +
+        '<p style="color:var(--muted);margin:8px 0 20px;max-width:52ch">Only mark this once the prompt has actually been sent and the change is live in your app.</p>' +
+        '<button class="btn btn--primary btn--block" id="finish">Mark Day ' + n + ' complete</button></div>';
+    }
+
+    page.innerHTML = html;
+    wire();
+  }
+
+  /* ── Wiring ─────────────────────────────────────────────────────── */
+  function wire() {
+    /* Answers save as they are typed, and the prompt updates live once
+       it has been written for the first time. */
+    page.querySelectorAll('[data-q]').forEach(function (el) {
+      el.addEventListener('input', function () {
+        var i = parseInt(el.getAttribute('data-m'), 10);
+        var a = S.answers(msgKey(i));
+        a[el.getAttribute('data-q')] = el.value;
+        S.saveAnswers(msgKey(i), a);
+        var pre = document.getElementById('t' + i);
+        if (pre && pre.style.display !== 'none') pre.textContent = S.build(d.messages[i], a);
+      });
+    });
+
+    page.querySelectorAll('[data-write]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var i = parseInt(b.getAttribute('data-write'), 10);
+        var pre = document.getElementById('t' + i);
+        pre.textContent = S.build(d.messages[i], S.answers(msgKey(i)));
+        pre.style.display = '';
+        b.textContent = 'Update my prompt';
+        pre.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    });
+
+    page.querySelectorAll('[data-copy]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var i = parseInt(b.getAttribute('data-copy'), 10);
+        var a = S.answers(msgKey(i));
+        var pre = document.getElementById('t' + i);
+        if (pre.style.display === 'none') { pre.textContent = S.build(d.messages[i], a); pre.style.display = ''; }
+        S.copy(S.build(d.messages[i], a), 'Copied — paste it into Base44');
+      });
+    });
+
+    page.querySelectorAll('[data-sent]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var i = parseInt(b.getAttribute('data-sent'), 10);
+        var a = S.answers(msgKey(i));
+        a._sent = !a._sent;
+        S.saveAnswers(msgKey(i), a);
+        render();
+        var el = document.getElementById('m' + i);
+        if (el) el.scrollIntoView({ block: 'center' });
+      });
+    });
+
+    var fin = document.getElementById('finish');
+    if (!fin) return;
+    fin.addEventListener('click', function () {
+      var err = document.getElementById('e');
+
+      if (d.submit) {
+        var r = S.checkUrl(document.getElementById('u').value);
+        if (!r.ok) { err.textContent = r.msg; err.classList.add('on'); return; }
+        err.classList.remove('on');
+        S.saveApp(r.url);
+        S.completeDay(n, { url: r.url });
+        if (r.msg) S.toast(r.msg);
+      } else if (d.review) {
+        var v = document.getElementById('chg').value.trim();
+        if (!v) { err.textContent = 'Write the one thing. It takes ten seconds and it is the point of the week.'; err.classList.add('on'); return; }
+        err.classList.remove('on');
+        S.completeDay(n, { change: v });
+      } else {
+        S.completeDay(n, {});
+      }
+
+      window.location.href = '/member/start/done?d=' + n;
+    });
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your System | The Self-Mastery System</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/member/start/start.css">
+</head>
+<body>
+<div class="topbar"></div>
+<div class="shell">
+  <aside class="rail"></aside>
+  <main class="main"><div class="wrap" id="page"></div></main>
+</div>
+<nav class="tabbar"></nav>
+<script src="/member/start/data/path.js"></script>
+<script src="/member/start/start.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   HOME. One card carries the next action and it is the biggest thing on
+   the page. Everything else is a number or a locked row. The first HQ
+   build put fifteen equal cards here and that is exactly why it read as
+   a menu rather than a path.
+══════════════════════════════════════════════════════════════════════ */
+(function () {
+  S.boot('home');
+  var st = S.state(), cur = S.currentDay(), d = window.PATH.day(cur);
+  var allDone = S.doneCount() >= 7;
+  var page = document.getElementById('page');
+
+  /* Seven squares. Lit for each day finished, ringed on the one now. */
+  function grid() {
+    var out = '<div class="grid7">';
+    for (var i = 1; i <= 7; i++) {
+      out += '<i class="' + (S.done(i) ? 'on' : '') + (i === cur && !allDone ? ' today' : '') + '"></i>';
+    }
+    return out + '</div>';
+  }
+
+  var html = '<div class="head"><span class="label">' +
+    new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' }) + '</span>' +
+    '<h1>' + (st.startedAt ? 'Welcome back.' : 'You know you’re capable of more.') + '</h1>' +
+    (st.startedAt ? '' : '<p class="lede">Seven days. One build a day. At the end of it you have a system that runs the things you actually control — and it is yours, not a template.</p>') +
+    '</div>';
+
+  html += '<div class="stats">' +
+    '<div class="stat' + (!allDone ? ' stat--live' : '') + '"><b>' + (allDone ? '7' : cur) + '</b><span>' + (allDone ? 'Days done' : 'Day of 7') + '</span></div>' +
+    '<div class="stat"><b>' + S.activeDays() + '</b><span>Active days</span></div>' +
+    '<div class="stat"><b>' + S.doneCount() + '/7</b><span>Complete</span></div>' +
+    '</div>';
+
+  if (allDone) {
+    html += '<div class="now"><span class="label">The seven are done</span>' +
+      '<h2>Everything is open.</h2>' +
+      '<p class="lede">Your system is built and running. Keep talking to it — that is the whole game from here.</p>' +
+      '<div class="btn-row"><a class="btn btn--primary" href="/member/start/library">The Build Library &rarr;</a>' +
+      '<a class="btn btn--ghost" href="/member/start/my-system">My system</a></div></div>';
+  } else {
+    html += '<a class="now" href="/member/start/day?d=' + cur + '">' +
+      '<span class="label">' + (st.startedAt ? 'Next up' : 'Start here') + ' &middot; ' + S.esc(d.eyebrow) + '</span>' +
+      '<h2>' + S.esc(d.title) + '</h2>' +
+      '<p class="lede">' + S.esc(d.summary) + '</p>' +
+      '<div class="now__meta"><span><b>~' + d.minutes + '</b> minutes</span>' +
+      '<span><b>' + (d.messages.length || 'No') + '</b> prompt' + (d.messages.length === 1 ? '' : 's') + '</span>' +
+      '<span>Copy and paste, no code</span></div>' +
+      '<div class="btn-row"><span class="btn btn--primary">' +
+        (st.startedAt ? 'Continue' : 'Begin Day 1') + ' &rarr;</span></div></a>';
+  }
+
+  html += '<div class="sec"><div class="sec__head"><h2>Your week</h2>' +
+    '<a href="/member/start/path">The path &rsaquo;</a></div>' + grid() + '</div>';
+
+  html += '<div class="sec"><div class="sec__head"><h2>What opens at seven</h2>' +
+    '<a href="/member/start/unlocks">Details &rsaquo;</a></div>';
+  var open = S.ladderOpen();
+  window.PATH.unlocks.forEach(function (u) {
+    html += '<div class="lad' + (open ? ' is-open' : '') + '"><div><h3>' + S.esc(u.title) + '</h3>' +
+      '<p>' + S.esc(u.sub) + '</p></div>' + S.icon(open ? 'tick' : 'lock') + '</div>';
+  });
+  html += '</div>';
+
+  page.innerHTML = html;
+})();
+</script>
+</body>
+</html>

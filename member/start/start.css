@@ -1,0 +1,257 @@
+/* ══════════════════════════════════════════════════════════════════════
+   THE FIRST SEVEN — INTERFACE
+
+   Same palette and type as the rest of the member area so this does not
+   read as a different product. The layout language is deliberately
+   different from the first HQ build: that one was a dashboard, a grid
+   of equal cards, and equal cards are exactly how somebody ends up
+   opening nothing.
+
+   This is a PATH. One column, a vertical spine, seven nodes, and one of
+   them lit. Everything behind you is quiet and ticked; everything ahead
+   is visible and locked. On any screen there is one thing to do and it
+   is the largest thing on it.
+══════════════════════════════════════════════════════════════════════ */
+
+:root{
+  --bg:#08090B;
+  --surface:#101216;
+  --surface-2:#161920;
+  --surface-3:#1C2029;
+  --line:#22262F;
+  --line-soft:#191D24;
+
+  --text:#F4F6F8;
+  --muted:#96A0AC;
+  --dim:#66707C;
+  --faint:#464E58;
+
+  --accent:#0EC4E6;
+  --accent-dim:#0A8FA8;
+  --cta:linear-gradient(180deg,#22D3EE 0%,#0894B4 100%);
+  --ok:#3DDC97;
+  --warn:#F0B73F;
+  --bad:#FF6B5E;
+
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+
+  --rail:232px;
+  --radius:14px;
+  --radius-lg:20px;
+}
+
+*{box-sizing:border-box}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16.5px/1.65 var(--body);
+  -webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--display);font-weight:700;margin:0;line-height:1.02;letter-spacing:-.01em;text-wrap:balance}
+p{margin:0}
+
+.label{font:600 11px/1 var(--body);letter-spacing:.18em;text-transform:uppercase;color:var(--faint);display:block;margin:0 0 13px}
+
+/* ══ SHELL ══════════════════════════════════════════════════════════ */
+.shell{display:flex;min-height:100vh}
+.rail{width:var(--rail);flex:0 0 var(--rail);border-right:1px solid var(--line-soft);
+  padding:24px 12px 20px 18px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
+.mark{display:flex;align-items:center;gap:10px;margin:0 0 28px;padding:0 6px}
+.mark b{font:700 15px/1 var(--display);letter-spacing:.02em;text-transform:uppercase;display:block}
+.mark span:last-child{font:600 9px/1 var(--body);letter-spacing:.2em;color:var(--faint);text-transform:uppercase;display:block;margin-top:5px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:0 0 7px}
+
+.nav{display:flex;flex-direction:column;gap:1px}
+.nav a{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:9px;color:var(--muted);font-size:15px;transition:.15s}
+.nav a:hover{background:var(--surface);color:var(--text)}
+.nav a[aria-current="page"]{background:var(--surface-2);color:var(--text);font-weight:600}
+.nav .ic{width:17px;height:17px;flex:0 0 17px;opacity:.8}
+.nav__lock{margin-left:auto;opacity:.45}
+.nav__lock .ic{width:13px;height:13px}
+.rail__foot{margin-top:auto;padding:12px 10px 0;border-top:1px solid var(--line-soft);
+  color:var(--faint);font-size:12.5px;font-variant-numeric:tabular-nums}
+
+.main{flex:1;min-width:0;padding:0 clamp(20px,4vw,44px) 120px}
+.wrap{max-width:720px;margin-inline:auto;padding-top:clamp(28px,5vw,56px)}
+.topbar,.tabbar{display:none}
+
+/* ══ HEADS ══════════════════════════════════════════════════════════ */
+.head{margin:0 0 34px}
+.head h1{font-size:clamp(34px,6.2vw,54px)}
+.head .lede{color:var(--muted);font-size:clamp(16.5px,2vw,18.5px);margin-top:12px;max-width:58ch}
+
+/* ══ THE ONE NEXT THING ═════════════════════════════════════════════ */
+.now{position:relative;overflow:hidden;border-radius:var(--radius-lg);border:1px solid var(--line);
+  background:radial-gradient(120% 140% at 88% 0%,rgba(14,196,230,.14) 0%,rgba(14,196,230,0) 58%),
+    linear-gradient(180deg,var(--surface-2) 0%,var(--surface) 100%);
+  padding:clamp(24px,4vw,38px);display:block}
+.now h2{font-size:clamp(28px,4.6vw,42px)}
+.now .lede{color:var(--muted);margin-top:11px;font-size:17px;max-width:50ch}
+.now__meta{display:flex;gap:16px;flex-wrap:wrap;margin-top:18px;color:var(--dim);font-size:13.5px}
+.now__meta b{color:var(--muted);font-weight:600}
+
+/* ══ BUTTONS ════════════════════════════════════════════════════════ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:13px 22px;border-radius:11px;
+  font-weight:600;font-size:15.5px;border:1px solid var(--line);background:var(--surface-2);transition:.15s}
+.btn:hover{background:var(--surface-3)}
+.btn:active{transform:translateY(1px)}
+.btn--primary{background:var(--cta);border-color:transparent;color:#03212A;font-weight:700}
+.btn--primary:hover{filter:brightness(1.07)}
+.btn--ghost{background:none}
+.btn--block{display:flex;width:100%}
+.btn--sm{padding:9px 15px;font-size:14px;border-radius:9px}
+.btn[disabled]{opacity:.38;cursor:not-allowed;transform:none}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+
+/* ══ THE SPINE ══════════════════════════════════════════════════════
+   Seven nodes on one vertical line. Done nodes go quiet, the current
+   one is the only thing with colour, locked ones stay visible because
+   the road ahead is the motivation.
+══════════════════════════════════════════════════════════════════════ */
+.spine{position:relative;margin:0;padding:0;list-style:none}
+.spine::before{content:"";position:absolute;left:19px;top:24px;bottom:24px;width:2px;background:var(--line-soft)}
+.spine li{position:relative;padding:0 0 12px 58px}
+.node{display:block;border:1px solid var(--line-soft);border-radius:var(--radius);padding:17px 19px;
+  background:var(--surface);transition:.16s}
+a.node:hover{border-color:var(--line);background:var(--surface-2)}
+.spine .pip{position:absolute;left:8px;top:18px;width:24px;height:24px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--line);color:var(--faint);
+  font:700 12px/20px var(--body);text-align:center;z-index:1}
+.spine .pip .ic{width:13px;height:13px;vertical-align:-2px}
+
+.spine li.is-done .pip{border-color:var(--ok);color:var(--ok)}
+.spine li.is-done .node{opacity:.62}
+.spine li.is-now .pip{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 5px rgba(14,196,230,.12)}
+.spine li.is-now .node{border-color:var(--accent-dim);background:var(--surface-2)}
+.spine li.is-locked .node{opacity:.45}
+
+.node h3{font-size:20px}
+.node .eyebrow{font:600 10.5px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--faint);display:block;margin-bottom:7px}
+.node p{color:var(--dim);font-size:14.5px;margin-top:6px;line-height:1.5}
+.node .foot{display:flex;gap:12px;align-items:center;margin-top:11px;color:var(--faint);font-size:12.5px;flex-wrap:wrap}
+.node .foot .ic{width:12px;height:12px;vertical-align:-1px}
+
+/* ══ STATS ══════════════════════════════════════════════════════════ */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 30px}
+.stat{border:1px solid var(--line-soft);border-radius:var(--radius);padding:15px 17px;background:var(--surface)}
+.stat b{display:block;font:700 30px/1 var(--display);font-variant-numeric:tabular-nums}
+.stat span{display:block;color:var(--faint);font-size:11.5px;letter-spacing:.11em;text-transform:uppercase;font-weight:600;margin-top:7px}
+.stat--live b{color:var(--accent)}
+
+/* ══ GRID (streak) ══════════════════════════════════════════════════ */
+.grid7{display:flex;gap:6px;margin-top:14px}
+.grid7 i{flex:1;aspect-ratio:1;border-radius:5px;background:var(--surface-3);border:1px solid var(--line-soft)}
+.grid7 i.on{background:rgba(61,220,151,.75);border-color:transparent}
+.grid7 i.today{box-shadow:0 0 0 2px var(--accent)}
+
+/* ══ STEPS ══════════════════════════════════════════════════════════ */
+.steps{counter-reset:s;list-style:none;margin:0;padding:0}
+.steps li{counter-increment:s;position:relative;padding:14px 0 14px 42px;border-bottom:1px solid var(--line-soft)}
+.steps li:last-child{border-bottom:0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:13px;width:25px;height:25px;border-radius:50%;
+  background:var(--surface-2);border:1px solid var(--line);color:var(--muted);font:600 12px/23px var(--body);text-align:center}
+.steps b{display:block;font-weight:600;font-size:16px}
+.steps span{color:var(--dim);font-size:14.5px}
+
+/* ══ PROMPT ═════════════════════════════════════════════════════════
+   The component the whole product depends on. Never truncated behind a
+   "show more", and the copy button is impossible to miss.
+══════════════════════════════════════════════════════════════════════ */
+.msg{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden;margin:0 0 16px}
+.msg__bar{display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--line-soft);background:var(--surface-2)}
+.msg__n{font:600 11px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.msg__mode{font:700 10px/1 var(--body);letter-spacing:.12em;padding:5px 8px;border-radius:5px;
+  background:rgba(14,196,230,.12);color:var(--accent)}
+.msg__bar .sp{flex:1}
+.msg__body{margin:0;padding:17px;max-height:300px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;
+  font:400 13.5px/1.66 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#C9D2DC}
+.msg__body::-webkit-scrollbar{width:9px}
+.msg__body::-webkit-scrollbar-thumb{background:var(--surface-3);border-radius:9px}
+.msg__note{padding:11px 14px;background:rgba(240,183,63,.07);border-top:1px solid var(--line-soft);
+  color:var(--warn);font-size:13.5px}
+.msg.is-sent .msg__bar{background:rgba(61,220,151,.09)}
+.msg.is-sent .msg__mode{background:rgba(61,220,151,.14);color:var(--ok)}
+
+/* ══ FIELDS ═════════════════════════════════════════════════════════ */
+.field{margin:0 0 15px}
+.field label{display:block;font-size:14px;color:var(--text);margin:0 0 6px;font-weight:600}
+.field .hint{color:var(--faint);font-size:13px;margin:0 0 7px}
+.input{width:100%;padding:12px 14px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);
+  font-size:16px;transition:border-color .15s}
+.input:focus{outline:none;border-color:var(--accent-dim)}
+.input::placeholder{color:var(--faint)}
+textarea.input{min-height:92px;resize:vertical;line-height:1.6}
+.err{color:var(--bad);font-size:13.5px;margin-top:8px;display:none}
+.err.on{display:block}
+
+/* ══ SECTIONS ═══════════════════════════════════════════════════════ */
+.sec{margin:40px 0 0}
+.sec__head{display:flex;align-items:baseline;gap:12px;margin:0 0 15px}
+.sec__head h2{font-size:clamp(21px,3vw,27px)}
+.sec__head a{margin-left:auto;font-size:14px;color:var(--muted)}
+.sec__head a:hover{color:var(--accent)}
+.rule{height:1px;background:var(--line-soft);border:0;margin:40px 0 0}
+
+/* ══ UNLOCK LADDER ══════════════════════════════════════════════════ */
+.lad{display:flex;align-items:center;gap:14px;padding:16px 18px;border:1px solid var(--line-soft);
+  border-radius:var(--radius);background:var(--surface);margin-bottom:9px}
+.lad h3{font-size:18px}
+.lad p{color:var(--faint);font-size:13.5px;margin-top:3px}
+.lad .ic{width:16px;height:16px;flex:0 0 16px;margin-left:auto;opacity:.5}
+.lad.is-open{border-color:rgba(61,220,151,.3);background:rgba(61,220,151,.05)}
+.lad.is-open .ic{color:var(--ok);opacity:1}
+
+.clock{display:flex;gap:9px;margin:0 0 26px}
+.clock div{flex:1;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:13px 10px;text-align:center}
+.clock b{display:block;font:700 27px/1 var(--display);font-variant-numeric:tabular-nums;color:var(--accent)}
+.clock span{display:block;color:var(--faint);font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin-top:6px}
+
+/* ══ MISC ═══════════════════════════════════════════════════════════ */
+.empty{border:1px dashed var(--line);border-radius:var(--radius);padding:28px 22px;text-align:center}
+.empty p{color:var(--dim);font-size:15px}
+.empty .btn{margin-top:15px}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--dim);font-size:14px;margin:0 0 18px}
+.back:hover{color:var(--text)}
+.back .ic{width:15px;height:15px}
+.done-box{border:1px solid rgba(61,220,151,.3);background:rgba(61,220,151,.06);border-radius:var(--radius-lg);padding:clamp(22px,4vw,32px)}
+.done-box h2{font-size:clamp(25px,4vw,34px)}
+.done-box .lede{color:var(--muted);margin-top:10px;max-width:46ch}
+.appurl{display:block;margin-top:16px;padding:12px 14px;border-radius:10px;background:var(--surface);
+  border:1px solid var(--line);color:var(--accent);font-size:14.5px;word-break:break-all}
+
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,14px);background:var(--text);color:var(--bg);
+  padding:12px 20px;border-radius:11px;font-weight:600;font-size:14.5px;opacity:0;pointer-events:none;
+  transition:.22s;z-index:90;box-shadow:0 12px 34px rgba(0,0,0,.5)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ══ MOBILE ═════════════════════════════════════════════════════════ */
+@media (max-width:860px){
+  .rail{display:none}
+  .main{padding:0 17px 92px}
+  .wrap{padding-top:14px}
+  .topbar{display:flex;align-items:center;gap:10px;padding:13px 17px;border-bottom:1px solid var(--line-soft);
+    position:sticky;top:0;z-index:40;background:rgba(8,9,11,.93);backdrop-filter:blur(12px)}
+  .topbar b{font:700 14px/1 var(--display);letter-spacing:.03em;text-transform:uppercase}
+  .topbar .sp{flex:1}
+  .tb-prog{color:var(--faint);font-size:13px;font-variant-numeric:tabular-nums}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;border-top:1px solid var(--line);
+    background:rgba(8,9,11,.95);backdrop-filter:blur(14px);padding:7px 4px calc(7px + env(safe-area-inset-bottom))}
+  .tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;
+    color:var(--faint);font-size:10.5px;font-weight:600}
+  .tabbar .ic{width:19px;height:19px}
+  .tabbar a[aria-current="page"]{color:var(--accent)}
+  .head{margin-bottom:24px}
+  .sec{margin-top:32px}
+  .now{padding:22px 19px}
+  .msg__body{max-height:none;font-size:13px;padding:15px}
+  .spine li{padding-left:50px}
+  .spine::before{left:15px}
+  .spine .pip{left:4px}
+  .stats{gap:8px}
+  .stat{padding:13px 14px}
+  .stat b{font-size:26px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

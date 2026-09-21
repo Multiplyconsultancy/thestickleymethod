@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Unlocks | The Self-Mastery System</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/member/start/start.css">
+</head>
+<body>
+<div class="topbar"></div>
+<div class="shell">
+  <aside class="rail"></aside>
+  <main class="main"><div class="wrap" id="page"></div></main>
+</div>
+<nav class="tabbar"></nav>
+<script src="/member/start/data/path.js"></script>
+<script src="/member/start/start.js"></script>
+<script>
+(function () {
+  S.boot('unlocks');
+  var open = S.ladderOpen(), c = S.clock(), page = document.getElementById('page');
+  var daysLeft = Math.max(0, 7 - S.doneCount()), activeLeft = Math.max(0, 7 - S.activeDays());
+
+  var html = '<div class="head"><span class="label">Unlocks</span>' +
+    '<h1>' + (open ? 'All open.' : 'Finish the seven.') + '</h1>' +
+    '<p class="lede">' + (open
+      ? 'You did the week. Everything below is yours.'
+      : 'Two things open all of this: all seven days done, across seven separate days. Racing ahead builds your app faster, it does not finish the week sooner.') + '</p></div>';
+
+  if (!open && c && !c.expired) {
+    html += '<span class="label">Your week ends in</span><div class="clock">' +
+      '<div><b>' + c.d + '</b><span>Days</span></div>' +
+      '<div><b>' + c.h + '</b><span>Hours</span></div>' +
+      '<div><b>' + c.m + '</b><span>Minutes</span></div></div>';
+  }
+
+  if (!open) {
+    html += '<div class="stats">' +
+      '<div class="stat stat--live"><b>' + daysLeft + '</b><span>Days left</span></div>' +
+      '<div class="stat"><b>' + activeLeft + '</b><span>Active days left</span></div>' +
+      '<div class="stat"><b>' + S.doneCount() + '/7</b><span>Done</span></div></div>';
+  }
+
+  html += '<div class="sec" style="margin-top:14px">';
+  window.PATH.unlocks.forEach(function (u) {
+    html += '<div class="lad' + (open ? ' is-open' : '') + '"><div><h3>' + S.esc(u.title) + '</h3>' +
+      '<p>' + S.esc(u.sub) + '</p></div>' + S.icon(open ? 'tick' : 'lock') + '</div>';
+  });
+  html += '</div>';
+
+  html += '<div class="btn-row">' + (open
+    ? '<a class="btn btn--primary" href="/member/start/library">Open the Library &rarr;</a>'
+    : '<a class="btn btn--primary" href="/member/start/path">Back to the path &rarr;</a>') + '</div>';
+
+  page.innerHTML = html;
+})();
+</script>
+</body>
+</html>

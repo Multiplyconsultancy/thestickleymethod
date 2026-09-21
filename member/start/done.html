@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Day complete | The Self-Mastery System</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/member/start/start.css">
+</head>
+<body>
+<div class="topbar"></div>
+<div class="shell">
+  <aside class="rail"></aside>
+  <main class="main"><div class="wrap" id="page"></div></main>
+</div>
+<nav class="tabbar"></nav>
+<script src="/member/start/data/path.js"></script>
+<script src="/member/start/start.js"></script>
+<script>
+/* The completion moment. The brief asked for meaningful and premium
+   rather than confetti, so: one statement, one number, one next step. */
+(function () {
+  S.boot('path');
+  var n = parseInt(S.qs('d') || '1', 10);
+  var d = window.PATH.day(n), next = window.PATH.day(n + 1);
+  var page = document.getElementById('page');
+
+  if (n === 1) {
+    page.innerHTML = '<div class="head" style="padding-top:8vh"><span class="label">Day One</span>' +
+      '<h1>Your system is live.</h1>' +
+      '<p class="lede">You don’t need to change your entire life today. Start by keeping the promises you make to yourself — that is tomorrow.</p></div>' +
+      (S.app() ? '<a class="appurl" href="' + S.esc(S.app().url) + '" target="_blank" rel="noopener">' + S.esc(S.app().url) + '</a>' : '') +
+      '<div class="btn-row"><a class="btn btn--primary" href="/member/start/day?d=2">Day 2 &rarr;</a>' +
+      '<a class="btn btn--ghost" href="/member/start">Home</a></div>' +
+      '<p class="hint" style="margin-top:26px">Come back tomorrow. The ladder needs seven separate days, so racing ahead builds the app faster but does not finish the week sooner.</p>';
+    return;
+  }
+
+  if (n === 7) {
+    page.innerHTML = '<div class="head" style="padding-top:8vh"><span class="label">The seven are done</span>' +
+      '<h1>That’s the week.</h1>' +
+      '<p class="lede">You have a working system with your own numbers in it, a coach in your pocket, and seven days of real records. Most people never get past watching.</p></div>' +
+      '<div class="stats"><div class="stat stat--live"><b>7</b><span>Days done</span></div>' +
+      '<div class="stat"><b>' + S.activeDays() + '</b><span>Active days</span></div>' +
+      '<div class="stat"><b>' + window.PATH.totalPrompts() + '</b><span>Builds sent</span></div></div>' +
+      '<div class="btn-row"><a class="btn btn--primary" href="/member/start/unlocks">See what opened &rarr;</a>' +
+      '<a class="btn btn--ghost" href="/member/start/my-system">My system</a></div>';
+    return;
+  }
+
+  page.innerHTML = '<div class="head" style="padding-top:8vh"><span class="label">' + S.esc(d.eyebrow) + '</span>' +
+    '<h1>' + S.esc(d.title) + ' is in.</h1>' +
+    '<p class="lede">' + S.doneCount() + ' of 7 done. ' +
+    (next ? 'Next: ' + S.esc(next.title) + ' — about ' + next.minutes + ' minutes.' : '') + '</p></div>' +
+    '<div class="btn-row">' +
+    (next ? '<a class="btn btn--primary" href="/member/start/day?d=' + (n + 1) + '">Day ' + (n + 1) + ' &rarr;</a>' : '') +
+    '<a class="btn btn--ghost" href="/member/start">Home</a></div>' +
+    '<p class="hint" style="margin-top:26px">Tell your app what happened today before you close it. That check-in is what keeps the grid honest.</p>';
+})();
+</script>
+</body>
+</html>

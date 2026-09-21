@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Library | The Self-Mastery System</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/member/start/start.css">
+</head>
+<body>
+<div class="topbar"></div>
+<div class="shell">
+  <aside class="rail"></aside>
+  <main class="main"><div class="wrap" id="page"></div></main>
+</div>
+<nav class="tabbar"></nav>
+<script src="/member/hq/data/catalogue.js"></script>
+<script src="/member/start/data/path.js"></script>
+<script src="/member/start/start.js"></script>
+<script>
+/* The twenty-four extra builds. Reuses the catalogue from the first HQ
+   build rather than duplicating it: one prompt, one place. Locked until
+   the week is done, because a library on day one is the buffet that
+   made the first version unusable. */
+(function () {
+  S.boot('library');
+  var page = document.getElementById('page');
+
+  if (!S.ladderOpen()) {
+    page.innerHTML = '<div class="head"><span class="label">Library</span><h1>Locked until you finish.</h1>' +
+      '<p class="lede">Twenty-four more tools you can add to your system. They open when the seven days are done — not before, because a wall of options on day one is how people end up building nothing.</p></div>' +
+      '<div class="stats"><div class="stat stat--live"><b>' + S.doneCount() + '/7</b><span>Days done</span></div>' +
+      '<div class="stat"><b>' + S.activeDays() + '/7</b><span>Active days</span></div>' +
+      '<div class="stat"><b>24</b><span>Waiting</span></div></div>' +
+      '<div class="btn-row"><a class="btn btn--primary" href="/member/start/path">Back to the path &rarr;</a></div>';
+    return;
+  }
+
+  var active = S.qs('p') || 'all';
+  function draw() {
+    var list = active === 'all' ? window.SMS.builds : window.SMS.byPillar(active);
+    var html = '<div class="head"><span class="label">Library</span><h1>Make it yours.</h1>' +
+      '<p class="lede">Twenty-four more tools, each one a written prompt. Start with ours, then build your own.</p></div>';
+    html += '<div class="sec" style="margin-top:0">';
+    list.forEach(function (b) {
+      var p = window.SMS.pillar(b.pillar);
+      html += '<a class="lad" href="/member/hq/build?id=' + b.id + '"><div><h3>' + S.esc(b.title) + '</h3>' +
+        '<p>' + S.esc(p.short) + ' &middot; ~' + b.minutes + ' min &middot; ' + S.esc(b.short) + '</p></div></a>';
+    });
+    html += '</div>';
+    page.innerHTML = html;
+  }
+  draw();
+})();
+</script>
+</body>
+</html>
