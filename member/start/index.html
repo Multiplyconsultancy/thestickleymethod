@@ -45,6 +45,37 @@
     return (open ? '<a class="pcard" href="' + href + '"' : '<div class="pcard is-locked"') +
       ' style="--day:' + p.accent + '">' + inner + (open ? '</a>' : '</div>');
   }
+
+  /* The hero's status line. Three states, because a member who has
+     finished every module of a day needs to be told to submit, not
+     handed a count of zero. */
+  function metaFor(d, nDone) {
+    var tot = d.parts.length, out;
+    if (nDone >= tot)      out = '<span><b>All ' + tot + '</b> modules done</span><span>Ready to submit</span>';
+    else if (nDone > 0)    out = '<span><b>' + nDone + ' of ' + tot + '</b> modules done</span><span><b>~' + Math.round(d.minutes * (tot - nDone) / tot) + '</b> min left</span>';
+    else                   out = '<span><b>' + tot + '</b> modules</span><span><b>~' + d.minutes + '</b> min</span>';
+    return out + '<span>' + S.esc(d.builds) + '</span>';
+  }
+
+  /* The week at a glance, so the home screen answers "where am I" without
+     a second page. Only data we actually hold: done, open, or a countdown. */
+  function sevenRows() {
+    return P.days.map(function (dd) {
+      var isDone = S.done(dd.n), open = S.unlocked(dd.n);
+      var cls = isDone ? ' is-done' : (open ? ' is-now' : '');
+      var st;
+      if (isDone) st = 'Done';
+      else if (open) st = S.partsDone(dd.n).length + '/' + dd.parts.length;
+      else { var ms = S.openIn(dd.n); st = ms === null ? 'Locked' : S.shortLeft(ms); }
+      var inner = '<span class="seven__n">' + (isDone ? S.icon('tick') : dd.n) + '</span>' +
+        '<span class="seven__t">' + S.esc(dd.title) + '</span>' +
+        '<span class="seven__s">' + st + '</span>';
+      return open
+        ? '<a class="seven__r' + cls + '" href="/member/start/day?d=' + dd.n + '">' + inner + '</a>'
+        : '<div class="seven__r' + cls + '">' + inner + '</div>';
+    }).join('');
+  }
+
   var P = window.PATH, st = S.state();
   var totL = P.totalLessons();
   var introDone = !!S.Store.get('intro.welcome', false);
@@ -78,8 +109,7 @@
         html += '<a class="now" style="--day:' + d.accent + '" href="/member/start/day?d=' + cur + '">' +
           '<span class="label">' + (nDone ? 'Continue' : 'Next up') + ' &middot; ' + S.esc(d.eyebrow) + '</span>' +
           '<h2>' + S.esc(d.title) + '</h2><p class="lede">' + S.esc(d.summary) + '</p>' +
-          '<div class="now__meta"><span><b>' + (d.parts.length - nDone) + '</b> modules left</span>' +
-          '<span><b>~' + d.minutes + '</b> min</span><span>' + S.esc(d.builds) + '</span></div>' +
+          '<div class="now__meta">' + metaFor(d, nDone) + '</div>' +
           '<div class="btn-row"><span class="btn btn--primary">' + (nDone ? 'Continue' : 'Start') + ' &rarr;</span></div></a>';
       }
     }
@@ -88,16 +118,23 @@
   /* ── Progress + activity ── */
   html += '<div class="toprow" style="margin-top:22px">' +
     '<div class="panel panel--progress"><h3>Course Progress</h3><p class="cap">All phases combined</p>' +
-      S.ring(pct, 142, 'var(--gold)', pct + '%', doneL + ' / ' + totL) +
+      S.ring(pct, 132, 'var(--gold)', pct + '%', doneL + ' / ' + totL) +
       '<div class="prail"><div><b>' + S.doneCount() + '</b><span>Days</span></div>' +
       '<div><b>' + modsDone + '</b><span>Modules</span></div>' +
-      '<div><b>' + S.activeDays() + '</b><span>Active</span></div></div></div>' +
+      '<div><b>' + P.totalPrompts() + '</b><span>Prompts</span></div></div></div>' +
+
     '<div class="panel" style="position:relative"><h3>Activity</h3>' +
-      '<p class="cap">' + S.activeDays() + ' active days &middot; last 12 weeks</p>' +
+      '<p class="cap">' + S.activeDays() + ' active day' + (S.activeDays() === 1 ? '' : 's') + ' &middot; last 18 weeks</p>' +
       '<div class="streakbig"><b>' + S.activeDays() + '</b><span>Day streak</span></div>' +
-      S.heatmap(12) +
-      '<div class="heat__legend"><span>Less</span><i class="heat__d"></i><i class="heat__d l1"></i>' +
-      '<i class="heat__d l2"></i><i class="heat__d l3"></i><span>More</span></div></div></div>';
+      S.heatmap(18) +
+      '<div class="heat__legend"><span>Less</span><i></i>' +
+        '<i style="background:rgba(79,169,122,.34)"></i><i style="background:rgba(79,169,122,.64)"></i>' +
+        '<i style="background:rgba(79,169,122,.94)"></i><span>More</span></div></div>' +
+
+    '<div class="panel panel--seven"><h3>The Seven</h3>' +
+      '<p class="cap">' + S.doneCount() + ' of 7 days closed</p>' +
+      '<div class="seven">' + sevenRows() + '</div></div>' +
+    '</div>';
 
   /* ── Modules ── */
   html += '<div class="sec"><div class="sec__head"><h2>Your modules</h2>' +

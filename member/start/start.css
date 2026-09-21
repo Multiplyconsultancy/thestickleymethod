@@ -128,7 +128,7 @@ p{margin:0}
 .card{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);padding:20px}
 
 /* ══ TOP ROW: ring + activity ═══════════════════════════════════════ */
-.toprow{display:grid;grid-template-columns:minmax(230px,300px) 1fr;gap:14px;margin:0 0 30px}
+.toprow{display:grid;grid-template-columns:minmax(220px,264px) minmax(0,1fr) minmax(210px,248px);gap:13px;margin:0 0 28px}
 .panel{
   background:linear-gradient(180deg,var(--surface-2) 0%,var(--surface) 100%);
   border:1px solid var(--line-soft);border-radius:var(--r);padding:19px 21px;
@@ -143,9 +143,6 @@ p{margin:0}
 .ring__mid span{display:block;color:var(--faint);font-size:11.5px;margin-top:5px;font-variant-numeric:tabular-nums}
 
 /* Activity heatmap */
-.heat{display:flex;gap:4px;margin-top:16px;overflow-x:auto;overflow-y:visible;padding:3px 3px 5px}
-.heat__wk{display:grid;grid-template-rows:repeat(7,1fr);gap:4px}
-.heat__d{width:13px;height:13px;border-radius:3.5px;background:rgba(255,255,255,.045)}
 .heat__d.l1{background:rgba(52,211,153,.32)}
 .heat__d.l2{background:rgba(52,211,153,.62)}
 .heat__d.l3{background:rgba(52,211,153,.92)}
@@ -403,7 +400,6 @@ textarea.input{min-height:88px;resize:vertical;line-height:1.6}
   .msg__body{max-height:none;font-size:12.5px;padding:15px}
   .phases{grid-template-columns:1fr}
   .pcard p{min-height:0}
-  .heat__d{width:11px;height:11px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
@@ -642,3 +638,74 @@ a.dcard:hover{border-color:color-mix(in srgb,var(--a) 34%,var(--line))}
   .gate--wait .gw__c{margin-left:0;width:100%;text-align:left;border-top:1px solid rgba(232,180,92,.16);padding-top:13px}
   .gate--wait .gw__c b{font-size:38px}
 }
+
+
+/* ══ PASS 4 — THE TOP OF THE HOME SCREEN ════════════════════════════
+   THE HERO HAD NO STYLES AT ALL. `.now` and `.now__meta` were dropped
+   when the stylesheet was rebuilt, but index.html still used them, so
+   the most important card on the product rendered as bare text on the
+   page background and its three meta values ran together into one
+   unreadable string. That, not spacing, is why the top looked cheap.
+
+   THE HEATMAP WAS THE DEAD SPACE. Fixed 13px cells drawn into a column
+   twice as wide as it needed left most of the panel empty. Columns now
+   flex to fill whatever width they are given, and the grid carries
+   month labels and a weekday gutter — without those it reads as a
+   smattering of squares rather than a calendar.
+══════════════════════════════════════════════════════════════════════ */
+
+/* ── The one next action ── */
+.now{
+  position:relative;display:block;overflow:hidden;border-radius:var(--r-lg);
+  border:1px solid var(--line);padding:clamp(24px,3.2vw,34px);
+  background:
+    radial-gradient(130% 150% at 100% 0%,color-mix(in srgb,var(--day) 13%,transparent) 0%,transparent 62%),
+    linear-gradient(180deg,var(--surface-2) 0%,var(--surface) 100%);
+  transition:border-color .16s;
+}
+.now::before{content:"";position:absolute;inset:0 0 auto;height:1px;border-radius:inherit;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.08) 20%,rgba(255,255,255,.08) 80%,transparent)}
+a.now:hover{border-color:color-mix(in srgb,var(--day) 36%,var(--line))}
+.now h2{font-size:clamp(28px,3.9vw,40px);letter-spacing:-.032em;margin-top:9px}
+.now .lede{color:var(--muted);margin-top:11px;font-size:16.5px;line-height:1.55;max-width:52ch}
+
+/* The run-together line. Separated, aligned, and never touching. */
+.now__meta{display:flex;align-items:center;flex-wrap:wrap;row-gap:8px;margin-top:20px;
+  color:var(--dim);font-size:13.5px}
+.now__meta span{display:inline-flex;align-items:center;gap:7px;padding-right:15px;margin-right:15px;
+  border-right:1px solid var(--line)}
+.now__meta span:last-child{border-right:0;padding-right:0;margin-right:0}
+.now__meta b{color:var(--text);font-weight:700;font-variant-numeric:tabular-nums}
+
+/* ── Heatmap that fills its panel ── */
+.heat{margin-top:15px}
+.heat__months{display:flex;gap:4px;margin-bottom:7px}
+.heat__gut{flex:0 0 32px}
+.heat__m{flex:1;min-width:0;font:600 9.5px/1 var(--body);letter-spacing:.08em;color:var(--faint);white-space:nowrap}
+.heat__body{display:flex;gap:4px}
+.heat__days{flex:0 0 32px;display:grid;grid-template-rows:repeat(7,1fr);gap:4px}
+.heat__days i{font-style:normal;font:600 9.5px/1 var(--body);color:var(--faint);display:flex;align-items:center}
+.heat__grid{flex:1;min-width:0;display:flex;gap:4px;padding:2px}
+.heat__wk{flex:1;min-width:0;display:grid;grid-template-rows:repeat(7,1fr);gap:4px}
+.heat__d{aspect-ratio:1;border-radius:3px;background:rgba(255,255,255,.04)}
+.heat__d.is-future{background:rgba(255,255,255,.015)}
+.heat__legend{display:flex;align-items:center;gap:6px;margin-top:12px;color:var(--faint);font-size:11px}
+.heat__legend i{width:11px;height:11px;border-radius:3px;background:rgba(255,255,255,.04)}
+
+/* ── Third panel: the week at a glance ── */
+.seven{display:flex;flex-direction:column;margin-top:13px}
+.seven__r{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--line-soft);font-size:13.5px}
+.seven__r:last-child{border-bottom:0}
+.seven__n{width:23px;height:23px;flex:0 0 23px;border-radius:7px;display:grid;place-items:center;
+  background:var(--surface-3);color:var(--faint);font:700 10.5px/1 var(--body);font-variant-numeric:tabular-nums}
+.seven__n .ic{width:12px;height:12px}
+.seven__t{flex:1;min-width:0;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seven__s{flex:0 0 auto;color:var(--faint);font-size:12px;font-variant-numeric:tabular-nums}
+.seven__r.is-done .seven__n{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}
+.seven__r.is-done .seven__t{color:var(--text)}
+.seven__r.is-now .seven__n{background:color-mix(in srgb,var(--gold) 18%,transparent);color:var(--gold)}
+.seven__r.is-now .seven__t{color:var(--text);font-weight:600}
+.seven__r.is-now .seven__s{color:var(--gold)}
+
+@media (max-width:1180px){ .toprow{grid-template-columns:minmax(230px,280px) 1fr} .panel--seven{grid-column:1 / -1} }
+@media (max-width:860px){ .toprow{grid-template-columns:1fr} .heat__days,.heat__gut{display:none} }

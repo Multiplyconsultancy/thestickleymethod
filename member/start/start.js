@@ -368,33 +368,207 @@ var NS = 'sms.start.v2.';
       '</div>';
   }
 
-  /* ── Activity heatmap. Twelve weeks back, Monday-first columns, and
-     today ringed. Reads the same check-in set the ladder counts. ── */
+  /* ── Activity heatmap ─────────────────────────────────────────────
+     Rebuilt to FILL its panel. The old one drew fixed 13px cells into a
+     column that was twice as wide as it needed, which is where most of
+     the dead space on the home screen came from. Columns now flex, so
+     the grid spans whatever width it is given, and it carries month and
+     weekday labels — without those it reads as a smattering of squares
+     rather than a calendar. ── */
   function heatmap(weeks) {
-    weeks = weeks || 12;
+    weeks = weeks || 18;
     var set = {};
-    state().checkins.forEach(function (d) { set[d] = 1; });
+    state().checkins.forEach(function (d) { set[d] = (set[d] || 0) + 1; });
     Object.keys(state().days).forEach(function (k) {
       var d = state().days[k]; if (d.date) set[d.date] = (set[d.date] || 0) + 1;
     });
 
+    var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function key(d) {
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+
+    /* End on the Sunday of the current week so today sits in the last column. */
     var now = new Date(); now.setHours(0, 0, 0, 0);
-    var end = new Date(now); end.setDate(end.getDate() + (7 - ((end.getDay() + 6) % 7) - 1));
-    var startD = new Date(end); startD.setDate(startD.getDate() - (weeks * 7 - 1));
-    var tod = today(), out = '<div class="heat">', cur = new Date(startD);
+    var end = new Date(now); end.setDate(end.getDate() + (6 - ((end.getDay() + 6) % 7)));
+    var start = new Date(end); start.setDate(start.getDate() - (weeks * 7 - 1));
+
+    var tod = today(), cols = '', months = '', cur = new Date(start), lastMonth = -1;
 
     for (var w = 0; w < weeks; w++) {
-      out += '<div class="heat__wk">';
+      /* One label per month, placed on the week its month first appears. */
+      var m = cur.getMonth();
+      months += '<span class="heat__m">' + (m !== lastMonth ? MON[m] : '') + '</span>';
+      lastMonth = m;
+
+      var cells = '';
       for (var i = 0; i < 7; i++) {
-        var key = cur.getFullYear() + '-' + String(cur.getMonth() + 1).padStart(2, '0') + '-' + String(cur.getDate()).padStart(2, '0');
-        var v = set[key] || 0;
+        var k = key(cur), v = set[k] || 0;
         var lvl = v >= 3 ? ' l3' : v === 2 ? ' l2' : v === 1 ? ' l1' : '';
-        out += '<i class="heat__d' + lvl + (key === tod ? ' today' : '') + '" title="' + key + '"></i>';
+        var future = cur > now ? ' is-future' : '';
+        cells += '<i class="heat__d' + lvl + future + (k === tod ? ' today' : '') + '" title="' + k + '"></i>';
         cur.setDate(cur.getDate() + 1);
       }
-      out += '</div>';
+      cols += '<span class="heat__wk">' + cells + '</span>';
     }
-    return out + '</div>';
+
+    return '<div class="heat">' +
+      '<div class="heat__months"><span class="heat__gut"></span>' + months + '</div>' +
+      '<div class="heat__body">' +
+        '<span class="heat__days"><i>Mon</i><i></i><i>Wed</i><i></i><i>Fri</i><i></i><i></i></span>' +
+        '<span class="heat__grid">' + cols + '</span>' +
+      '</div></div>';
+  }
+
+  /* ── The app they built ───────────────────────────────────────── */
+  function app() { return state().app; }
+  function saveApp(url) {
+    var s = state();
+    s.app = { url: url, verifiedAt: new Date().toISOString() };
+    return save(s);
+  }
+
+  /* Permissive on purpose. Base44 serves published apps from more than
+     one host shape, and telling somebody who genuinely built the thing
+     that their own link is invalid loses them at the last step. */
+  function checkUrl(raw) {
+    var t = String(raw || '').trim();
+    if (!t) return { ok: false, msg: 'Paste the link to your published app first.' };
+    if (!/^https?:\/\//i.test(t)) t = 'https://' + t;
+    var u;
+    try { u = new URL(t); } catch (e) { return { ok: false, msg: 'That is not a link. It should start with https://' }; }
+    if (!u.hostname || u.hostname.indexOf('.') === -1) {
+      return { ok: false, msg: 'That is not a link. It should start with https://' };
+    }
+    var b44 = /(^|\.)base44\.(app|com)$/i.test(u.hostname);
+    return { ok: true, url: u.href, base44: b44,
+      msg: b44 ? '' : 'Saved — but that is not a base44.app link. Check it is the published app, not the builder.' };
+  }
+
+  /* ── Answers, remembered ──────────────────────────────────────────
+     Somebody who fills in six questions, wanders off to Base44 and
+     comes back should not find an empty form. */
+  function answers(key) { return state().answers[key] || {}; }
+  function saveAnswers(key, obj) {
+    var s = state();
+    s.answers[key] = obj;
+    return save(s);
+  }
+
+  /* ── The prompt generator ─────────────────────────────────────────
+     The single most important function here. A member staring at an
+     empty prompt box does nothing, so they never see one: they answer
+     plain questions and the message assembles itself.
+
+     An unanswered question removes its whole line rather than sending
+     "- Income right now: {{income}} per month" with a hole in it. A
+     half-filled form still produces a clean, sendable prompt. */
+  function build(msg, vals) {
+    var out = msg.text;
+    var qs = msg.questions || [];
+
+    qs.forEach(function (q) {
+      var v = (vals[q.id] || '').trim();
+      var token = '{{' + q.id + '}}';
+      if (!v) {
+        /* Drop the line that carried it. */
+        out = out.split('\n').filter(function (line) { return line.indexOf(token) === -1; }).join('\n');
+        return;
+      }
+      if (q.area) {
+        v = v.split(/\n+/).map(function (l) {
+          l = l.trim().replace(/^[-*•]\s*/, '');
+          return l ? '- ' + l : '';
+        }).filter(Boolean).join('\n');
+      }
+      out = out.split(token).join(v);
+    });
+
+    return out.replace(/\n{3,}/g, '\n\n').trim();
+  }
+
+  /* ── UI helpers ───────────────────────────────────────────────── */
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function qs(n) { try { return new URL(window.location.href).searchParams.get(n); } catch (e) { return null; } }
+
+  var tt;
+  function toast(m) {
+    var el = document.querySelector('.toast');
+    if (!el) { el = document.createElement('div'); el.className = 'toast'; document.body.appendChild(el); }
+    el.textContent = m; el.classList.add('on');
+    clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, 2600);
+  }
+
+  /* Clipboard needs a secure context and permission, and this button
+     failing silently breaks the entire product loop. Always fall back. */
+  function copy(text, ok) {
+    function fb() {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:-9999px';
+      document.body.appendChild(ta); ta.select();
+      var d = false;
+      try { d = document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      toast(d ? (ok || 'Copied') : 'Could not copy — select the text and copy it by hand.');
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () { toast(ok || 'Copied'); }, fb);
+    } else { fb(); }
+  }
+
+  var ICONS = {
+    home:'<path d="M3 9.5 10 3.5l7 6V17a1 1 0 0 1-1 1h-3.6v-5H7.6v5H4a1 1 0 0 1-1-1z"/>',
+    modules:'<rect x="3" y="3.5" width="14" height="4.2" rx="1.6"/><rect x="3" y="10" width="14" height="6.5" rx="1.6"/>',
+    system:'<rect x="3" y="3.5" width="6" height="6" rx="1.6"/><rect x="11" y="3.5" width="6" height="6" rx="1.6"/><rect x="3" y="11" width="6" height="5.5" rx="1.6"/><rect x="11" y="11" width="6" height="5.5" rx="1.6"/>',
+    bonus:'<path d="M10 3.2 12 7.4l4.6.6-3.4 3.2.9 4.6L10 13.6 5.9 15.8l.9-4.6L3.4 8l4.6-.6z"/>',
+    community:'<circle cx="7.4" cy="8" r="2.4"/><circle cx="13.2" cy="8.6" r="1.9"/><path d="M3.4 16c0-2.2 1.8-3.6 4-3.6s4 1.4 4 3.6M12.4 12.6c2 .1 3.5 1.4 3.5 3.4"/>',
+    announce:'<path d="M4 8.2v3.6h2.6L12 15.4V4.6L6.6 8.2z"/><path d="M14.6 7.4a3.6 3.6 0 0 1 0 5.2"/>',
+    wins:'<path d="M6 3.5h8v3.2a4 4 0 0 1-8 0z"/><path d="M6 4.6H3.8v1.2A2.6 2.6 0 0 0 6.4 8.4M14 4.6h2.2v1.2a2.6 2.6 0 0 1-2.6 2.6"/><path d="M10 10.8v3M7 16.5h6"/>',
+    leaderboard:'<rect x="3.2" y="9" width="3.6" height="7.5" rx="1"/><rect x="8.2" y="4.5" width="3.6" height="12" rx="1"/><rect x="13.2" y="7" width="3.6" height="9.5" rx="1"/>',
+    lock:'<rect x="4.6" y="8.8" width="10.8" height="7.6" rx="2"/><path d="M7.2 8.8V6.6a2.8 2.8 0 0 1 5.6 0v2.2"/>',
+    tick:'<path d="M4.6 10.3l3.4 3.4 7.4-7.6"/>',
+    back:'<path d="M11.6 4.8 6.4 10l5.2 5.2"/>',
+    play:'<path d="M7.4 5.2 14.6 10l-7.2 4.8z"/>',
+    flame:'<path d="M10 3.2s3.6 3.1 3.6 6.4a3.6 3.6 0 0 1-7.2 0c0-1.3.5-2.3.5-2.3s.7 1 1.5 1c.9 0 1.6-.8 1.6-2.3 0-1.2 0-2.8 0-2.8z"/><path d="M6.4 9.6a3.6 3.6 0 0 0 7.2 0c0 4-1.6 6.6-3.6 6.6s-3.6-2.6-3.6-6.6z"/>',
+    heart:'<path d="M10 16.2S3.6 12.4 3.6 8.1A3.3 3.3 0 0 1 10 6.5a3.3 3.3 0 0 1 6.4 1.6c0 4.3-6.4 8.1-6.4 8.1z"/>',
+    chart:'<path d="M3.6 16.4h12.8"/><path d="M6 16.4V9.6M10 16.4V4.8M14 16.4v-4.6"/>',
+    chat:'<path d="M16.4 11.2a2.4 2.4 0 0 1-2.4 2.4H7.2L3.6 16.4V5.6a2.4 2.4 0 0 1 2.4-2.4h8a2.4 2.4 0 0 1 2.4 2.4z"/>',
+    depth:'<circle cx="10" cy="10" r="6.6"/><circle cx="10" cy="10" r="3.4"/><circle cx="10" cy="10" r=".9" fill="currentColor"/>',
+    crown:'<path d="M3.4 6.2 6.2 11l3.8-6 3.8 6 2.8-4.8v8.6a1.4 1.4 0 0 1-1.4 1.4H4.8a1.4 1.4 0 0 1-1.4-1.4z"/>',
+    grid:'<rect x="3.4" y="3.4" width="5.6" height="5.6" rx="1.5"/><rect x="11" y="3.4" width="5.6" height="5.6" rx="1.5"/><rect x="3.4" y="11" width="5.6" height="5.6" rx="1.5"/><rect x="11" y="11" width="5.6" height="5.6" rx="1.5"/>',
+    live:'<circle cx="10" cy="10" r="2.6"/><path d="M6.2 6.2a5.4 5.4 0 0 0 0 7.6M13.8 13.8a5.4 5.4 0 0 0 0-7.6"/>',
+  };
+
+  function icon(n) {
+    return '<svg class="ic" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" ' +
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[n] || '') + '</svg>';
+  }
+
+
+  /* ── Progress ring. Owns its own centre label: pages were
+     positioning it with negative margins, which is what clipped the
+     panel beside it. ── */
+  function ring(pct, size, accent, big, small) {
+    size = size || 138;
+    var r = (size / 2) - 8, c = 2 * Math.PI * r;
+    var off = c * (1 - Math.max(0, Math.min(1, pct / 100)));
+    return '<div class="ring" style="width:' + size + 'px;height:' + size + 'px">' +
+      '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '">' +
+        '<circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" ' +
+          'stroke="rgba(255,255,255,.06)" stroke-width="8"/>' +
+        '<circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" ' +
+          'stroke="' + (accent || 'var(--gold)') + '" stroke-width="8" stroke-linecap="round" ' +
+          'stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '"/>' +
+      '</svg>' +
+      (big !== undefined
+        ? '<div class="ring__mid"><b>' + big + '</b>' + (small ? '<span>' + small + '</span>' : '') + '</div>'
+        : '') +
+      '</div>';
   }
 
   /* ── Navigation. Five items. Never more. ──────────────────────────
