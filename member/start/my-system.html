@@ -46,7 +46,7 @@
       '<button class="btn btn--ghost" id="edit">Update link</button></div></div>';
 
   html += '<div class="sec"><div class="sec__head"><h2>What it does</h2></div>';
-  P.days.filter(function (d) { return d.messages.length; }).forEach(function (d) {
+  P.days.forEach(function (d) {
     var on = S.done(d.n);
     html += '<div class="lad' + (on ? ' is-open' : '') + '" style="--a:' + d.accent + '">' +
       '<span class="chip" style="--a:' + d.accent + '">' + S.icon(d.mark) + '</span>' +

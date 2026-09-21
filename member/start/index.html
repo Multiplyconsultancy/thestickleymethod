@@ -25,8 +25,6 @@
 <script>
 (function () {
   S.boot('home');
-  /* One phase card. The accent lives on the element so the wash, the
-     bar and the chip all read it from a single custom property. */
   function pcard(p) {
     var open = !p.gated || S.ladderOpen();
     var done = p.lessons.filter(function (l) {
@@ -36,7 +34,7 @@
     var pct = tot ? Math.round(done / tot * 100) : (open ? 100 : 0);
     var href = p.id === 'library' ? '/member/start/library' : '/member/start/phase?p=' + p.id;
     var sub = tot ? done + ' / ' + tot + ' lessons' : '24 builds';
-    if (p.id === 'seven') sub += ' &middot; ' + window.PATH.totalPrompts() + ' prompts';
+    if (p.id === 'seven') sub += ' · ' + window.PATH.totalPrompts() + ' prompts';
     var inner =
       '<div class="pcard__top"><span class="chip">' + S.icon(p.mark) + '</span>' +
         '<span class="pcard__eyebrow">Phase ' + p.n + '</span>' +
@@ -49,54 +47,98 @@
   }
   var P = window.PATH, st = S.state();
   var totL = P.totalLessons();
-  var doneL = S.doneCount() + (S.Store.get('intro.welcome', false) ? 1 : 0);
+  var introDone = !!S.Store.get('intro.welcome', false);
+  var doneL = S.doneCount() + (introDone ? 1 : 0);
   var pct = Math.round(doneL / totL * 100);
   var cur = S.currentDay();
+  var modsDone = P.days.reduce(function (t, d) { return t + S.partsDone(d.n).length; }, 0);
 
   var html = '<div class="phead"><h1>' + (st.startedAt ? 'Welcome back.' : 'Welcome in.') + '</h1>' +
     '<p class="sub">' + doneL + ' of ' + totL + ' lessons complete &middot; ' +
-    S.activeDays() + '-day streak &middot; ' + P.totalPrompts() + ' prompts in the path</p></div>';
+    S.activeDays() + '-day streak &middot; ' + modsDone + ' of ' + P.totalPrompts() + ' prompts sent</p></div>';
 
-  /* Ring owns its own centre label now; the old version positioned it
-     with negative margins and that is what clipped the panel beside it. */
-  html += '<div class="toprow">' +
-    '<div class="panel"><h3>Course Progress</h3><p class="cap">All phases combined</p>' +
-      S.ring(pct, 146, 'var(--gold)', pct + '%', doneL + ' / ' + totL) + '</div>' +
+  /* ── One next action, above everything ── */
+  if (!S.ladderOpen()) {
+    if (!introDone && !S.doneCount()) {
+      html += '<a class="now" style="--day:#E8825C" href="/member/start/phase?p=start">' +
+        '<span class="label">Start here</span><h2>Watch the welcome</h2>' +
+        '<p class="lede">Four minutes. What this is, how the week works, and exactly where to begin.</p>' +
+        '<div class="now__meta"><span><b>4</b> min</span><span>Phase 1</span></div>' +
+        '<div class="btn-row"><span class="btn btn--primary">Watch it &rarr;</span></div></a>';
+    } else {
+      var d = P.day(cur), waiting = !S.unlocked(cur) ? S.openIn(cur) : 0;
+      var nDone = S.partsDone(cur).length;
+      if (waiting > 0) {
+        html += '<div class="now" style="--day:' + d.accent + '"><span class="label">Next up &middot; ' + S.esc(d.eyebrow) + '</span>' +
+          '<h2>' + S.esc(d.title) + '</h2><p class="lede">' + S.esc(d.summary) + '</p>' +
+          '<div class="cd" id="cd" style="max-width:340px;margin-top:18px"></div>' +
+          '<p class="hint" style="margin-top:12px;color:var(--faint);font-size:13px">One day opens every ' +
+          S.UNLOCK_HOURS + ' hours. A week of honest records cannot be crammed into one evening.</p></div>';
+      } else {
+        html += '<a class="now" style="--day:' + d.accent + '" href="/member/start/day?d=' + cur + '">' +
+          '<span class="label">' + (nDone ? 'Continue' : 'Next up') + ' &middot; ' + S.esc(d.eyebrow) + '</span>' +
+          '<h2>' + S.esc(d.title) + '</h2><p class="lede">' + S.esc(d.summary) + '</p>' +
+          '<div class="now__meta"><span><b>' + (d.parts.length - nDone) + '</b> modules left</span>' +
+          '<span><b>~' + d.minutes + '</b> min</span><span>' + S.esc(d.builds) + '</span></div>' +
+          '<div class="btn-row"><span class="btn btn--primary">' + (nDone ? 'Continue' : 'Start') + ' &rarr;</span></div></a>';
+      }
+    }
+  }
+
+  /* ── Progress + activity ── */
+  html += '<div class="toprow" style="margin-top:22px">' +
+    '<div class="panel panel--progress"><h3>Course Progress</h3><p class="cap">All phases combined</p>' +
+      S.ring(pct, 142, 'var(--gold)', pct + '%', doneL + ' / ' + totL) +
+      '<div class="prail"><div><b>' + S.doneCount() + '</b><span>Days</span></div>' +
+      '<div><b>' + modsDone + '</b><span>Modules</span></div>' +
+      '<div><b>' + S.activeDays() + '</b><span>Active</span></div></div></div>' +
     '<div class="panel" style="position:relative"><h3>Activity</h3>' +
       '<p class="cap">' + S.activeDays() + ' active days &middot; last 12 weeks</p>' +
       '<div class="streakbig"><b>' + S.activeDays() + '</b><span>Day streak</span></div>' +
       S.heatmap(12) +
-      '<div class="heat__legend"><span>Less</span>' +
-        '<i class="heat__d"></i><i class="heat__d l1"></i><i class="heat__d l2"></i><i class="heat__d l3"></i>' +
-        '<span>More</span></div></div></div>';
+      '<div class="heat__legend"><span>Less</span><i class="heat__d"></i><i class="heat__d l1"></i>' +
+      '<i class="heat__d l2"></i><i class="heat__d l3"></i><span>More</span></div></div></div>';
 
-  html += '<div class="sec" style="margin-top:0"><div class="sec__head"><h2>Your modules</h2>' +
+  /* ── Modules ── */
+  html += '<div class="sec"><div class="sec__head"><h2>Your modules</h2>' +
     '<a href="/member/start/modules">All phases &rsaquo;</a></div>' +
     '<p style="color:var(--faint);font-size:13px;margin:-6px 0 13px">Work through them in order.</p>' +
     '<div class="phases">' + P.phases.map(pcard).join('') + '</div></div>';
 
-  /* Exactly one next action, and it knows whether the next day is
-     actually open yet rather than sending people at a locked door. */
-  if (!S.ladderOpen()) {
-    var d = P.day(cur), waiting = !S.unlocked(cur) ? S.openIn(cur) : 0;
-    html += '<div class="cont" id="cont"><div><b id="contb">' +
-      (waiting > 0 ? 'Day ' + cur + ' opens soon' : 'Day ' + cur + ' · ' + S.esc(d.title)) + '</b>' +
-      '<span id="conts">' + (waiting > 0
-        ? 'Come back and finish the week.'
-        : d.parts.length + ' modules · about ' + d.minutes + ' minutes') + '</span></div>' +
-      (waiting > 0
-        ? '<span class="gate__t" id="contt"></span>'
-        : '<a class="btn btn--primary" href="/member/start/phase?p=seven&l=d' + cur + '">Continue &rarr;</a>') +
-      '</div>';
-  }
+  /* ── What opens at seven ── */
+  html += '<div class="sec"><div class="sec__head"><h2>What opens at seven</h2>' +
+    '<a href="/member/start/bonus">Details &rsaquo;</a></div>';
+  var op = S.ladderOpen();
+  P.unlocks.forEach(function (u) {
+    html += '<div class="lad' + (op ? ' is-open' : '') + '" style="--a:' + u.accent + '">' +
+      '<span class="chip" style="--a:' + u.accent + '">' + S.icon(u.mark) + '</span>' +
+      '<div><h3>' + S.esc(u.title) + '</h3><p>' + S.esc(u.sub) + '</p></div>' +
+      '<span class="lad__s">' + S.icon(op ? 'tick' : 'lock') + '</span></div>';
+  });
+  html += '</div>';
+
+  /* ── Included programmes ── */
+  html += '<div class="sec"><div class="sec__head"><h2>Included with your membership</h2></div><div class="phases">';
+  [{ t:'The Stickley Method', s:'Appearance', a:'#8B6FD4', m:'grid' },
+   { t:'Nightfall', s:'Mind & Character', a:'#4A7FD4', m:'depth' },
+   { t:'IMPACT', s:'Wealth', a:'#D9A441', m:'chart' }].forEach(function (x) {
+    html += '<div class="pcard" style="--day:' + x.a + '">' +
+      '<div class="pcard__top"><span class="chip">' + S.icon(x.m) + '</span>' +
+      '<span class="pcard__eyebrow">Programme</span></div>' +
+      '<h3>' + x.t + '</h3><p>Surfaced inside ' + x.s + '. Full programme included.</p>' +
+      '<div class="pcard__foot"><span>Included</span><span class="pc">—</span></div></div>';
+  });
+  html += '</div></div>';
 
   document.getElementById('page').innerHTML = html;
 
-  var ct = document.getElementById('contt');
-  if (ct) S.tick(function () {
+  var cd = document.getElementById('cd');
+  if (cd) S.tick(function () {
     var ms = S.openIn(cur);
     if (ms <= 0) { window.location.reload(); return; }
-    ct.textContent = S.shortLeft(ms);
+    cd.innerHTML = S.clockFace(ms).map(function (u) {
+      return '<div><b>' + u.v + '</b><span>' + u.l + '</span></div>';
+    }).join('');
   });
 })();
 </script></body></html>

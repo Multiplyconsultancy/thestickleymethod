@@ -143,13 +143,13 @@ p{margin:0}
 .ring__mid span{display:block;color:var(--faint);font-size:11.5px;margin-top:5px;font-variant-numeric:tabular-nums}
 
 /* Activity heatmap */
-.heat{display:flex;gap:4px;margin-top:16px;overflow-x:auto;padding-bottom:3px}
+.heat{display:flex;gap:4px;margin-top:16px;overflow-x:auto;overflow-y:visible;padding:3px 3px 5px}
 .heat__wk{display:grid;grid-template-rows:repeat(7,1fr);gap:4px}
 .heat__d{width:13px;height:13px;border-radius:3.5px;background:rgba(255,255,255,.045)}
 .heat__d.l1{background:rgba(52,211,153,.32)}
 .heat__d.l2{background:rgba(52,211,153,.62)}
 .heat__d.l3{background:rgba(52,211,153,.92)}
-.heat__d.today{box-shadow:0 0 0 2px var(--gold)}
+.heat__d.today{box-shadow:0 0 0 2px var(--gold);position:relative;z-index:1}
 .heat__legend{display:flex;align-items:center;gap:6px;margin-top:11px;color:var(--faint);font-size:11.5px}
 .streakbig{position:absolute;top:19px;right:21px;text-align:right}
 .streakbig b{display:block;font:600 30px/1 var(--display);color:var(--gold);font-variant-numeric:tabular-nums}
@@ -159,10 +159,10 @@ p{margin:0}
    The engine of the home screen. Each one carries its own accent as a
    tinted chip, a matching bar, and a soft corner glow.
 ══════════════════════════════════════════════════════════════════════ */
-.phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px;align-items:stretch}
 .pcard{
   --a:var(--day);
-  position:relative;overflow:hidden;display:block;border-radius:var(--r);
+  position:relative;overflow:hidden;display:flex;flex-direction:column;border-radius:var(--r);
   border:1px solid var(--line-soft);padding:20px 21px 18px;
   background:
     radial-gradient(130% 120% at 100% 0%,color-mix(in srgb,var(--a) 10%,transparent) 0%,transparent 58%),
@@ -181,8 +181,8 @@ p{margin:0}
 .chip .ic{width:19px;height:19px}
 .pcard__eyebrow{font:800 9.5px/1 var(--body);letter-spacing:.17em;text-transform:uppercase;color:var(--a)}
 .pcard h3{font-size:22px;margin-top:6px}
-.pcard p{color:var(--dim);font-size:14px;margin-top:8px;line-height:1.52;min-height:2.9em}
-.pcard__foot{display:flex;align-items:center;gap:10px;margin-top:15px;color:var(--faint);font-size:12.5px;font-variant-numeric:tabular-nums}
+.pcard p{color:var(--dim);font-size:14px;margin-top:8px;line-height:1.52}
+.pcard__foot{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:16px;color:var(--faint);font-size:12.5px;font-variant-numeric:tabular-nums}
 .pcard__foot .pc{margin-left:auto;font-weight:700;color:var(--muted)}
 .bar{height:4px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden;margin-top:9px}
 .bar i{display:block;height:100%;border-radius:99px;background:var(--a);opacity:.9;transition:width .5s}
@@ -500,4 +500,102 @@ textarea.input{min-height:88px;resize:vertical;line-height:1.6}
 @media (max-width:860px){
   .mod__h{padding:13px 14px}
   .mod__body{padding:2px 14px 15px}
+}
+
+
+/* ══ PASS 3 ═════════════════════════════════════════════════════════
+   Three fixes and one lift.
+
+   THE HEATMAP was clipping its own today-ring: a 2px outer ring drawn on
+   a cell inside an overflow-x container with no padding has nowhere to
+   go. The container now carries padding and the ringed cell sits above
+   its siblings.
+
+   THE PHASE CARDS did not line up because equal height was being asked
+   of a paragraph via min-height, which a longer blurb simply overruns.
+   The card is a flex column now and the footer is pushed down with
+   margin-top:auto, so every bar lands on the same line regardless of
+   how much text sits above it.
+
+   THE PROGRESS PANEL read as cheap because it was a ring floating in
+   dead space. It now carries a stat rail underneath it, which is both
+   more informative and visually anchored.
+══════════════════════════════════════════════════════════════════════ */
+
+.nav__off{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:11px;
+  color:var(--faint);font-size:14.5px;font-weight:500;cursor:default}
+.nav__off .ic{width:17px;height:17px;flex:0 0 17px;opacity:.45}
+
+/* Progress panel: ring plus a rail of real numbers under it. */
+.panel--progress{display:flex;flex-direction:column}
+.prail{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:16px;
+  border-top:1px solid var(--line-soft);padding-top:14px}
+.prail div{text-align:center}
+.prail b{display:block;font:600 19px/1 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.prail span{display:block;color:var(--faint);font:700 9px/1 var(--body);letter-spacing:.13em;
+  text-transform:uppercase;margin-top:6px}
+
+/* ── Day grid: the level between a phase and a module ── */
+.days{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:13px;align-items:stretch}
+.dcard{--a:var(--day);position:relative;display:flex;flex-direction:column;overflow:hidden;
+  border-radius:var(--r);border:1px solid var(--line-soft);padding:18px 19px 16px;
+  background:radial-gradient(130% 120% at 100% 0%,color-mix(in srgb,var(--a) 10%,transparent) 0%,transparent 58%),var(--surface)}
+.dcard::before{content:"";position:absolute;inset:0 0 auto;height:1px;border-radius:inherit;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.07) 22%,rgba(255,255,255,.07) 78%,transparent)}
+a.dcard:hover{border-color:color-mix(in srgb,var(--a) 34%,var(--line))}
+.dcard__top{display:flex;align-items:center;gap:11px;margin-bottom:13px}
+.dcard__n{width:34px;height:34px;flex:0 0 34px;border-radius:10px;display:grid;place-items:center;
+  background:color-mix(in srgb,var(--a) 12%,transparent);color:var(--a);
+  border:1px solid color-mix(in srgb,var(--a) 24%,transparent);
+  font:600 14px/1 var(--display);font-variant-numeric:tabular-nums}
+.dcard__n .ic{width:16px;height:16px}
+.dcard__eyebrow{font:700 9.5px/1 var(--body);letter-spacing:.17em;text-transform:uppercase;color:var(--a)}
+.dcard h3{font-size:19px;margin-top:5px;letter-spacing:-.025em}
+.dcard p{color:var(--dim);font-size:13.5px;margin-top:7px;line-height:1.5}
+.dcard__foot{display:flex;align-items:center;gap:9px;margin-top:auto;padding-top:15px;
+  color:var(--faint);font-size:12.5px;font-variant-numeric:tabular-nums}
+.dcard__foot .pc{margin-left:auto;font-weight:700;color:var(--muted)}
+.dcard.is-locked{opacity:.55}
+.dcard.is-locked .dcard__n{background:rgba(255,255,255,.04);color:var(--faint);border-color:var(--line-soft)}
+.dcard.is-done .dcard__n{background:color-mix(in srgb,var(--ok) 13%,transparent);color:var(--ok);
+  border-color:color-mix(in srgb,var(--ok) 26%,transparent)}
+.dcard__wait{display:flex;align-items:center;gap:7px;margin-top:auto;padding-top:15px;
+  color:var(--gold);font:600 13px/1 var(--body);font-variant-numeric:tabular-nums}
+.dcard__wait .ic{width:13px;height:13px}
+
+/* ── Module rail: 1.1, 1.2, 1.3 down the side ── */
+.mrail__h{padding:14px 16px;border-bottom:1px solid var(--line-soft)}
+.mrail__h b{display:block;font:600 15px/1.2 var(--display);letter-spacing:-.02em}
+.mrail__h span{display:block;color:var(--faint);font-size:12px;margin-top:4px}
+.mrow{display:flex;align-items:center;gap:11px;padding:12px 15px;border-bottom:1px solid var(--line-soft);transition:.14s}
+.mrow:last-child{border-bottom:0}
+.mrow:hover{background:var(--surface-2)}
+.mrow__n{width:27px;height:27px;flex:0 0 27px;border-radius:8px;display:grid;place-items:center;
+  background:var(--surface-3);color:var(--faint);font:700 10.5px/1 var(--body);font-variant-numeric:tabular-nums}
+.mrow__t{flex:1;min-width:0}
+.mrow__t b{display:block;font-size:14px;font-weight:600;letter-spacing:-.01em}
+.mrow__t span{display:block;color:var(--faint);font-size:11.5px;margin-top:2px}
+.mrow.is-done .mrow__n{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+.mrow.is-cur{background:linear-gradient(90deg,color-mix(in srgb,var(--day) 10%,transparent),transparent 62%);
+  box-shadow:inset 2px 0 0 var(--day)}
+.mrow.is-cur .mrow__n{background:color-mix(in srgb,var(--day) 18%,transparent);color:var(--day)}
+
+/* ── Build detail (library) ── */
+.bmeta{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
+.bwhy{border-left:2px solid var(--line);padding:2px 0 2px 16px;margin:18px 0 0;color:var(--muted);white-space:pre-line}
+
+/* ── Community ── */
+.thread{display:flex;gap:13px;padding:16px 18px;border:1px solid var(--line-soft);
+  border-radius:var(--r);background:var(--surface);margin-bottom:10px}
+.av{width:36px;height:36px;flex:0 0 36px;border-radius:50%;display:grid;place-items:center;
+  background:var(--surface-3);color:var(--muted);font:700 13px/1 var(--body)}
+.thread__b{flex:1;min-width:0}
+.thread__b .who{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.thread__b .who b{font-size:14.5px;font-weight:700}
+.thread__b .who span{color:var(--faint);font-size:12px}
+.thread__b p{color:var(--muted);font-size:14px;margin-top:6px}
+
+@media (max-width:860px){
+  .days,.phases{grid-template-columns:1fr}
+  .prail b{font-size:17px}
 }

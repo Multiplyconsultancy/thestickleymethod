@@ -20,427 +20,125 @@
   <main class="main"><div class="wrap" id="page"></div></main>
 </div>
 <nav class="tabbar"></nav>
-
 <script src="/member/start/data/path.js"></script>
 <script src="/member/start/start.js"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════
-   PHASE + LESSON.
+   A PHASE.
 
-   A day is a set of numbered modules, the way a workshop is. Each module
-   carries why it exists, ordered steps, one prompt assembled from the
-   member's own answers, and a checkpoint list of what they should be
-   able to see before moving on.
-
-   Everything else in this product is navigation. This is where a prompt
-   either gets copied into Base44 or does not, so it is built around
-   removing every reason to stall: no empty prompt box ever, answers that
-   survive a trip to Base44 and back, one module open at a time so six in
-   a row never reads as a wall, and every predictable failure pre-empted
-   in the copy rather than in a support email.
-
-   Two gates live here. A day cannot be closed until its own minimum time
-   has elapsed, and the next day opens on a timer after this one closes.
-   Both show a live countdown rather than a number that only moves when
-   the page is refreshed.
+   The level that was missing. Modules -> PHASE -> Day -> Module, so the
+   seven days read as seven boxes in the same format as the phase grid
+   above them, each showing either its progress or how long until it
+   opens. A locked day is shown, never hidden: the road ahead is the
+   motivation, and a member who cannot see day four has no reason to
+   finish day three.
 ══════════════════════════════════════════════════════════════════════ */
 (function () {
   var P = window.PATH;
   var ph = P.phase(S.qs('p') || 'seven') || P.phases[0];
   var page = document.getElementById('page');
   S.boot('modules');
+  document.title = ph.title + ' | The Self-Mastery System';
 
-  function lessonDone(l) { return l.kind === 'day' ? S.done(l.day) : !!S.Store.get('intro.' + l.id, false); }
-  function lessonOpen(l) { return l.kind === 'day' ? S.unlocked(l.day) : true; }
-
-  var lessons = ph.lessons;
-  var wanted = S.qs('l');
-  var cur = lessons.filter(function (l) { return l.id === wanted; })[0];
-  if (!cur) cur = lessons.filter(function (l) { return lessonOpen(l) && !lessonDone(l); })[0] || lessons[lessons.length - 1];
-
-  var d = (cur && cur.kind === 'day') ? P.day(cur.day) : null;
-  var accent = d ? d.accent : ph.accent;
-  document.title = (cur ? cur.title : ph.title) + ' | The Self-Mastery System';
-
-  var openMod = null;                     // which module is expanded
-  var stopTicks = [];                     // live countdowns to clear on re-render
-
-  function key(i) { return d.n + '.' + i; }
-  function clearTicks() { stopTicks.forEach(function (f) { f(); }); stopTicks = []; }
-
-  /* ── Lesson list ──────────────────────────────────────────────── */
-  function list() {
-    var out = '<aside class="llist"><div class="llist__h">' + S.esc(ph.title) + ' &middot; ' +
-      lessons.filter(lessonDone).length + '/' + lessons.length + '</div>';
-    lessons.forEach(function (l, i) {
-      var isDone = lessonDone(l), open = lessonOpen(l), isCur = cur && l.id === cur.id;
-      var cls = (isDone ? ' is-done' : '') + (isCur ? ' is-cur' : '') + (!open ? ' is-locked' : '');
-      var style = l.kind === 'day' ? ' style="--day:' + P.day(l.day).accent + '"' : '';
-      var sub = l.mins + ' min';
-      if (l.kind === 'day') {
-        var dd = P.day(l.day);
-        sub += ' &middot; ' + dd.parts.length + ' modules';
-        if (!open && !isDone) {
-          var ms = S.openIn(l.day);
-          sub = ms === null ? 'Finish Day ' + (l.day - 1) : 'Opens in ' + S.shortLeft(ms);
-        }
-      }
-      var inner = '<span class="lrow__n">' + (isDone ? S.icon('tick') : (i + 1)) + '</span>' +
-        '<span class="lrow__t"><b>' + S.esc(l.title) + '</b><span>' + sub + '</span></span>' +
-        (!open ? S.icon('lock') : '');
-      out += open
-        ? '<a class="lrow' + cls + '"' + style + ' href="/member/start/phase?p=' + ph.id + '&l=' + l.id + '">' + inner + '</a>'
-        : '<div class="lrow' + cls + '"' + style + '>' + inner + '</div>';
-    });
-    return out + '</aside>';
-  }
-
-  /* ── Intro lesson ─────────────────────────────────────────────── */
-  function intro() {
-    var isDone = lessonDone(cur);
-    return '<div class="lhero"><span class="lhero__eyebrow">' + S.esc(ph.title) + '</span>' +
-      '<h2>' + S.esc(cur.title) + '</h2>' +
-      '<p class="lede">What this is, how it works, and exactly where to begin.</p>' +
-      '<div class="lhero__meta"><span class="pill pill--a">' + cur.mins + ' min</span>' +
-      '<span class="pill">Watch first</span></div></div>' +
-
-      '<div class="card" style="padding:0;overflow:hidden;margin-bottom:14px">' +
-        '<div style="aspect-ratio:16/9;display:grid;place-items:center;background:var(--bg-2)">' +
-          '<div style="text-align:center;padding:20px;color:var(--faint)">' + S.icon('play') +
-          '<p style="font-size:13px;margin-top:10px">Baby’s welcome video goes here.<br>The slot is wired — it needs the file.</p></div>' +
-        '</div></div>' +
-
-      '<div class="card"><span class="label">The short version</span>' +
-        '<p style="color:var(--muted);margin-bottom:13px">You are about to build one private app that runs the five areas you actually control: your body, your mind, your appearance, your character and your money.</p>' +
-        '<p style="color:var(--muted);margin-bottom:13px">Seven days, twenty-nine prompts. Day one is the long one — about forty-five minutes, six modules, and you finish with a published app that has your real numbers in it. Days two to seven are twenty to thirty minutes each and every one adds something.</p>' +
-        '<p style="color:var(--muted);margin-bottom:13px">Every prompt is written for you. You answer plain questions here, the message assembles itself, you paste it into Base44 and send it. You never have to work out what to type.</p>' +
-        '<p style="color:var(--muted)">One rule worth knowing now: your app will have no forms and no edit buttons. Everything enters by you telling it. That is deliberate — the app is the scoreboard, the conversation is the game.</p>' +
-      '</div>' +
-
-      '<div class="btn-row">' + (isDone
-        ? '<a class="btn btn--primary" href="/member/start/phase?p=seven&l=d1">Go to Day 1 &rarr;</a>' +
-          '<button class="btn btn--ghost" id="unmark">Mark as not done</button>'
-        : '<button class="btn btn--primary" id="mark">Mark complete &amp; start Day 1</button>') + '</div>';
-  }
-
-  /* ── A locked day ─────────────────────────────────────────────── */
-  function lockedDay() {
-    var ms = S.openIn(d.n);
-    if (ms === null) {
-      return '<div class="locked" style="--day:' + d.accent + '"><span class="chip">' + S.icon('lock') + '</span>' +
-        '<h2>' + S.esc(d.title) + '</h2>' +
-        '<p>Finish Day ' + (d.n - 1) + ' first. One thing at a time is the whole idea.</p>' +
-        '<div class="btn-row" style="justify-content:center"><a class="btn btn--primary" href="/member/start/phase?p=seven&l=d' + (d.n - 1) + '">Go to Day ' + (d.n - 1) + ' &rarr;</a></div></div>';
-    }
-    return '<div class="locked" style="--day:' + d.accent + '"><span class="chip">' + S.icon('lock') + '</span>' +
-      '<h2>' + S.esc(d.title) + '</h2>' +
-      '<p>Day ' + d.n + ' opens ' + S.UNLOCK_HOURS + ' hours after you finished Day ' + (d.n - 1) +
-      '. Seven days is the point — you cannot cram a week of honest records into one evening.</p>' +
-      '<div class="cd" id="lockcd"></div>' +
-      '<div class="btn-row" style="justify-content:center">' +
-      '<a class="btn btn--ghost" href="/member/start">Back to home</a></div></div>';
-  }
-
-  /* ── One module ───────────────────────────────────────────────── */
-  function moduleBlock(pt, i) {
-    var isDone = S.partDone(d.n, pt.id);
-    var isOpen = openMod === pt.id;
-    var m = pt.message;
-    var saved = S.answers(key(i));
-    var hasQ = (m.questions || []).length > 0;
-    var sent = !!saved._sent;
-    var written = !hasQ || Object.keys(saved).filter(function (k) { return k !== '_sent' && saved[k]; }).length > 0;
-
-    var h = '<div class="mod' + (isDone ? ' is-done' : '') + '" id="p' + i + '">' +
-      '<button class="mod__h" data-tog="' + pt.id + '">' +
-        '<span class="mod__n">' + (isDone ? S.icon('tick') : S.esc(pt.id)) + '</span>' +
-        '<span class="mod__t"><b>' + S.esc(pt.title) + '</b>' +
-        '<span>' + pt.mins + ' min &middot; 1 prompt' + (isDone ? ' &middot; done' : '') + '</span></span>' +
-        '<span class="mod__s">' + S.icon(isOpen ? 'tick' : 'play') + '</span></button>' +
-      '<div class="mod__body"' + (isOpen ? '' : ' hidden') + '>';
-
-    h += '<p class="mod__why">' + S.esc(pt.blurb) + '</p>';
-
-    h += '<ol class="steps">' + pt.steps.map(function (s) {
-      return '<li><b>' + S.esc(s.b) + '</b><span>' + S.esc(s.s) + '</span></li>';
-    }).join('') + '</ol>';
-
-    /* The prompt */
-    h += '<div class="msg' + (sent ? ' is-sent' : '') + '" style="margin-top:16px">' +
-      '<div class="msg__bar"><span class="msg__n">Prompt ' + S.esc(pt.id) + '</span>' +
-      '<span class="msg__mode">' + S.esc(m.mode) + '</span>' +
-      (m.label ? '<span class="msg__n">' + S.esc(m.label) + '</span>' : '') +
-      '<span class="sp"></span>' +
-      '<button class="btn btn--sm' + (sent ? '' : ' btn--primary') + '" data-copy="' + i + '">' +
-      (sent ? 'Copy again' : 'Copy') + '</button></div>';
-
-    if (hasQ) {
-      h += '<div class="qs">';
-      m.questions.forEach(function (q) {
-        var v = S.esc(saved[q.id] || '');
-        h += '<div class="field"><label for="q' + i + '_' + q.id + '">' + S.esc(q.label) + '</label>' +
-          (q.hint ? '<p class="hint">' + S.esc(q.hint) + '</p>' : '') +
-          (q.area
-            ? '<textarea class="input" id="q' + i + '_' + q.id + '" data-m="' + i + '" data-q="' + q.id + '" placeholder="' + S.esc(q.ph || '') + '">' + v + '</textarea>'
-            : '<input class="input" id="q' + i + '_' + q.id + '" data-m="' + i + '" data-q="' + q.id + '" value="' + v + '" placeholder="' + S.esc(q.ph || '') + '">') +
-          '</div>';
-      });
-      h += '<button class="btn btn--block" style="margin:4px 0 15px" data-write="' + i + '">' +
-        (written ? 'Update my prompt' : 'Write my prompt') + '</button></div>';
-    }
-
-    h += '<pre class="msg__body" id="t' + i + '"' + (written ? '' : ' style="display:none"') + '>' +
-      S.esc(written ? S.build(m, saved) : '') + '</pre>';
-    if (m.note) h += '<div class="msg__note">' + S.esc(m.note) + '</div>';
-    h += '<div class="msg__foot"><button class="btn btn--sm btn--ghost" data-sent="' + i + '">' +
-      (sent ? '&#10003; Sent' : 'Mark as sent') + '</button>' +
-      '<span style="color:var(--faint);font-size:13px">' +
-      (sent ? 'Done.' : 'Paste it into Base44 and send it as one message.') + '</span>' +
-      '<a class="btn btn--sm btn--ghost" style="margin-left:auto" href="https://app.base44.com" target="_blank" rel="noopener">Base44 &#8599;</a>' +
-      '</div></div>';
-
-    /* Checkpoints */
-    if (pt.check && pt.check.length) {
-      h += '<ul class="chk"><li class="chk__h" style="display:block">Before you move on</li>' +
-        pt.check.map(function (c) { return '<li>' + S.icon('tick') + '<span>' + S.esc(c) + '</span></li>'; }).join('') +
-        '</ul>';
-    }
-
-    h += '<div class="btn-row" style="margin-top:16px">' + (isDone
-      ? '<button class="btn btn--ghost" data-undo="' + pt.id + '">Mark as not done</button>'
-      : '<button class="btn btn--primary" data-mod="' + pt.id + '">Module done &rarr;</button>') + '</div>';
-
-    return h + '</div></div>';
-  }
-
-  /* ── A day ────────────────────────────────────────────────────── */
-  function dayLesson() {
-    if (!S.unlocked(d.n)) return lockedDay();
-
-    S.firstSeen(d.n);                                   // starts the minimum-time clock
-    var isDone = S.done(d.n);
-    var nDone = d.parts.filter(function (p) { return S.partDone(d.n, p.id); }).length;
-    var pct = Math.round(nDone / d.parts.length * 100);
-
-    var h = '<div class="lhero"><span class="lhero__eyebrow">' + S.esc(d.eyebrow) + ' &middot; ' + S.esc(d.theme) + '</span>' +
-      '<h2>' + S.esc(d.title) + '</h2>' +
-      '<p class="lede">' + S.esc(d.summary) + '</p>' +
-      '<div class="lhero__meta"><span class="pill pill--a">' + d.parts.length + ' modules</span>' +
-      '<span class="pill">~' + d.minutes + ' min</span>' +
-      '<span class="pill">' + S.esc(d.builds) + '</span>' +
-      (isDone ? '<span class="pill">Done</span>' : '') + '</div></div>';
-
-    if (isDone) {
-      h += '<div class="done-box"><h2>Day ' + d.n + ' is done.</h2><p class="lede">' +
-        (d.n < 7 ? 'Day ' + (d.n + 1) + ' opens ' + S.UNLOCK_HOURS + ' hours after you finished this one.'
-                 : 'That is the seven. Everything is unlocked.') + '</p>';
-      if (d.n < 7) {
-        var ms = S.openIn(d.n + 1);
-        h += (ms > 0 ? '<div class="cd" id="nextcd" style="max-width:320px;margin-top:16px"></div>'
-                     : '<div class="btn-row"><a class="btn btn--primary" href="/member/start/phase?p=seven&l=d' + (d.n + 1) + '">Day ' + (d.n + 1) + ' &rarr;</a></div>');
-      } else {
-        h += '<div class="btn-row"><a class="btn btn--primary" href="/member/start/bonus">See what opened &rarr;</a></div>';
-      }
-      h += '</div><p class="label" style="margin-top:28px">The modules, if you need them again</p>';
-    } else {
-      h += '<div class="card" style="margin-bottom:14px"><p style="color:var(--muted)">' + S.esc(d.why) + '</p></div>';
-      h += '<div class="cont" style="margin-top:0"><div><b>' + nDone + ' of ' + d.parts.length + ' modules done</b>' +
-        '<span>Work through them in order.</span>' +
-        '<div class="bar" style="max-width:260px"><i style="width:' + pct + '%"></i></div></div></div>';
-    }
-
-    h += '<div class="sec" style="margin-top:20px">' +
-      d.parts.map(moduleBlock).join('') + '</div>';
-
-    if (isDone) return h;
-
-    /* ── The day gate ── */
-    var allMods = S.allPartsDone(d.n);
-    h += '<hr class="rule"><div class="sec">';
-
-    if (!allMods) {
-      h += '<div class="gate"><div><b>Finish all ' + d.parts.length + ' modules</b>' +
-        '<span>' + (d.parts.length - nDone) + ' left before you can close the day.</span></div></div>';
-      return h + '</div>';
-    }
-
-    if (!S.canSubmit(d.n)) {
-      h += '<div class="gate" id="gate"><div><b>' + (d.submit ? 'Submit opens shortly' : 'Nearly there') + '</b>' +
-        '<span>Day ' + d.n + ' is meant to take about ' + d.minutes + ' minutes. Go and actually build it.</span></div>' +
-        '<span class="gate__t" id="gatet"></span></div>';
-    }
-
-    if (d.submit) {
-      h += '<h2 style="font-size:24px;margin-top:18px">Paste your app link</h2>' +
-        '<p style="color:var(--muted);margin:8px 0 16px;max-width:52ch">Publish it in Base44 and set it to private. That link is what opens Day 2.</p>' +
-        '<div class="field"><label for="u">Your Base44 app link</label>' +
-        '<input class="input" id="u" type="url" inputmode="url" spellcheck="false" placeholder="https://your-app.base44.app"></div>';
-    } else if (d.review) {
-      h += '<h2 style="font-size:24px;margin-top:18px">What changes next week?</h2>' +
-        '<p style="color:var(--muted);margin:8px 0 16px;max-width:52ch">One thing. Not five. It is the only output of the whole week that matters.</p>' +
-        '<div class="field"><textarea class="input" id="chg" placeholder="The one thing I am changing next week is..."></textarea></div>';
-    } else {
-      h += '<h2 style="font-size:24px;margin-top:18px">Close the day</h2>' +
-        '<p style="color:var(--muted);margin:8px 0 16px;max-width:52ch">Only close it once every prompt has actually been sent and the changes are live in your app.</p>';
-    }
-
-    h += '<p class="err" id="e"></p>' +
-      '<button class="btn btn--primary btn--block" id="finish"' + (S.canSubmit(d.n) ? '' : ' disabled') + '>' +
-      (d.submit ? 'Submit and finish Day 1' : d.review ? 'Finish the seven' : 'Mark Day ' + d.n + ' complete') + '</button>';
-
-    return h + '</div>';
-  }
-
-  /* ── Render ───────────────────────────────────────────────────── */
-  function render() {
-    clearTicks();
+  /* ── Phase 1: a single intro lesson, so render it directly. ── */
+  if (ph.id === 'start') {
+    var l = ph.lessons[0], isDone = !!S.Store.get('intro.' + l.id, false);
     page.innerHTML =
       '<a class="back" href="/member/start/modules">' + S.icon('back') + 'All modules</a>' +
-      '<div class="lesson-wrap" style="--day:' + accent + '">' + list() +
-      '<div class="lbody">' + (d ? dayLesson() : intro()) + '</div></div>';
-    wire();
-  }
+      '<div style="--day:' + ph.accent + '">' +
+      '<div class="lhero"><span class="lhero__eyebrow">Phase 1 &middot; ' + S.esc(ph.title) + '</span>' +
+      '<h2>' + S.esc(l.title) + '</h2>' +
+      '<p class="lede">What this is, how it works, and exactly where to begin.</p>' +
+      '<div class="lhero__meta"><span class="pill pill--a">' + l.mins + ' min</span>' +
+      '<span class="pill">1 lesson</span>' + (isDone ? '<span class="pill">Done</span>' : '') + '</div></div>' +
 
-  function face(el, ms) {
-    el.innerHTML = S.clockFace(ms).map(function (u) {
-      return '<div><b>' + u.v + '</b><span>' + u.l + '</span></div>';
-    }).join('');
-  }
+      '<div class="card" style="padding:0;overflow:hidden;margin-bottom:14px">' +
+      '<div style="aspect-ratio:16/9;display:grid;place-items:center;background:var(--bg-2)">' +
+      '<div style="text-align:center;padding:20px;color:var(--faint)">' + S.icon('play') +
+      '<p style="font-size:13px;margin-top:10px">Baby’s welcome video goes here.<br>The slot is wired — it needs the file.</p></div></div></div>' +
 
-  function wire() {
-    var mk = document.getElementById('mark');
+      '<div class="card"><span class="label">The short version</span>' +
+      '<p style="color:var(--muted);margin-bottom:13px">You are about to build one private app that runs the five areas you actually control: your body, your mind, your appearance, your character and your money.</p>' +
+      '<p style="color:var(--muted);margin-bottom:13px">Seven days, ' + P.totalPrompts() + ' prompts. Day one is the long one — about forty-five minutes across six modules, ending in a published app with your real numbers in it. Every day after that opens ' + S.UNLOCK_HOURS + ' hours later and takes twenty to thirty minutes.</p>' +
+      '<p style="color:var(--muted);margin-bottom:13px">Every prompt is written for you. You answer plain questions, the message assembles itself, you paste it into Base44 and send it. You never have to work out what to type.</p>' +
+      '<p style="color:var(--muted)">One rule worth knowing now: your app will have no forms and no edit buttons. Everything enters by you telling it. That is deliberate — the app is the scoreboard, the conversation is the game.</p></div>' +
+
+      '<div class="btn-row">' + (isDone
+        ? '<a class="btn btn--primary" href="/member/start/phase?p=seven">Go to The First Seven &rarr;</a>' +
+          '<button class="btn btn--ghost" id="un">Mark as not done</button>'
+        : '<button class="btn btn--primary" id="mk">Mark complete &amp; continue</button>') + '</div></div>';
+
+    var mk = document.getElementById('mk');
     if (mk) mk.addEventListener('click', function () {
-      S.Store.set('intro.' + cur.id, true); S.checkIn();
-      window.location.href = '/member/start/phase?p=seven&l=d1';
+      S.Store.set('intro.' + l.id, true); S.checkIn();
+      window.location.href = '/member/start/phase?p=seven';
     });
-    var un = document.getElementById('unmark');
-    if (un) un.addEventListener('click', function () { S.Store.set('intro.' + cur.id, false); render(); });
-    if (!d) return;
+    var un = document.getElementById('un');
+    if (un) un.addEventListener('click', function () { S.Store.set('intro.' + l.id, false); window.location.reload(); });
+    return;
+  }
 
-    /* Live: day-unlock countdown on a locked day. */
-    var lk = document.getElementById('lockcd');
-    if (lk) stopTicks.push(S.tick(function () {
+  /* ── Phase 3: the library lives on its own page. ── */
+  if (ph.id === 'library') { window.location.replace('/member/start/library'); return; }
+
+  /* ── Phase 2: the seven days, as a grid. ── */
+  var introDone = !!S.Store.get('intro.welcome', false);
+  var nDone = S.doneCount();
+
+  var html = '<a class="back" href="/member/start/modules">' + S.icon('back') + 'All modules</a>' +
+    '<div class="phead"><h1>' + S.esc(ph.title) + '</h1>' +
+    '<p class="sub">' + nDone + ' of 7 days done &middot; ' + P.totalPrompts() +
+    ' prompts &middot; one day opens every ' + S.UNLOCK_HOURS + ' hours</p></div>';
+
+  if (!introDone) {
+    html += '<div class="gate" style="margin:0 0 18px"><div><b>Watch the welcome first</b>' +
+      '<span>Phase 1 takes four minutes and explains how the week works.</span></div>' +
+      '<a class="btn btn--primary" style="margin-left:auto" href="/member/start/phase?p=start">Watch it &rarr;</a></div>';
+  }
+
+  html += '<div class="days">';
+  P.days.forEach(function (d) {
+    var isDone = S.done(d.n), open = S.unlocked(d.n);
+    var done = d.parts.filter(function (p) { return S.partDone(d.n, p.id); }).length;
+    var pct = Math.round(done / d.parts.length * 100);
+    var cls = isDone ? ' is-done' : (open ? '' : ' is-locked');
+    var wait = (!open && !isDone) ? S.openIn(d.n) : null;
+
+    var inner =
+      '<div class="dcard__top"><span class="dcard__n">' +
+        (isDone ? S.icon('tick') : open ? d.n : S.icon('lock')) + '</span>' +
+        '<span class="dcard__eyebrow">' + S.esc(d.eyebrow) + ' &middot; ' + S.esc(d.theme) + '</span></div>' +
+      '<h3>' + S.esc(d.title) + '</h3><p>' + S.esc(d.summary) + '</p>';
+
+    if (wait !== null && wait > 0) {
+      inner += '<div class="dcard__wait" data-wait="' + d.n + '">' + S.icon('lock') +
+        '<span>Unlocks in <span data-cd="' + d.n + '">—</span></span></div>';
+    } else if (wait === null && !isDone) {
+      inner += '<div class="dcard__wait">' + S.icon('lock') + '<span>Finish Day ' + (d.n - 1) + ' first</span></div>';
+    } else {
+      inner += '<div class="dcard__foot"><span>' + done + ' / ' + d.parts.length + ' modules &middot; ~' +
+        d.minutes + ' min</span><span class="pc">' + pct + '%</span></div>' +
+        '<div class="bar"><i style="width:' + pct + '%"></i></div>';
+    }
+
+    html += (open || isDone)
+      ? '<a class="dcard' + cls + '" style="--day:' + d.accent + '" href="/member/start/day?d=' + d.n + '">' + inner + '</a>'
+      : '<div class="dcard' + cls + '" style="--day:' + d.accent + '">' + inner + '</div>';
+  });
+  html += '</div>';
+
+  page.innerHTML = html;
+
+  /* Live countdowns on every locked day card. */
+  P.days.forEach(function (d) {
+    var el = page.querySelector('[data-cd="' + d.n + '"]');
+    if (!el) return;
+    S.tick(function () {
       var ms = S.openIn(d.n);
+      if (ms === null) return;
       if (ms <= 0) { window.location.reload(); return; }
-      face(lk, ms);
-    }));
-
-    /* Live: countdown to the next day on a finished day. */
-    var nx = document.getElementById('nextcd');
-    if (nx) stopTicks.push(S.tick(function () {
-      var ms = S.openIn(d.n + 1);
-      if (ms <= 0) { window.location.reload(); return; }
-      face(nx, ms);
-    }));
-
-    /* Live: the minimum-time gate on the finish button. */
-    var gt = document.getElementById('gatet');
-    if (gt) stopTicks.push(S.tick(function () {
-      var ms = S.submitIn(d.n);
-      gt.textContent = S.shortLeft(ms);
-      if (ms <= 0) {
-        var g = document.getElementById('gate'); if (g) g.remove();
-        var f = document.getElementById('finish'); if (f) f.removeAttribute('disabled');
-      }
-    }));
-
-    /* Module accordion. */
-    page.querySelectorAll('[data-tog]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        var id = b.getAttribute('data-tog');
-        openMod = (openMod === id) ? null : id;
-        render();
-        var el = document.querySelector('[data-tog="' + id + '"]');
-        if (el && openMod) el.scrollIntoView({ block: 'start', behavior: 'smooth' });
-      });
+      el.textContent = S.shortLeft(ms);
     });
-
-    page.querySelectorAll('[data-mod]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        var id = b.getAttribute('data-mod');
-        S.completePart(d.n, id);
-        var idx = d.parts.map(function (p) { return p.id; }).indexOf(id);
-        var next = d.parts[idx + 1];
-        openMod = next && !S.partDone(d.n, next.id) ? next.id : null;
-        render();
-        if (openMod) {
-          var el = document.querySelector('[data-tog="' + openMod + '"]');
-          if (el) el.scrollIntoView({ block: 'start', behavior: 'smooth' });
-        } else {
-          var f = document.getElementById('finish') || document.querySelector('.gate');
-          if (f) f.scrollIntoView({ block: 'center', behavior: 'smooth' });
-        }
-      });
-    });
-    page.querySelectorAll('[data-undo]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        S.uncompletePart(d.n, b.getAttribute('data-undo'));
-        openMod = b.getAttribute('data-undo'); render();
-      });
-    });
-
-    /* Prompt machinery. */
-    page.querySelectorAll('[data-q]').forEach(function (el) {
-      el.addEventListener('input', function () {
-        var i = parseInt(el.getAttribute('data-m'), 10);
-        var a = S.answers(key(i));
-        a[el.getAttribute('data-q')] = el.value;
-        S.saveAnswers(key(i), a);
-        var pre = document.getElementById('t' + i);
-        if (pre && pre.style.display !== 'none') pre.textContent = S.build(d.parts[i].message, a);
-      });
-    });
-    page.querySelectorAll('[data-write]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        var i = parseInt(b.getAttribute('data-write'), 10);
-        var pre = document.getElementById('t' + i);
-        pre.textContent = S.build(d.parts[i].message, S.answers(key(i)));
-        pre.style.display = ''; b.textContent = 'Update my prompt';
-      });
-    });
-    page.querySelectorAll('[data-copy]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        var i = parseInt(b.getAttribute('data-copy'), 10);
-        var pre = document.getElementById('t' + i);
-        if (pre.style.display === 'none') { pre.textContent = S.build(d.parts[i].message, S.answers(key(i))); pre.style.display = ''; }
-        S.copy(S.build(d.parts[i].message, S.answers(key(i))), 'Copied — paste it into Base44');
-      });
-    });
-    page.querySelectorAll('[data-sent]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        var i = parseInt(b.getAttribute('data-sent'), 10);
-        var a = S.answers(key(i)); a._sent = !a._sent;
-        S.saveAnswers(key(i), a);
-        openMod = d.parts[i].id; render();
-      });
-    });
-
-    var fin = document.getElementById('finish');
-    if (!fin) return;
-    fin.addEventListener('click', function () {
-      if (!S.canSubmit(d.n)) return;
-      var err = document.getElementById('e');
-      if (d.submit) {
-        var r = S.checkUrl(document.getElementById('u').value);
-        if (!r.ok) { err.textContent = r.msg; err.classList.add('on'); return; }
-        err.classList.remove('on'); S.saveApp(r.url); S.completeDay(d.n, { url: r.url });
-        if (r.msg) S.toast(r.msg);
-      } else if (d.review) {
-        var v = document.getElementById('chg').value.trim();
-        if (!v) { err.textContent = 'Write the one thing. It takes ten seconds and it is the point of the week.'; err.classList.add('on'); return; }
-        err.classList.remove('on'); S.completeDay(d.n, { change: v });
-      } else { S.completeDay(d.n, {}); }
-      window.location.href = '/member/start/done?d=' + d.n;
-    });
-  }
-
-  /* Open the first unfinished module by default. */
-  if (d && S.unlocked(d.n) && !S.done(d.n)) {
-    var first = d.parts.filter(function (p) { return !S.partDone(d.n, p.id); })[0];
-    openMod = first ? first.id : null;
-  }
-  render();
+  });
 })();
-</script>
-</body>
-</html>
+</script></body></html>

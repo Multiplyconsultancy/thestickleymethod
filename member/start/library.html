@@ -62,7 +62,7 @@
 
   list.forEach(function (b) {
     var p = window.SMS.pillar(b.pillar), a = TINT[b.pillar] || 'var(--gold)';
-    html += '<a class="lad" style="--a:' + a + '" href="/member/hq/build?id=' + b.id + '">' +
+    html += '<a class="lad" style="--a:' + a + '" href="/member/start/build?id=' + b.id + '">' +
       '<span class="chip" style="--a:' + a + '">' + S.icon('grid') + '</span>' +
       '<div><h3>' + S.esc(b.title) + '</h3><p>' + S.esc(p.short) + ' &middot; ~' + b.minutes +
       ' min &middot; ' + S.esc(b.short) + '</p></div></a>';

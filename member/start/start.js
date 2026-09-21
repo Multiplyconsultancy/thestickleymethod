@@ -33,7 +33,10 @@
 window.S = (function () {
   'use strict';
 
-  var NS = 'sms.start.v1.';
+  /* v2 resets every member to day zero. A path built out of locks and
+   timers cannot be judged from an account that has already finished it,
+   so the namespace bump is deliberate, not accidental. */
+var NS = 'sms.start.v2.';
   var WEEK = 7;
 
   var Store = {
@@ -402,10 +405,10 @@ window.S = (function () {
     { id:'modules', label:'Modules',       href:'/member/start/modules',       icon:'modules' },
     { id:'system',  label:'My System',     href:'/member/start/my-system',     icon:'system' },
     { id:'bonus',   label:'Bonus',         href:'/member/start/bonus',         icon:'bonus' },
-    { id:'comm',    label:'Community',     href:'/member/start/bonus',         icon:'community',   gated:true },
+    { id:'comm',    label:'Community',     href:'/member/start/community',     icon:'community',   gated:true },
     { id:'ann',     label:'Announcements', href:'/member/start/announcements', icon:'announce',    badge:3 },
     { id:'wins',    label:'Wins',          href:'/member/start/wins',          icon:'wins' },
-    { id:'board',   label:'Leaderboard',   href:'/member/start/bonus',         icon:'leaderboard', gated:true },
+    { id:'board',   label:'Leaderboard',   href:'/member/start/bonus',         icon:'leaderboard', gated:true, soon:true },
   ];
 
   function boot(current) {
@@ -416,11 +419,14 @@ window.S = (function () {
       '<div><b>Self-Mastery</b><span>The System</span></div></a><nav class="nav">';
     NAV.forEach(function (i) {
       var cur = i.id === current ? ' aria-current="page"' : '';
-      var tail = '';
-      if (i.gated && !open) tail = '<span class="nav__lock">' + icon('lock') + '</span>';
-      else if (i.badge)     tail = '<span class="nav__badge">' + i.badge + '</span>';
-      rail += '<a href="' + i.href + '"' + cur + '>' + icon(i.icon) +
-              '<span>' + esc(i.label) + '</span>' + tail + '</a>';
+      var locked = i.gated && !open;
+      var tail = locked ? '<span class="nav__lock">' + icon('lock') + '</span>'
+               : i.badge ? '<span class="nav__badge">' + i.badge + '</span>' : '';
+      /* A locked row is a span, not a link. Sending somebody to a door
+         that is shut is worse than showing them it is shut. */
+      rail += locked
+        ? '<span class="nav__off">' + icon(i.icon) + '<span>' + esc(i.label) + '</span>' + tail + '</span>'
+        : '<a href="' + i.href + '"' + cur + '>' + icon(i.icon) + '<span>' + esc(i.label) + '</span>' + tail + '</a>';
     });
     rail += '</nav><div class="rail__foot">' + doneCount() + ' of 7 days done</div>';
     var r = document.querySelector('.rail'); if (r) r.innerHTML = rail;
