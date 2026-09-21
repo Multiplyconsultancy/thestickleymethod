@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Builds | The Self-Mastery System</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/member/hq/hq.css">
+<style>
+/* ══════════════════════════════════════════════════════════════════════
+   MY BUILDS — the page that has to carry the retention claim.
+
+   The brief wants the strongest reason to stay to be "this now contains
+   my system", not "I have not finished the videos". That only holds if
+   this page visibly accumulates. So it is grouped by pillar, counts
+   itself, and dates every entry, and the create-your-own flow sits at
+   the bottom rather than on a separate page — the moment someone wants
+   a tool we do not stock is the moment they either extend the system or
+   leave it.
+══════════════════════════════════════════════════════════════════════ */
+.mb{display:flex;align-items:flex-start;gap:14px;padding:18px}
+.mb__main{flex:1;min-width:0}
+.mb h3{font-size:19px}
+.mb .u{color:var(--faint);font-size:13px;margin-top:4px;word-break:break-all}
+.mb .d{color:var(--faint);font-size:12.5px;margin-top:7px}
+.mb__acts{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
+.mb__acts button,.mb__acts a{
+  font-size:13px;padding:7px 12px;border-radius:8px;border:1px solid var(--line);
+  color:var(--muted);background:var(--surface-2);
+}
+.mb__acts .go{background:var(--cta);border-color:transparent;color:#03212A;font-weight:700}
+.mb__acts .rm:hover{color:var(--bad);border-color:var(--bad)}
+.pgroup{margin:30px 0 0}
+.pgroup>.label{display:flex;align-items:center;gap:9px}
+.pgroup>.label b{color:var(--muted)}
+#custom{scroll-margin-top:22px}
+.gen{border:1px solid var(--line);border-radius:var(--radius-lg);padding:clamp(20px,4vw,30px);background:var(--surface);margin-top:18px}
+</style>
+</head>
+<body>
+<div class="topbar"></div>
+<div class="shell">
+  <aside class="rail"></aside>
+  <main class="main"><div class="wrap wrap--wide" id="page"></div></main>
+</div>
+<nav class="tabbar"></nav>
+
+<script src="/member/hq/data/catalogue.js"></script>
+<script src="/member/hq/hq.js"></script>
+<script>
+(function () {
+  HQ.boot('mine');
+  var page = document.getElementById('page');
+
+  /* ── The custom prompt generator ───────────────────────────────────
+     Members are not expected to know how to write for an app builder,
+     and a blank prompt box is exactly where people stall. This wraps
+     whatever they describe in the same scaffolding every catalogue
+     prompt uses: one message, explicit storage, explicit layout, and a
+     WHAT NOT TO ADD block. That last section is what stops Base44
+     bolting on accounts, notifications and a settings page nobody
+     asked for.
+     ─────────────────────────────────────────────────────────────── */
+  function generate(name, purpose, tracks) {
+    return 'I am building a private app called ' + name + ', just for me, one user. ' +
+      'This message is the full specification. Treat every decision below as final and only ask me about genuine gaps.\n\n' +
+      'WHAT IT IS FOR\n' + purpose + '\n\n' +
+      'WHAT IT NEEDS TO KEEP TRACK OF\n' + tracks + '\n\n' +
+      'HOME SCREEN\n' +
+      'One screen I can read in about five seconds. The single most important number large at the top, ' +
+      'today’s state underneath it, and a 30 day grid showing one square per day so I can see my own consistency at a glance. ' +
+      'Big numbers, small quiet labels.\n\n' +
+      'HISTORY\n' +
+      'A second screen listing everything in reverse date order, so I can look back at what I actually did.\n\n' +
+      'STYLE\n' +
+      'Dark theme, near black background, high contrast, generous spacing, minimal. ' +
+      'Mobile first: it must work properly on a phone, and hold up on a laptop.\n\n' +
+      'WHAT NOT TO ADD\n' +
+      '- No accounts, sign ups, profiles or sharing. Just me.\n' +
+      '- No notifications, no badges, no points, no levels, no confetti.\n' +
+      '- No motivational messages and no advice. It keeps the record, I do the judging.\n' +
+      '- No extra pages, settings screens or features beyond this spec.\n\n' +
+      'Build it.';
+  }
+
+  function customBlock() {
+    return '<hr class="rule">' +
+      '<div class="sec" id="custom"><span class="label">Create your own</span>' +
+      '<h2 style="font-size:clamp(24px,3.4vw,30px)">Build something we don’t stock</h2>' +
+      '<p class="lede" style="color:var(--muted);margin-top:10px;max-width:56ch">Start with ours, then make the system yours. Describe what you need and we will write the prompt in the same shape as the rest — that scaffolding is most of what makes Base44 behave.</p>' +
+      '<div class="gen">' +
+        '<div class="field"><label for="cn">What is it called?</label>' +
+          '<input class="input" id="cn" maxlength="50" placeholder="Reading Tracker"></div>' +
+        '<div class="field"><label for="cp">Which pillar does it belong to?</label>' +
+          '<select class="input" id="cp">' + window.SMS.pillars.map(function (p) {
+            return '<option value="' + p.id + '">' + HQ.esc(p.name) + '</option>';
+          }).join('') + '</select></div>' +
+        '<div class="field"><label for="cw">What should it help you do?</label>' +
+          '<textarea class="input" id="cw" placeholder="Help me read every day instead of scrolling, and see how many pages I actually get through in a month."></textarea></div>' +
+        '<div class="field"><label for="ct">What does it need to keep track of?</label>' +
+          '<textarea class="input" id="ct" placeholder="The date, the book, pages read, and minutes spent."></textarea>' +
+          '<p class="hint">One thing per line. Be specific — vague input here is what produces a vague app.</p></div>' +
+        '<p class="err" id="ce"></p>' +
+        '<button class="btn btn--primary btn--block" id="gen">Write my prompt</button>' +
+        '<div id="out" style="display:none;margin-top:22px">' +
+          '<div class="prompt"><div class="prompt__bar"><span class="t">Send as one message</span>' +
+            '<span class="sp"></span><button class="btn btn--sm btn--primary" id="gcopy">Copy</button></div>' +
+            '<pre class="prompt__body" id="gtext"></pre></div>' +
+          '<div class="btn-row"><a class="btn" href="https://app.base44.com" target="_blank" rel="noopener">Open Base44 &#8599;</a></div>' +
+          '<div class="field" style="margin-top:20px"><label for="cu">Paste the link when it is built</label>' +
+            '<input class="input" id="cu" type="url" inputmode="url" spellcheck="false" placeholder="https://your-app.base44.app"></div>' +
+          '<p class="err" id="ue"></p>' +
+          '<button class="btn btn--primary btn--block" id="csave">Save to my system</button>' +
+        '</div>' +
+      '</div></div>';
+  }
+
+  function render() {
+    var mine = HQ.myBuilds();
+
+    var body = '<div class="head"><span class="label">My Builds</span>' +
+      '<h1>' + (mine.length ? 'Your system' : 'Your system starts here') + '</h1>' +
+      '<p class="lede">' + (mine.length
+        ? mine.length + ' tool' + (mine.length > 1 ? 's' : '') + ' you built, connected to your HQ. Open any of them from here or from their pillar.'
+        : 'Nothing connected yet. Every tool you build in Base44 gets saved here and stays in your HQ.') +
+      '</p></div>';
+
+    if (!mine.length) {
+      var f = window.SMS.firstBuild();
+      body += '<div class="hero"><span class="label">Start here</span><h2>' + HQ.esc(f.title) + '</h2>' +
+        '<p class="lede">' + HQ.esc(f.short) + '</p>' +
+        '<div class="hero__meta"><span><b>~' + f.minutes + '</b> min</span><span><b>' + HQ.esc(f.difficulty) + '</b></span></div>' +
+        '<div class="btn-row"><a class="btn btn--primary" href="/member/hq/build?id=' + f.id + '">Build it &rarr;</a>' +
+        '<a class="btn btn--ghost" href="/member/hq/builds">Browse all ' + window.SMS.builds.length + '</a></div></div>';
+    } else {
+      window.SMS.pillars.forEach(function (p) {
+        var list = HQ.buildsIn(p.id);
+        if (!list.length) return;
+        body += '<div class="pgroup"><span class="label"><b>' + HQ.esc(p.name) + '</b> · ' + list.length + '</span>' +
+          '<div class="grid grid--2">' + list.map(function (b) {
+            var tpl = b.templateId ? window.SMS.build(b.templateId) : null;
+            var when = '';
+            try { when = new Date(b.addedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }); } catch (e) {}
+            return '<div class="card mb"><div class="mb__main">' +
+              '<h3>' + HQ.esc(b.title) + '</h3>' +
+              (tpl ? '<p style="color:var(--dim);font-size:14px;margin-top:5px">' + HQ.esc(tpl.short) + '</p>' : '') +
+              '<p class="u">' + HQ.esc(b.url) + '</p>' +
+              '<p class="d">Added ' + HQ.esc(when) + (b.templateId ? '' : ' · your own build') + '</p>' +
+              '<div class="mb__acts">' +
+                '<a class="go" href="' + HQ.esc(b.url) + '" target="_blank" rel="noopener">Open &#8599;</a>' +
+                '<button data-act="edit" data-k="' + b.key + '">Edit link</button>' +
+                '<button data-act="rename" data-k="' + b.key + '">Rename</button>' +
+                (tpl ? '<a href="/member/hq/build?id=' + tpl.id + '">Prompt</a>' : '') +
+                '<button class="rm" data-act="remove" data-k="' + b.key + '">Remove</button>' +
+              '</div></div></div>';
+          }).join('') + '</div></div>';
+      });
+      body += '<div class="btn-row" style="margin-top:28px">' +
+        '<a class="btn" href="/member/hq/builds">Add another from the library</a></div>';
+    }
+
+    page.innerHTML = body + customBlock();
+    wire();
+  }
+
+  function wire() {
+    page.querySelectorAll('[data-act]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var k = btn.getAttribute('data-k');
+        var b = HQ.myBuilds().filter(function (x) { return x.key === k; })[0];
+        if (!b) return;
+        var act = btn.getAttribute('data-act');
+
+        if (act === 'edit') {
+          var next = window.prompt('Update the link', b.url);
+          if (next === null) return;
+          var r = HQ.checkUrl(next);
+          if (!r.ok) { HQ.toast(r.msg); return; }
+          HQ.updateBuild(k, { url: r.url }); HQ.toast('Link updated'); render();
+        }
+        if (act === 'rename') {
+          var nm = window.prompt('Rename this build', b.title);
+          if (nm === null) return;
+          nm = nm.trim(); if (!nm) return;
+          HQ.updateBuild(k, { title: nm }); HQ.toast('Renamed'); render();
+        }
+        if (act === 'remove') {
+          if (!window.confirm('Remove ' + b.title + ' from your system?\n\nThis only removes the link from your HQ. Your app in Base44 is not touched.')) return;
+          HQ.removeBuild(k); HQ.toast('Removed'); render();
+        }
+      });
+    });
+
+    var gen = document.getElementById('gen');
+    gen.addEventListener('click', function () {
+      var n = document.getElementById('cn').value.trim();
+      var w = document.getElementById('cw').value.trim();
+      var t = document.getElementById('ct').value.trim();
+      var e = document.getElementById('ce');
+      if (!n || !w || !t) {
+        e.textContent = 'Fill in the name, what it should help you do, and what it tracks.';
+        e.classList.add('on'); return;
+      }
+      e.classList.remove('on');
+      var text = generate(n, w, t.split(/\n+/).map(function (l) {
+        l = l.trim().replace(/^[-*•]\s*/, '');
+        return l ? '- ' + l : '';
+      }).filter(Boolean).join('\n'));
+      document.getElementById('gtext').textContent = text;
+      document.getElementById('out').style.display = 'block';
+      document.getElementById('out').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    document.getElementById('gcopy').addEventListener('click', function () {
+      HQ.copy(document.getElementById('gtext').textContent, 'Prompt copied — paste it into Base44');
+    });
+
+    document.getElementById('csave').addEventListener('click', function () {
+      var ue = document.getElementById('ue');
+      var r = HQ.checkUrl(document.getElementById('cu').value);
+      if (!r.ok) { ue.textContent = r.msg; ue.classList.add('on'); return; }
+      ue.classList.remove('on');
+      HQ.addBuild({
+        templateId: null,
+        title: document.getElementById('cn').value.trim() || 'My build',
+        pillar: document.getElementById('cp').value,
+        url: r.url,
+      });
+      HQ.toast(r.msg || 'Saved to your system');
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    if (window.location.hash === '#custom') {
+      document.getElementById('custom').scrollIntoView();
+    }
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

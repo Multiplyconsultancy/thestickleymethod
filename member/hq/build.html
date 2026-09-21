@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Build | The Self-Mastery System</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/member/hq/hq.css">
+<style>
+/* ══════════════════════════════════════════════════════════════════════
+   BUILD DETAIL — the page the whole product depends on.
+
+   Everything before this is navigation. This is where a member either
+   copies a prompt and builds something, or does not. So the two actions
+   that matter (Copy prompt, Open Base44) are the only primary-weight
+   things on the page, and the save form is visible from the start
+   rather than revealed later: someone returning from Base44 with a URL
+   in their clipboard should not have to hunt for where it goes.
+══════════════════════════════════════════════════════════════════════ */
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--dim);font-size:14px;margin:0 0 20px}
+.back:hover{color:var(--text)}
+.back .ic{width:15px;height:15px}
+.bhead{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.bhead h1{font-size:clamp(32px,5.5vw,46px);width:100%;margin-bottom:4px}
+.why-box{border-left:2px solid var(--line);padding:2px 0 2px 18px;margin:22px 0 0;color:var(--muted);white-space:pre-line}
+.done{
+  border:1px solid rgba(61,220,151,.28);background:rgba(61,220,151,.06);
+  border-radius:var(--radius-lg);padding:clamp(22px,4vw,34px);
+}
+.done h2{font-size:clamp(26px,4vw,36px)}
+.done .lede{color:var(--muted);margin-top:11px;max-width:48ch}
+.done__url{
+  display:block;margin-top:18px;padding:13px 15px;border-radius:11px;background:var(--surface);
+  border:1px solid var(--line);color:var(--accent);font-size:14.5px;word-break:break-all;
+}
+.linkrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.danger{color:var(--bad)}
+</style>
+</head>
+<body>
+<div class="topbar"></div>
+<div class="shell">
+  <aside class="rail"></aside>
+  <main class="main"><div class="wrap" id="page"></div></main>
+</div>
+<nav class="tabbar"></nav>
+
+<script src="/member/hq/data/catalogue.js"></script>
+<script src="/member/hq/hq.js"></script>
+<script>
+(function () {
+  var b = window.SMS.build(HQ.qs('id'));
+  var page = document.getElementById('page');
+
+  if (!b) {
+    HQ.boot('builds');
+    page.innerHTML = '<a class="back" href="/member/hq/builds">' + HQ.icon('back') + 'Build Library</a>' +
+      '<div class="head"><h1>Build not found</h1>' +
+      '<p class="lede">That build is not in the library. It may have been renamed.</p></div>' +
+      '<a class="btn btn--primary" href="/member/hq/builds">Browse the library</a>';
+    return;
+  }
+
+  var pillar = window.SMS.pillar(b.pillar);
+  HQ.boot('pillar', b.pillar);
+  document.title = b.title + ' | The Self-Mastery System';
+
+  function render() {
+    var saved = HQ.builtFrom(b.id);
+
+    /* ── Already built: lead with their app, not with the prompt. ── */
+    var savedBlock = saved ? (
+      '<div class="done">' +
+        '<h2>' + (b.first ? 'Your first system is live.' : b.title + ' is live.') + '</h2>' +
+        '<p class="lede">' + (b.first
+          ? 'You don’t need to change your entire life today. Start by keeping the promises you make to yourself.'
+          : 'It is saved to ' + HQ.esc(pillar.name) + ' and on your home screen.') + '</p>' +
+        '<a class="done__url" href="' + HQ.esc(saved.url) + '" target="_blank" rel="noopener">' + HQ.esc(saved.url) + '</a>' +
+        '<div class="linkrow">' +
+          '<a class="btn btn--primary" href="' + HQ.esc(saved.url) + '" target="_blank" rel="noopener">Open my build</a>' +
+          '<button class="btn btn--ghost" id="edit">Edit link</button>' +
+          '<button class="btn btn--ghost" id="rebuild">Rebuild</button>' +
+          '<button class="btn btn--ghost danger" id="remove">Remove</button>' +
+        '</div>' +
+      '</div>' +
+      (b.after ? '<p class="why-box" style="margin-top:26px">' + HQ.esc(b.after) + '</p>' : '')
+    ) : '';
+
+    /* ── Not built yet: the workflow. ── */
+    var workflow = saved ? '' : (
+      '<div class="sec">' +
+        '<span class="label">How this works</span>' +
+        '<ol class="steps">' +
+          '<li><b>Copy the prompt</b><span>It is written for you. Do not edit it before sending.</span></li>' +
+          '<li><b>Open Base44 and start a new app</b><span>Sign in with the same email you use here.</span></li>' +
+          '<li><b>Paste it as one message and send</b><span>Let it build. It takes a few minutes. Do not resend or refresh.</span></li>' +
+          '<li><b>Publish, and set it to private</b><span>Top right of the builder. This holds your real numbers.</span></li>' +
+          '<li><b>Come back and paste the link below</b><span>That saves it into your system.</span></li>' +
+        '</ol>' +
+      '</div>' +
+
+      '<div class="sec">' +
+        '<span class="label">Your prompt</span>' +
+        '<div class="prompt">' +
+          '<div class="prompt__bar"><span class="t">Send as one message</span><span class="sp"></span>' +
+            '<button class="btn btn--sm btn--primary" id="copy">Copy prompt</button></div>' +
+          '<pre class="prompt__body" id="ptext">' + HQ.esc(b.prompt) + '</pre>' +
+        '</div>' +
+        '<div class="btn-row">' +
+          '<button class="btn btn--primary" id="copy2">Copy prompt</button>' +
+          '<a class="btn" href="https://app.base44.com" target="_blank" rel="noopener">Open Base44 &#8599;</a>' +
+        '</div>' +
+        '<p class="hint" style="margin-top:14px">Your app will not look exactly like anyone else’s. Same prompt, different builds — that is normal. Working is what matters. If one thing is broken, tell the builder to fix that one thing.</p>' +
+      '</div>' +
+
+      '<hr class="rule">' +
+
+      '<div class="sec">' +
+        '<span class="label">Step 5 — save it to your system</span>' +
+        '<h2 style="font-size:26px;margin-bottom:6px">Paste your app link</h2>' +
+        '<p style="color:var(--muted);margin-bottom:20px">Publish it in Base44 first, then paste the published link here.</p>' +
+        '<div class="field"><label for="u">Your Base44 app link</label>' +
+          '<input class="input" id="u" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://your-app.base44.app"></div>' +
+        '<div class="field"><label for="n">Name it</label>' +
+          '<input class="input" id="n" type="text" maxlength="60" value="' + HQ.esc(b.title) + '"></div>' +
+        '<p class="err" id="e"></p>' +
+        '<button class="btn btn--primary btn--block" id="save">Save to my system</button>' +
+      '</div>'
+    );
+
+    page.innerHTML =
+      '<a class="back" href="/member/hq/pillar?p=' + b.pillar + '">' + HQ.icon('back') + HQ.esc(pillar.name) + '</a>' +
+      '<div class="bhead">' +
+        '<h1>' + HQ.esc(b.title) + '</h1>' +
+        '<span class="tag tag--pillar">' + HQ.esc(pillar.short) + '</span>' +
+        (b.first ? '<span class="tag tag--first">Start here</span>' : '') +
+        (saved ? '<span class="tag tag--built">In your system</span>' : '') +
+        '<span class="tag">' + HQ.esc(b.difficulty) + '</span>' +
+        '<span class="tag">~' + b.minutes + ' min</span>' +
+      '</div>' +
+      '<p class="lede" style="color:var(--muted);font-size:18px;max-width:60ch">' + HQ.esc(b.short) + '</p>' +
+      '<div class="why-box"><b style="color:var(--text)">What it fixes.</b> ' + HQ.esc(b.problem) + '</div>' +
+      (b.long ? '<div class="why-box" style="margin-top:14px">' + HQ.esc(b.long) + '</div>' : '') +
+      savedBlock + workflow;
+
+    wire(saved);
+  }
+
+  function wire(saved) {
+    function onCopy() { HQ.copy(b.prompt, 'Prompt copied — paste it into Base44'); }
+    ['copy', 'copy2'].forEach(function (id) {
+      var el = document.getElementById(id); if (el) el.addEventListener('click', onCopy);
+    });
+
+    var saveBtn = document.getElementById('save');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', function () {
+        var err = document.getElementById('e');
+        var res = HQ.checkUrl(document.getElementById('u').value);
+        if (!res.ok) { err.textContent = res.msg; err.classList.add('on'); return; }
+        err.classList.remove('on');
+        HQ.addBuild({
+          templateId: b.id,
+          title: (document.getElementById('n').value || '').trim() || b.title,
+          pillar: b.pillar,
+          url: res.url,
+        });
+        if (res.msg) HQ.toast(res.msg);
+        render();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      /* Enter in either field saves, so a pasted URL is one keystroke from done. */
+      ['u', 'n'].forEach(function (id) {
+        document.getElementById(id).addEventListener('keydown', function (ev) {
+          if (ev.key === 'Enter') { ev.preventDefault(); saveBtn.click(); }
+        });
+      });
+    }
+
+    var edit = document.getElementById('edit');
+    if (edit) edit.addEventListener('click', function () {
+      var next = window.prompt('Update the link to your app', saved.url);
+      if (next === null) return;
+      var res = HQ.checkUrl(next);
+      if (!res.ok) { HQ.toast(res.msg); return; }
+      HQ.updateBuild(saved.key, { url: res.url });
+      HQ.toast('Link updated');
+      render();
+    });
+
+    var rebuild = document.getElementById('rebuild');
+    if (rebuild) rebuild.addEventListener('click', function () {
+      /* Rebuild does not delete their app. It reopens the prompt so they
+         can build a fresh one, and only replaces the saved link if they
+         actually save a new one. */
+      HQ.removeBuild(saved.key);
+      HQ.toast('Prompt reopened — your old app is untouched');
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    var remove = document.getElementById('remove');
+    if (remove) remove.addEventListener('click', function () {
+      if (!window.confirm('Remove ' + b.title + ' from your system?\n\nThis only removes the link from your HQ. Your app in Base44 is not touched.')) return;
+      HQ.removeBuild(saved.key);
+      HQ.toast('Removed from your system');
+      render();
+    });
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

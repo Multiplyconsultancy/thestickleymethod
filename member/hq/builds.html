@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Build Library | The Self-Mastery System</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/member/hq/hq.css">
+</head>
+<body>
+<div class="topbar"></div>
+<div class="shell">
+  <aside class="rail"></aside>
+  <main class="main"><div class="wrap wrap--wide">
+    <div class="head"><span class="label">Build Library</span><h1>Tools you can add to your system</h1>
+    <p class="lede">Every one is a prewritten prompt. You copy it, Base44 builds it, and it lives in your HQ. Start with ours, then make the system yours.</p></div>
+    <div class="filters" id="filters"></div>
+    <div class="grid grid--3" id="list"></div>
+    <div class="sec"><a class="card quiet-row" href="/member/hq/my-builds#custom" style="display:flex">
+      <div><h3>Create your own</h3><p>Nothing here fits? Describe what you need and we will write the prompt.</p></div>
+      <span class="arrow" style="margin-left:auto;color:var(--faint);font-size:18px">&rsaquo;</span></a></div>
+  </div></main>
+</div>
+<nav class="tabbar"></nav>
+<script src="/member/hq/data/catalogue.js"></script>
+<script src="/member/hq/hq.js"></script>
+<script>
+(function () {
+  HQ.boot('builds');
+  /* One build card, used by the library and by every pillar page. */
+  function buildCard(b) {
+    var p = window.SMS.pillar(b.pillar);
+    var saved = HQ.builtFrom(b.id);
+    return '<a class="card build-card" href="/member/hq/build?id=' + b.id + '">' +
+      '<h3>' + HQ.esc(b.title) + '</h3>' +
+      '<p class="why">' + HQ.esc(b.problem) + '</p>' +
+      '<div class="foot">' +
+        '<span class="tag tag--pillar">' + HQ.esc(p.short) + '</span>' +
+        (saved ? '<span class="tag tag--built">Built</span>' : '') +
+        (b.first ? '<span class="tag tag--first">Start here</span>' : '') +
+        '<span class="meta" style="margin-left:auto"><span>' + HQ.esc(b.difficulty) + '</span><span>~' + b.minutes + ' min</span></span>' +
+      '</div></a>';
+  }
+  var active = HQ.qs('p') || 'all';
+
+  function draw() {
+    var list = active === 'all' ? window.SMS.builds : window.SMS.byPillar(active);
+    /* Starter builds first inside any view: the brief is explicit that an
+       overwhelmed beginner must always be able to see one obvious door. */
+    list = list.slice().sort(function (a, b) { return (b.first ? 2 : b.featured ? 1 : 0) - (a.first ? 2 : a.featured ? 1 : 0); });
+    document.getElementById('list').innerHTML = list.map(buildCard).join('');
+
+    document.getElementById('filters').innerHTML =
+      '<button data-p="all" aria-pressed="' + (active === 'all') + '">Everything <span style="opacity:.6">' + window.SMS.builds.length + '</span></button>' +
+      window.SMS.pillars.map(function (p) {
+        return '<button data-p="' + p.id + '" aria-pressed="' + (active === p.id) + '">' + HQ.esc(p.short) +
+               ' <span style="opacity:.6">' + window.SMS.byPillar(p.id).length + '</span></button>';
+      }).join('');
+
+    document.querySelectorAll('#filters button').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        active = btn.getAttribute('data-p');
+        try {
+          var u = new URL(window.location.href);
+          if (active === 'all') u.searchParams.delete('p'); else u.searchParams.set('p', active);
+          window.history.replaceState({}, '', u);
+        } catch (e) {}
+        draw();
+      });
+    });
+  }
+  draw();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mastery | The Self-Mastery System</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/member/hq/hq.css">
+</head>
+<body>
+<div class="topbar"></div>
+<div class="shell">
+  <aside class="rail"></aside>
+  <main class="main"><div class="wrap" id="page"></div></main>
+</div>
+<nav class="tabbar"></nav>
+<script src="/member/hq/data/catalogue.js"></script>
+<script src="/member/hq/hq.js"></script>
+<script>
+(function () {
+  HQ.boot('mastery');
+  document.getElementById('page').innerHTML =
+    '<div class="head"><span class="label">Mastery</span><h1>The five pillars</h1>' +
+    '<p class="lede">You do not need to master all five. Pick what matters to you now, build the systems that make it easier to execute, and come back for the rest when you are ready.</p></div>' +
+    '<div class="grid grid--2">' + window.SMS.pillars.map(function (p) {
+      var mine = HQ.buildsIn(p.id).length;
+      var all  = window.SMS.byPillar(p.id).length;
+      return '<a class="card pillar-card" href="/member/hq/pillar?p=' + p.id + '">' +
+        '<h3>' + HQ.esc(p.name) + '</h3><p>' + HQ.esc(p.tagline) + '</p>' +
+        '<div class="foot">' + (mine ? '<b>' + mine + ' in your HQ</b> · ' : '') + all + ' builds</div></a>';
+    }).join('') + '</div>';
+})();
+</script>
+</body>
+</html>

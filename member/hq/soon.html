@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Coming next | The Self-Mastery System</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/member/hq/hq.css">
+</head>
+<body>
+<div class="topbar"></div>
+<div class="shell">
+  <aside class="rail"></aside>
+  <main class="main"><div class="wrap" id="page"></div></main>
+</div>
+<nav class="tabbar"></nav>
+<script src="/member/hq/data/catalogue.js"></script>
+<script src="/member/hq/hq.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   NOT-YET-BUILT SURFACES.
+
+   These are specified, routed and in the navigation, but not built. A
+   real page saying so beats a dead link, and beats quietly hiding them:
+   the shape of the product stays legible, and nobody files a bug asking
+   where the journal went. Each one says what it will do, in the words
+   of the spec, so it reads as a roadmap rather than an error.
+══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var PAGES = {
+    today: { nav: 'today', title: 'Today', label: 'Daily control centre',
+      lede: 'Your promises for today, grouped by pillar, with one honest line at the bottom: how many you kept.',
+      list: ['Commitments you define yourself, attached to any pillar', 'A single count — 5 of 6 promises kept', 'Streaks that reset honestly, and ask what happened', 'Built for one hand, on a phone, twice a day'] },
+    journal: { nav: 'journal', title: 'Journal', label: 'Four guided modes',
+      lede: 'Somewhere private to write, with structure when you want it and a blank page when you do not.',
+      list: ['Daily Reflection — what you did well, where you fell short, what you are avoiding', 'Weekly Review — what moved your life forward, what wasted your time', 'Stoic Reflection — what was in your control, and how you responded', 'Free Journal — a blank page, and every past entry browsable'] },
+    audit: { nav: 'audit', title: 'Self Audit', label: 'Your own honest scores',
+      lede: 'You rate yourself across nine areas. Nothing is calculated for you and there is no single Self-Mastery Score.',
+      list: ['Body, Appearance, Discipline, Emotional Control, Character', 'Confidence, Social Life, Financial Progress, Purpose', 'Why you gave those scores, in your own words', 'Every past audit kept, so you can see your own perception move'] },
+    protocol: { nav: 'protocol', title: "Baby's Protocol", label: 'What Baby currently does',
+      lede: 'His current training, diet, work structure, content workflow and routines. This is what he does now — take what serves you, ignore what does not.',
+      list: ['Current training and diet', 'Work structure and content workflow', 'Morning and evening routines', 'Each one with a Build this into my system link'] },
+    library: { nav: 'library', title: 'Library', label: 'Everything included',
+      lede: 'The full resource library, searchable, filterable by pillar and by programme.',
+      list: ['The Stickley Method — full programme', 'Nightfall — full programme', 'IMPACT — full programme', 'Lessons surfaced inside the pillar they belong to, not buried in a folder'] },
+    settings: { nav: 'settings', title: 'Settings', label: 'Your account',
+      lede: 'Your details, your focus areas, and what happens to your data.',
+      list: ['Change the focus areas you picked at signup', 'Rename or reorder your builds', 'Export everything you have written', 'Your membership and billing'] },
+  };
+
+  var key = HQ.qs('p') || 'today';
+  var pg = PAGES[key] || PAGES.today;
+  HQ.boot(pg.nav);
+  document.title = pg.title + ' | The Self-Mastery System';
+
+  document.getElementById('page').innerHTML =
+    '<div class="head"><span class="label">' + HQ.esc(pg.label) + '</span>' +
+    '<h1>' + HQ.esc(pg.title) + '</h1>' +
+    '<p class="lede">' + HQ.esc(pg.lede) + '</p></div>' +
+    '<div class="card" style="padding:26px"><span class="label">What it will do</span>' +
+      '<ul style="margin:0;padding-left:19px;color:var(--muted);line-height:1.85">' +
+      pg.list.map(function (i) { return '<li>' + HQ.esc(i) + '</li>'; }).join('') + '</ul></div>' +
+    '<div class="empty" style="margin-top:20px"><p>Not built yet. In the meantime, the fastest way to make progress is to build a tool you will actually open tomorrow.</p>' +
+    '<a class="btn btn--primary" href="/member/hq/builds">Build Library</a></div>';
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your HQ | The Self-Mastery System</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/member/hq/hq.css">
+<style>
+/* ══════════════════════════════════════════════════════════════════════
+   HOME.
+
+   The brief asks for two feelings that pull against each other: "I got
+   a lot for this" and "I know exactly what to do next". Abundance and
+   clarity fail together when everything on the page is the same weight,
+   which is how most member areas end up as a wall of equal cards.
+
+   So the hierarchy is enforced rather than suggested: exactly ONE
+   full-width primary action at the top, the five pillars beneath it at
+   equal weight to each other and lower weight than the hero, and
+   everything else as quiet rows below the fold. The abundance is real
+   and visible; it is just never competing with the next step.
+
+   Three states, in order of how often they will be seen over a
+   lifetime: not yet onboarded, onboarded with nothing built, and
+   returning with a system.
+══════════════════════════════════════════════════════════════════════ */
+.greet{font-size:clamp(30px,5.5vw,46px)}
+.greet+.lede{color:var(--muted);font-size:17.5px;margin-top:10px;max-width:58ch}
+.quiet-row{display:flex;align-items:center;gap:14px;padding:15px 18px}
+.quiet-row h3{font-size:18px}
+.quiet-row p{color:var(--faint);font-size:13.5px;margin-top:2px}
+.quiet-row .arrow{margin-left:auto;color:var(--faint);flex:0 0 auto;font-size:18px}
+a.quiet-row:hover .arrow{color:var(--accent)}
+.soon-pill{font:600 10px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--faint);
+  border:1px solid var(--line);padding:4px 7px;border-radius:5px;margin-left:auto;flex:0 0 auto}
+.mine-row{display:flex;align-items:center;gap:13px;padding:14px 17px}
+.mine-row b{font-size:16.5px}
+.mine-row .tag{flex:0 0 auto}
+.mine-row .open{margin-left:auto;color:var(--accent);font-size:14px;font-weight:600;flex:0 0 auto}
+</style>
+</head>
+<body>
+<div class="topbar"></div>
+<div class="shell">
+  <aside class="rail"></aside>
+  <main class="main"><div class="wrap" id="page"></div></main>
+</div>
+<nav class="tabbar"></nav>
+
+<script src="/member/hq/data/catalogue.js"></script>
+<script src="/member/hq/hq.js"></script>
+<script>
+(function () {
+  HQ.boot('home');
+  var page  = document.getElementById('page');
+  var prof  = HQ.profile();
+  var mine  = HQ.myBuilds();
+  var first = window.SMS.firstBuild();
+
+  /* Recommendation lives in hq.js so onboarding and this page can
+     never drift apart again. See HQ.recommend. */
+  function recommended() { return HQ.recommend(prof); }
+
+  function pillarCards() {
+    return '<div class="grid grid--2">' + window.SMS.pillars.map(function (p) {
+      var n = HQ.buildsIn(p.id).length;
+      return '<a class="card pillar-card" href="/member/hq/pillar?p=' + p.id + '">' +
+        '<h3>' + HQ.esc(p.name) + '</h3><p>' + HQ.esc(p.blurb) + '</p>' +
+        '<div class="foot">' + (n
+          ? '<b>' + n + ' system' + (n > 1 ? 's' : '') + '</b> in your HQ'
+          : window.SMS.byPillar(p.id).length + ' builds available') +
+        '</div></a>';
+    }).join('') + '</div>';
+  }
+
+  function moreRows() {
+    var rows = [
+      { h: 'My Builds', p: mine.length ? mine.length + ' connected' : 'Nothing connected yet', href: '/member/hq/my-builds' },
+      { h: 'Build Library', p: window.SMS.builds.length + ' tools you can add to your system', href: '/member/hq/builds' },
+      { h: 'Today', p: 'Your daily promises, in one place', soon: true },
+      { h: 'Journal', p: 'Daily reflection, weekly review, stoic reflection', soon: true },
+      { h: 'Self Audit', p: 'Rate yourself honestly, and watch it move', soon: true },
+      { h: "Baby's Protocol", p: 'What Baby currently does. Take what serves you.', soon: true },
+    ];
+    return '<div class="grid">' + rows.map(function (r) {
+      if (r.soon) {
+        return '<div class="card quiet-row"><div><h3>' + HQ.esc(r.h) + '</h3><p>' + HQ.esc(r.p) +
+               '</p></div><span class="soon-pill">Soon</span></div>';
+      }
+      return '<a class="card quiet-row" href="' + r.href + '"><div><h3>' + HQ.esc(r.h) +
+             '</h3><p>' + HQ.esc(r.p) + '</p></div><span class="arrow">&rsaquo;</span></a>';
+    }).join('') + '</div>';
+  }
+
+  function programmes() {
+    return '<div class="grid">' + window.SMS.programmes.map(function (pr) {
+      var where = pr.pillars.map(function (id) { return window.SMS.pillar(id).short; }).join(' & ');
+      return '<div class="card prog"><div><h3>' + HQ.esc(pr.name) + '</h3>' +
+             '<p>Surfaced in ' + HQ.esc(where) + '</p></div>' +
+             '<span class="tag tag--built">Included</span></div>';
+    }).join('') + '</div>';
+  }
+
+  /* ── State 1: brand new. One door, nothing else competing. ────── */
+  if (!HQ.isOnboarded()) {
+    page.innerHTML =
+      '<div class="head"><span class="label">The Self-Mastery System</span>' +
+      '<h1 class="greet">You know you’re capable of more.</h1>' +
+      '<p class="lede">This is where you build the system that gets you there. Everything below is already yours. Two questions first, then you build your first tool — about ten minutes.</p></div>' +
+
+      '<div class="hero"><span class="label">Start here</span>' +
+        '<h2>Set up your HQ</h2>' +
+        '<p class="lede">Two quick questions so the system points you at the right thing, then straight into your first build.</p>' +
+        '<div class="hero__meta"><span><b>2</b> questions</span><span><b>~10</b> minutes to your first system</span></div>' +
+        '<div class="btn-row"><a class="btn btn--primary" href="/member/hq/onboarding">Start &rarr;</a>' +
+        '<a class="btn btn--ghost" href="/member/hq/builds">Just show me everything</a></div>' +
+      '</div>' +
+
+      '<div class="sec"><div class="sec__head"><h2>The five pillars</h2></div>' + pillarCards() + '</div>' +
+      '<div class="sec"><div class="sec__head"><h2>Included programmes</h2></div>' + programmes() + '</div>' +
+      '<hr class="rule">' +
+      '<div class="sec"><div class="sec__head"><h2>Also in your HQ</h2></div>' + moreRows() + '</div>';
+    return;
+  }
+
+  /* ── State 2: onboarded, nothing built. Still exactly one door. ── */
+  if (!mine.length) {
+    var r = recommended();
+    page.innerHTML =
+      '<div class="head"><span class="label">Your HQ</span>' +
+      '<h1 class="greet">' + (prof.name ? 'Right, ' + HQ.esc(prof.name) + '.' : 'Your HQ is set up.') + '</h1>' +
+      '<p class="lede">Now build the first thing. You don’t need to change your entire life today — start by keeping the promises you make to yourself.</p></div>' +
+
+      '<div class="hero"><span class="label">Build your first system</span>' +
+        '<h2>' + HQ.esc(r.title) + '</h2>' +
+        '<p class="lede">' + HQ.esc(r.short) + '</p>' +
+        '<div class="hero__meta"><span><b>~' + r.minutes + '</b> minutes</span><span><b>' + HQ.esc(r.difficulty) + '</b></span><span>Copy, paste, done</span></div>' +
+        '<div class="btn-row"><a class="btn btn--primary" href="/member/hq/build?id=' + r.id + '">Start your first build &rarr;</a>' +
+        '<a class="btn btn--ghost" href="/member/hq/builds">Pick a different one</a></div>' +
+      '</div>' +
+
+      '<div class="sec"><div class="sec__head"><h2>Your pillars</h2>' +
+        '<a href="/member/hq/mastery">All five &rsaquo;</a></div>' + pillarCards() + '</div>' +
+      '<div class="sec"><div class="sec__head"><h2>Included programmes</h2></div>' + programmes() + '</div>' +
+      '<hr class="rule">' +
+      '<div class="sec"><div class="sec__head"><h2>Also in your HQ</h2></div>' + moreRows() + '</div>';
+    return;
+  }
+
+  /* ── State 3: returning. Their system first, one suggestion last. ─ */
+  var recent = mine.slice().sort(function (a, b) {
+    return String(b.addedAt).localeCompare(String(a.addedAt));
+  }).slice(0, 4);
+
+  var notBuilt = window.SMS.builds.filter(function (bd) { return !HQ.builtFrom(bd.id); });
+  var next = notBuilt.filter(function (bd) { return (prof.focus || []).indexOf(bd.pillar) > -1; })[0] || notBuilt[0];
+
+  page.innerHTML =
+    '<div class="head"><span class="label">' + new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' }) + '</span>' +
+    '<h1 class="greet">Welcome back' + (prof.name ? ', ' + HQ.esc(prof.name) : '') + '.</h1></div>' +
+
+    '<div class="sec" style="margin-top:0"><div class="sec__head"><h2>My systems</h2>' +
+      '<a href="/member/hq/my-builds">All ' + mine.length + ' &rsaquo;</a></div>' +
+      '<div class="grid">' + recent.map(function (bd) {
+        var p = window.SMS.pillar(bd.pillar);
+        return '<a class="card mine-row" href="' + HQ.esc(bd.url) + '" target="_blank" rel="noopener">' +
+          '<b>' + HQ.esc(bd.title) + '</b>' +
+          '<span class="tag tag--pillar">' + HQ.esc(p ? p.short : '') + '</span>' +
+          '<span class="open">Open &#8599;</span></a>';
+      }).join('') + '</div></div>' +
+
+    (next ? '<div class="sec"><div class="sec__head"><h2>Recommended next</h2></div>' +
+      '<a class="card hero" style="display:block" href="/member/hq/build?id=' + next.id + '">' +
+        '<span class="label">' + HQ.esc(window.SMS.pillar(next.pillar).name) + '</span>' +
+        '<h2>' + HQ.esc(next.title) + '</h2>' +
+        '<p class="lede">' + HQ.esc(next.problem) + '</p>' +
+        '<div class="hero__meta"><span><b>~' + next.minutes + '</b> min</span><span><b>' + HQ.esc(next.difficulty) + '</b></span></div>' +
+      '</a></div>' : '') +
+
+    '<div class="sec"><div class="sec__head"><h2>Your pillars</h2>' +
+      '<a href="/member/hq/mastery">All five &rsaquo;</a></div>' + pillarCards() + '</div>' +
+    '<hr class="rule">' +
+    '<div class="sec"><div class="sec__head"><h2>Also in your HQ</h2></div>' + moreRows() + '</div>';
+})();
+</script>
+</body>
+</html>

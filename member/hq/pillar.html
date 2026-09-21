@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mastery | The Self-Mastery System</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/member/hq/hq.css">
+</head>
+<body>
+<div class="topbar"></div>
+<div class="shell">
+  <aside class="rail"></aside>
+  <main class="main"><div class="wrap wrap--wide" id="page"></div></main>
+</div>
+<nav class="tabbar"></nav>
+<script src="/member/hq/data/catalogue.js"></script>
+<script src="/member/hq/hq.js"></script>
+<script>
+(function () {
+  /* One build card, used by the library and by every pillar page. */
+  function buildCard(b) {
+    var p = window.SMS.pillar(b.pillar);
+    var saved = HQ.builtFrom(b.id);
+    return '<a class="card build-card" href="/member/hq/build?id=' + b.id + '">' +
+      '<h3>' + HQ.esc(b.title) + '</h3>' +
+      '<p class="why">' + HQ.esc(b.problem) + '</p>' +
+      '<div class="foot">' +
+        '<span class="tag tag--pillar">' + HQ.esc(p.short) + '</span>' +
+        (saved ? '<span class="tag tag--built">Built</span>' : '') +
+        (b.first ? '<span class="tag tag--first">Start here</span>' : '') +
+        '<span class="meta" style="margin-left:auto"><span>' + HQ.esc(b.difficulty) + '</span><span>~' + b.minutes + ' min</span></span>' +
+      '</div></a>';
+  }
+  var p = window.SMS.pillar(HQ.qs('p'));
+  var page = document.getElementById('page');
+
+  if (!p) {
+    HQ.boot('mastery');
+    page.innerHTML = '<div class="head"><h1>Pillar not found</h1></div>' +
+      '<a class="btn btn--primary" href="/member/hq/mastery">See all five</a>';
+    return;
+  }
+
+  HQ.boot('pillar', p.id);
+  document.title = p.name + ' | The Self-Mastery System';
+
+  var mine    = HQ.buildsIn(p.id);
+  var all     = window.SMS.byPillar(p.id);
+  var starter = window.SMS.build(p.starter);
+  var progs   = window.SMS.programmes.filter(function (pr) { return pr.pillars.indexOf(p.id) > -1; });
+  var rest    = all.filter(function (b) { return b.id !== p.starter && !HQ.builtFrom(b.id); });
+
+  /* My Systems, Suggested start, Recommended, Learn — the same four in
+     the same order on every pillar, so the second pillar a member opens
+     needs no reading. */
+  page.innerHTML =
+    '<div class="head"><span class="label">Mastery</span><h1>' + HQ.esc(p.name) + '</h1>' +
+    '<p class="lede">' + HQ.esc(p.tagline) + '</p></div>' +
+
+    '<div class="sec" style="margin-top:0"><div class="sec__head"><h2>My systems</h2>' +
+      (mine.length ? '<a href="/member/hq/my-builds">All mine &rsaquo;</a>' : '') + '</div>' +
+      (mine.length
+        ? '<div class="grid grid--2">' + mine.map(function (b) {
+            return '<a class="card mine-row" style="display:flex;align-items:center;gap:13px" href="' + HQ.esc(b.url) + '" target="_blank" rel="noopener">' +
+              '<b style="font-size:16.5px">' + HQ.esc(b.title) + '</b>' +
+              '<span style="margin-left:auto;color:var(--accent);font-size:14px;font-weight:600">Open &#8599;</span></a>';
+          }).join('') + '</div>'
+        : '<div class="empty"><p>You haven’t added a ' + HQ.esc(p.name) + ' system yet.</p>' +
+          '<a class="btn btn--primary" href="/member/hq/build?id=' + starter.id + '">Start with ' + HQ.esc(starter.title) + '</a></div>') +
+    '</div>' +
+
+    (!HQ.builtFrom(starter.id) && mine.length
+      ? '<div class="sec"><div class="sec__head"><h2>Suggested starting point</h2></div>' +
+        '<a class="card hero" style="display:block" href="/member/hq/build?id=' + starter.id + '">' +
+          '<span class="label">Start with</span><h2>' + HQ.esc(starter.title) + '</h2>' +
+          '<p class="lede">' + HQ.esc(starter.problem) + '</p>' +
+          '<div class="hero__meta"><span><b>~' + starter.minutes + '</b> min</span><span><b>' + HQ.esc(starter.difficulty) + '</b></span></div></a></div>'
+      : '') +
+
+    (rest.length
+      ? '<div class="sec"><div class="sec__head"><h2>Recommended builds</h2>' +
+        '<a href="/member/hq/builds?p=' + p.id + '">All ' + all.length + ' &rsaquo;</a></div>' +
+        '<div class="grid grid--3">' + rest.slice(0, 6).map(buildCard).join('') + '</div></div>'
+      : '') +
+
+    '<hr class="rule">' +
+    '<div class="sec"><div class="sec__head"><h2>Learn</h2></div>' +
+      (progs.length
+        ? '<div class="grid">' + progs.map(function (pr) {
+            return '<div class="card prog"><div><h3>' + HQ.esc(pr.name) + '</h3>' +
+              '<p>' + HQ.esc(pr.note) + ' Lessons for this pillar are being surfaced here.</p></div>' +
+              '<span class="tag tag--built">Included</span></div>';
+          }).join('') + '</div>'
+        : '<div class="empty"><p>Lessons for this pillar are on the way.</p></div>') +
+    '</div>';
+})();
+</script>
+</body>
+</html>
