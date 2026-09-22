@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/member/start/start.css">
+<link rel="stylesheet" href="/start.css">
 <style>
 /* The one page in the member area that renders without a session, so it
    carries its own centred layout rather than the app shell. */
@@ -49,7 +49,7 @@
   recently and it will not let you in, message support and we will clear the old ones.</p>
 </div></div>
 
-<script src="/member/start/start.js"></script>
+<script src="/start.js"></script>
 <script>
 (function () {
   var em = document.getElementById('em'), go = document.getElementById('go'), err = document.getElementById('e');
@@ -60,8 +60,8 @@
       /* Only ever bounce to a path inside the member area. An open
          redirect on a login page is how phishing links get their
          credibility. */
-      return (n && n.indexOf('/member/start') === 0) ? n : '/member/start';
-    } catch (e) { return '/member/start'; }
+      return (n && n.indexOf('/') === 0) ? n : '/';
+    } catch (e) { return '/'; }
   }
 
   function fail(msg) {

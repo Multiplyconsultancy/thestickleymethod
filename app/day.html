@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/member/start/start.css">
+<link rel="stylesheet" href="/start.css">
 </head>
 <body>
 <div class="topbar"></div>
@@ -21,8 +21,8 @@
 </div>
 <nav class="tabbar"></nav>
 
-<script src="/member/start/data/path.js"></script>
-<script src="/member/start/start.js"></script>
+<script src="/data/path.js"></script>
+<script src="/start.js"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════
    A DAY.
@@ -47,7 +47,7 @@
   var d = P.day(n);
   var page = document.getElementById('page');
 
-  if (!d) { window.location.replace('/member/start/phase?p=seven'); return; }
+  if (!d) { window.location.replace('/phase?p=seven'); return; }
   S.boot('modules');
   document.title = 'Day ' + n + ' · ' + d.title + ' | The Self-Mastery System';
 
@@ -63,16 +63,16 @@
   /* ── Locked ─────────────────────────────────────────────────────── */
   if (!S.unlocked(n)) {
     var ms = S.openIn(n);
-    page.innerHTML = '<a class="back" href="/member/start/phase?p=seven">' + S.icon('back') + 'The First Seven</a>' +
+    page.innerHTML = '<a class="back" href="/phase?p=seven">' + S.icon('back') + 'The First Seven</a>' +
       '<div class="locked" style="--day:' + d.accent + '"><span class="chip">' + S.icon('lock') + '</span>' +
       '<h2>' + S.esc(d.title) + '</h2>' +
       (ms === null
         ? '<p>Finish Day ' + (n - 1) + ' first. One thing at a time is the whole idea.</p>' +
-          '<div class="btn-row" style="justify-content:center"><a class="btn btn--primary" href="/member/start/day?d=' + (n - 1) + '">Go to Day ' + (n - 1) + ' &rarr;</a></div>'
+          '<div class="btn-row" style="justify-content:center"><a class="btn btn--primary" href="/day?d=' + (n - 1) + '">Go to Day ' + (n - 1) + ' &rarr;</a></div>'
         : '<p>Day ' + n + ' opens ' + S.UNLOCK_HOURS + ' hours after you finished Day ' + (n - 1) +
           '. Seven days is the point — a week of honest records cannot be crammed into one evening.</p>' +
           '<div class="cd" id="lk"></div>' +
-          '<div class="btn-row" style="justify-content:center"><a class="btn btn--ghost" href="/member/start/phase?p=seven">Back to the seven</a></div>') +
+          '<div class="btn-row" style="justify-content:center"><a class="btn btn--ghost" href="/phase?p=seven">Back to the seven</a></div>') +
       '</div>';
     var lk = document.getElementById('lk');
     if (lk) S.tick(function () {
@@ -99,7 +99,7 @@
     d.parts.forEach(function (p) {
       var isDone = S.partDone(n, p.id), isCur = p.id === cur.id;
       out += '<a class="mrow' + (isDone ? ' is-done' : '') + (isCur ? ' is-cur' : '') + '" ' +
-        'href="/member/start/day?d=' + n + '&m=' + p.id + '">' +
+        'href="/day?d=' + n + '&m=' + p.id + '">' +
         '<span class="mrow__n">' + (isDone ? S.icon('tick') : S.esc(p.id)) + '</span>' +
         '<span class="mrow__t"><b>' + S.esc(p.title) + '</b><span>' + p.mins + ' min &middot; 1 prompt</span></span></a>';
     });
@@ -178,7 +178,7 @@
     var next = d.parts[idx + 1];
     h += '<div class="btn-row">' + (isDone
       ? '<button class="btn btn--ghost" id="undo">Mark as not done</button>' +
-        (next ? '<a class="btn btn--primary" href="/member/start/day?d=' + n + '&m=' + next.id + '">Next module &rarr;</a>' : '')
+        (next ? '<a class="btn btn--primary" href="/day?d=' + n + '&m=' + next.id + '">Next module &rarr;</a>' : '')
       : '<button class="btn btn--primary" id="moddone">Module done' + (next ? ' &rarr; ' + S.esc(next.id) : '') + '</button>') +
       '</div>';
 
@@ -194,8 +194,8 @@
                                  : 'That is the seven. Everything is unlocked.') + '</p>' +
         (nx ? (S.openIn(n + 1) > 0
                 ? '<div class="cd" id="nx" style="max-width:320px;margin-top:16px"></div>'
-                : '<div class="btn-row"><a class="btn btn--primary" href="/member/start/day?d=' + (n + 1) + '">Day ' + (n + 1) + ' &rarr;</a></div>')
-            : '<div class="btn-row"><a class="btn btn--primary" href="/member/start/bonus">See what opened &rarr;</a></div>') +
+                : '<div class="btn-row"><a class="btn btn--primary" href="/day?d=' + (n + 1) + '">Day ' + (n + 1) + ' &rarr;</a></div>')
+            : '<div class="btn-row"><a class="btn btn--primary" href="/bonus">See what opened &rarr;</a></div>') +
         '</div>';
     }
 
@@ -240,7 +240,7 @@
     var pct = Math.round(nDone / d.parts.length * 100);
 
     page.innerHTML =
-      '<a class="back" href="/member/start/phase?p=seven">' + S.icon('back') + 'The First Seven</a>' +
+      '<a class="back" href="/phase?p=seven">' + S.icon('back') + 'The First Seven</a>' +
       '<div class="phead" style="margin-bottom:18px"><h1>' + S.esc(d.eyebrow) + ' &middot; ' + S.esc(d.title) + '</h1>' +
       '<p class="sub">' + S.esc(d.builds) + ' &middot; ' + nDone + ' of ' + d.parts.length + ' modules done</p>' +
       '<div class="bar" style="--a:' + d.accent + ';max-width:320px;margin-top:11px"><i style="width:' + pct + '%"></i></div></div>' +
@@ -285,7 +285,7 @@
     if (md) md.addEventListener('click', function () {
       S.completePart(n, cur.id);
       var next = d.parts[idx + 1];
-      if (next && !S.partDone(n, next.id)) { window.location.href = '/member/start/day?d=' + n + '&m=' + next.id; }
+      if (next && !S.partDone(n, next.id)) { window.location.href = '/day?d=' + n + '&m=' + next.id; }
       else { render(); var el = document.getElementById('close'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
     });
 
@@ -327,7 +327,7 @@
         if (!v) { err.textContent = 'Write the one thing. It takes ten seconds and it is the point of the week.'; err.classList.add('on'); return; }
         err.classList.remove('on'); S.completeDay(n, { change: v });
       } else { S.completeDay(n, {}); }
-      window.location.href = '/member/start/done?d=' + n;
+      window.location.href = '/done?d=' + n;
     });
   }
 

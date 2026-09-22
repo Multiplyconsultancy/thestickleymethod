@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/member/start/start.css">
+<link rel="stylesheet" href="/start.css">
 </head>
 <body>
 <div class="topbar"></div>
@@ -20,8 +20,8 @@
   <main class="main"><div class="wrap" id="page"></div></main>
 </div>
 <nav class="tabbar"></nav>
-<script src="/member/start/data/path.js"></script>
-<script src="/member/start/start.js"></script>
+<script src="/data/path.js"></script>
+<script src="/start.js"></script>
 <script>
 (function () {
   S.boot('bonus');
@@ -47,7 +47,7 @@
 
   html += '<div class="cont"><div><b>' + (left ? left + ' day' + (left > 1 ? 's' : '') + ' left' : 'Everything is open') + '</b>' +
     '<span>' + (left ? 'Then all four unlock at once.' : 'Nothing left to earn here.') + '</span></div>' +
-    '<a class="btn btn--primary" href="' + (open ? '/member/start/library' : '/member/start/phase?p=seven') + '">' +
+    '<a class="btn btn--primary" href="' + (open ? '/library' : '/phase?p=seven') + '">' +
     (open ? 'Open the Library' : 'Continue the seven') + ' &rarr;</a></div>';
 
   document.getElementById('page').innerHTML = html;

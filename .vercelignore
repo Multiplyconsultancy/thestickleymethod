@@ -3,3 +3,7 @@
 # Vercel project (Root Directory = baby-ai), so its source must not be uploaded
 # as static files here.
 baby-ai/
+
+# The member platform is a separate Vercel project (Root Directory =
+# app), so its source must not be uploaded as static files here.
+app/

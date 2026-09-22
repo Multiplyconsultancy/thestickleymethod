@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/member/start/start.css">
+<link rel="stylesheet" href="/start.css">
 </head>
 <body>
 <div class="topbar"></div>
@@ -20,28 +20,27 @@
   <main class="main"><div class="wrap" id="page"></div></main>
 </div>
 <nav class="tabbar"></nav>
-<script src="/member/hq/data/catalogue.js"></script>
-<script src="/member/start/data/path.js"></script>
-<script src="/member/start/start.js"></script>
+<script src="/data/catalogue.js"></script>
+<script src="/data/path.js"></script>
+<script src="/start.js"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════
    A LIBRARY BUILD.
 
-   The library used to hand people off to /member/hq, which is the old
-   interface, so a member finished a beautiful seven-day path and then
-   fell through a trapdoor into a different product. This is the same
-   content rendered in this design, and nothing links out any more.
+   A library build, rendered in this app's own design. Nothing links out
+   to another product: a member who finishes the seven-day path stays
+   inside the same interface when they open the library.
 ══════════════════════════════════════════════════════════════════════ */
 (function () {
   S.boot('modules');
   var page = document.getElementById('page');
   var b = window.SMS.build(S.qs('id'));
 
-  if (!S.ladderOpen()) { window.location.replace('/member/start/library'); return; }
+  if (!S.ladderOpen()) { window.location.replace('/library'); return; }
   if (!b) {
-    page.innerHTML = '<a class="back" href="/member/start/library">' + S.icon('back') + 'The Library</a>' +
+    page.innerHTML = '<a class="back" href="/library">' + S.icon('back') + 'The Library</a>' +
       '<div class="phead"><h1>Build not found</h1><p class="sub">It may have been renamed.</p></div>' +
-      '<a class="btn btn--primary" href="/member/start/library">Back to the Library</a>';
+      '<a class="btn btn--primary" href="/library">Back to the Library</a>';
     return;
   }
 
@@ -51,7 +50,7 @@
   document.title = b.title + ' | The Self-Mastery System';
 
   function render() {
-    var h = '<a class="back" href="/member/start/library">' + S.icon('back') + 'The Library</a>' +
+    var h = '<a class="back" href="/library">' + S.icon('back') + 'The Library</a>' +
       '<div style="--day:' + a + '">' +
       '<div class="lhero"><span class="lhero__eyebrow">' + S.esc(p.name) + '</span>' +
       '<h2>' + S.esc(b.title) + '</h2><p class="lede">' + S.esc(b.short) + '</p>' +

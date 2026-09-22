@@ -575,21 +575,21 @@ var NS = 'sms.start.v2.';
      The first build had eleven and that is precisely why it felt like
      a menu instead of a path. */
   var NAV = [
-    { id:'home',    label:'Home',          href:'/member/start',               icon:'home' },
-    { id:'modules', label:'Modules',       href:'/member/start/modules',       icon:'modules' },
-    { id:'system',  label:'My System',     href:'/member/start/my-system',     icon:'system' },
-    { id:'bonus',   label:'Bonus',         href:'/member/start/bonus',         icon:'bonus' },
-    { id:'comm',    label:'Community',     href:'/member/start/community',     icon:'community',   gated:true },
-    { id:'ann',     label:'Announcements', href:'/member/start/announcements', icon:'announce',    badge:3 },
-    { id:'wins',    label:'Wins',          href:'/member/start/wins',          icon:'wins' },
-    { id:'board',   label:'Leaderboard',   href:'/member/start/bonus',         icon:'leaderboard', gated:true, soon:true },
+    { id:'home',    label:'Home',          href:'/',               icon:'home' },
+    { id:'modules', label:'Modules',       href:'/modules',       icon:'modules' },
+    { id:'system',  label:'My System',     href:'/my-system',     icon:'system' },
+    { id:'bonus',   label:'Bonus',         href:'/bonus',         icon:'bonus' },
+    { id:'comm',    label:'Community',     href:'/community',     icon:'community',   gated:true },
+    { id:'ann',     label:'Announcements', href:'/announcements', icon:'announce',    badge:3 },
+    { id:'wins',    label:'Wins',          href:'/wins',          icon:'wins' },
+    { id:'board',   label:'Leaderboard',   href:'/bonus',         icon:'leaderboard', gated:true, soon:true },
   ];
 
   function boot(current) {
     var open = ladderOpen();
     var logo = '<span class="mark__logo">SM</span>';
 
-    var rail = '<a class="mark" href="/member/start">' + logo +
+    var rail = '<a class="mark" href="/">' + logo +
       '<div><b>Self-Mastery</b><span>The System</span></div></a><nav class="nav">';
     NAV.forEach(function (i) {
       var cur = i.id === current ? ' aria-current="page"' : '';

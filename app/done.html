@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/member/start/start.css">
+<link rel="stylesheet" href="/start.css">
 </head>
 <body>
 <div class="topbar"></div>
@@ -20,8 +20,8 @@
   <main class="main"><div class="wrap wrap--narrow" id="page"></div></main>
 </div>
 <nav class="tabbar"></nav>
-<script src="/member/start/data/path.js"></script>
-<script src="/member/start/start.js"></script>
+<script src="/data/path.js"></script>
+<script src="/start.js"></script>
 <script>
 (function () {
   S.boot('modules');
@@ -43,8 +43,8 @@
           '<h3 style="font-size:28px">' + S.activeDays() + '</h3><p>Active days</p></div>' +
         '<div class="pcard" style="--day:#3FA5B8"><div class="pcard__top"><span class="chip">' + S.icon('chat') + '</span></div>' +
           '<h3 style="font-size:28px">' + P.totalPrompts() + '</h3><p>Prompts sent</p></div></div>' +
-      '<div class="btn-row"><a class="btn btn--primary" href="/member/start/bonus">See what opened &rarr;</a>' +
-      '<a class="btn btn--ghost" href="/member/start/library">The Library</a></div>');
+      '<div class="btn-row"><a class="btn btn--primary" href="/bonus">See what opened &rarr;</a>' +
+      '<a class="btn btn--ghost" href="/library">The Library</a></div>');
     return;
   }
 
@@ -71,7 +71,7 @@
     if (!t || !g) return;
     if (ms <= 0) {
       g.innerHTML = '<div><b>Day ' + (n + 1) + ' is open</b><span>' + S.esc(next.summary) + '</span></div>' +
-        '<a class="btn btn--primary" style="margin-left:auto" href="/member/start/phase?p=seven&l=d' + (n + 1) + '">Start &rarr;</a>';
+        '<a class="btn btn--primary" style="margin-left:auto" href="/phase?p=seven&l=d' + (n + 1) + '">Start &rarr;</a>';
       return;
     }
     t.textContent = S.shortLeft(ms);

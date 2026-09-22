@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/member/start/start.css">
+<link rel="stylesheet" href="/start.css">
 </head>
 <body>
 <div class="topbar"></div>
@@ -20,8 +20,8 @@
   <main class="main"><div class="wrap" id="page"></div></main>
 </div>
 <nav class="tabbar"></nav>
-<script src="/member/start/data/path.js"></script>
-<script src="/member/start/start.js"></script>
+<script src="/data/path.js"></script>
+<script src="/start.js"></script>
 <script>
 (function () {
   S.boot('modules');
@@ -34,7 +34,7 @@
     }).length;
     var tot = p.lessons.length;
     var pct = tot ? Math.round(done / tot * 100) : (open ? 100 : 0);
-    var href = p.id === 'library' ? '/member/start/library' : '/member/start/phase?p=' + p.id;
+    var href = p.id === 'library' ? '/library' : '/phase?p=' + p.id;
     var sub = tot ? done + ' / ' + tot + ' lessons' : '24 builds';
     if (p.id === 'seven') sub += ' &middot; ' + window.PATH.totalPrompts() + ' prompts';
     var inner =

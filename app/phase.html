@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/member/start/start.css">
+<link rel="stylesheet" href="/start.css">
 </head>
 <body>
 <div class="topbar"></div>
@@ -20,8 +20,8 @@
   <main class="main"><div class="wrap" id="page"></div></main>
 </div>
 <nav class="tabbar"></nav>
-<script src="/member/start/data/path.js"></script>
-<script src="/member/start/start.js"></script>
+<script src="/data/path.js"></script>
+<script src="/start.js"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════
    A PHASE.
@@ -44,7 +44,7 @@
   if (ph.id === 'start') {
     var l = ph.lessons[0], isDone = !!S.Store.get('intro.' + l.id, false);
     page.innerHTML =
-      '<a class="back" href="/member/start/modules">' + S.icon('back') + 'All modules</a>' +
+      '<a class="back" href="/modules">' + S.icon('back') + 'All modules</a>' +
       '<div style="--day:' + ph.accent + '">' +
       '<div class="lhero"><span class="lhero__eyebrow">Phase 1 &middot; ' + S.esc(ph.title) + '</span>' +
       '<h2>' + S.esc(l.title) + '</h2>' +
@@ -64,14 +64,14 @@
       '<p style="color:var(--muted)">One rule worth knowing now: your app will have no forms and no edit buttons. Everything enters by you telling it. That is deliberate — the app is the scoreboard, the conversation is the game.</p></div>' +
 
       '<div class="btn-row">' + (isDone
-        ? '<a class="btn btn--primary" href="/member/start/phase?p=seven">Go to The First Seven &rarr;</a>' +
+        ? '<a class="btn btn--primary" href="/phase?p=seven">Go to The First Seven &rarr;</a>' +
           '<button class="btn btn--ghost" id="un">Mark as not done</button>'
         : '<button class="btn btn--primary" id="mk">Mark complete &amp; continue</button>') + '</div></div>';
 
     var mk = document.getElementById('mk');
     if (mk) mk.addEventListener('click', function () {
       S.Store.set('intro.' + l.id, true); S.checkIn();
-      window.location.href = '/member/start/phase?p=seven';
+      window.location.href = '/phase?p=seven';
     });
     var un = document.getElementById('un');
     if (un) un.addEventListener('click', function () { S.Store.set('intro.' + l.id, false); window.location.reload(); });
@@ -79,13 +79,13 @@
   }
 
   /* ── Phase 3: the library lives on its own page. ── */
-  if (ph.id === 'library') { window.location.replace('/member/start/library'); return; }
+  if (ph.id === 'library') { window.location.replace('/library'); return; }
 
   /* ── Phase 2: the seven days, as a grid. ── */
   var introDone = !!S.Store.get('intro.welcome', false);
   var nDone = S.doneCount();
 
-  var html = '<a class="back" href="/member/start/modules">' + S.icon('back') + 'All modules</a>' +
+  var html = '<a class="back" href="/modules">' + S.icon('back') + 'All modules</a>' +
     '<div class="phead"><h1>' + S.esc(ph.title) + '</h1>' +
     '<p class="sub">' + nDone + ' of 7 days done &middot; ' + P.totalPrompts() +
     ' prompts &middot; one day opens every ' + S.UNLOCK_HOURS + ' hours</p></div>';
@@ -93,7 +93,7 @@
   if (!introDone) {
     html += '<div class="gate" style="margin:0 0 18px"><div><b>Watch the welcome first</b>' +
       '<span>Phase 1 takes four minutes and explains how the week works.</span></div>' +
-      '<a class="btn btn--primary" style="margin-left:auto" href="/member/start/phase?p=start">Watch it &rarr;</a></div>';
+      '<a class="btn btn--primary" style="margin-left:auto" href="/phase?p=start">Watch it &rarr;</a></div>';
   }
 
   html += '<div class="days">';
@@ -122,7 +122,7 @@
     }
 
     html += (open || isDone)
-      ? '<a class="dcard' + cls + '" style="--day:' + d.accent + '" href="/member/start/day?d=' + d.n + '">' + inner + '</a>'
+      ? '<a class="dcard' + cls + '" style="--day:' + d.accent + '" href="/day?d=' + d.n + '">' + inner + '</a>'
       : '<div class="dcard' + cls + '" style="--day:' + d.accent + '">' + inner + '</div>';
   });
   html += '</div>';

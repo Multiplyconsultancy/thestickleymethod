@@ -49,7 +49,7 @@ module.exports = async function handler(req, res) {
   if (!authorised(req)) return res.status(401).json({ ok: false, error: 'unauthorised' });
 
   if (!kv.configured())     return res.status(500).json({ ok: false, error: 'KV not configured' });
-  if (!session.configured()) return res.status(500).json({ ok: false, error: 'SESSION_SECRET not set' });
+  if (!session.indexConfigured()) return res.status(500).json({ ok: false, error: 'INDEX_SALT not set' });
   if (!whop.configured())   return res.status(500).json({ ok: false, error: 'Whop not configured' });
 
   try {

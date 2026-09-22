@@ -2,7 +2,7 @@
    LOGIN.
 
    Post an email. If it belongs to a member, you get a signed cookie and
-   middleware.js lets you into /member/start.
+   middleware.js lets you into the app.
 
    TWO CHECKS, AND THEY FAIL IN OPPOSITE DIRECTIONS ON PURPOSE.
 
@@ -27,8 +27,8 @@
    membership check has already passed.
 ══════════════════════════════════════════════════════════════════════ */
 
-const kv = require('../../lib/kv.js');
-const session = require('../../lib/session.js');
+const kv = require('../../../lib/kv.js');
+const session = require('../../../lib/session.js');
 
 const MAX_DEVICES = 3;
 const WINDOW = 30 * 86400;        // rolling, same length as the cookie
@@ -50,7 +50,7 @@ module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'POST only' });
 
-  if (!session.configured()) {
+  if (!session.configured() || !session.indexConfigured()) {
     return res.status(500).json({ ok: false, error: 'Login is not configured yet. Tell support.' });
   }
 
