@@ -1,4 +1,0 @@
-# Members only. Nothing here should be indexed, and the pages carry
-# noindex of their own as well.
-User-agent: *
-Disallow: /
