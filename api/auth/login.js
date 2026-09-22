@@ -34,6 +34,13 @@ const MAX_DEVICES = 3;
 const WINDOW = 30 * 86400;        // rolling, same length as the cookie
 const INDEX = 'members:emails';
 
+/* Rate limits, fixed 15 minute windows. Per address stops somebody
+   grinding one member's account; per IP stops them walking a list of
+   addresses to find out which ones are members. */
+const RL_WINDOW = 900;
+const RL_EMAIL = 8;
+const RL_IP = 30;
+
 function clientIp(req) {
   const fwd = String(req.headers['x-forwarded-for'] || '');
   return fwd.split(',')[0].trim() || req.socket?.remoteAddress || '';
@@ -58,6 +65,17 @@ module.exports = async function handler(req, res) {
   }
 
   const idHash = session.hashEmail(email);
+  const ip = clientIp(req);
+
+  /* ── 0. Throttle, before anything expensive or enumerable. ── */
+  const byEmail = await kv.bump(`rl:e:${idHash}`, RL_EMAIL, RL_WINDOW);
+  const byIp = await kv.bump(`rl:i:${session.hashIp(ip)}`, RL_IP, RL_WINDOW);
+  if (byEmail.limited || byIp.limited) {
+    return res.status(429).json({
+      ok: false,
+      error: 'Too many attempts. Wait fifteen minutes and try again.',
+    });
+  }
 
   /* ── 1. Membership. Fails closed. ── */
   const isMember = await kv.cmd('SISMEMBER', INDEX, idHash);
@@ -74,22 +92,35 @@ module.exports = async function handler(req, res) {
     });
   }
 
-  /* ── 2. Devices. Fails open. ── */
-  const deviceHash = session.hashDevice(clientIp(req), req.headers['user-agent']);
-  const dev = await kv.touchDevice(idHash, deviceHash, WINDOW);
+  /* ── 2. Devices. Fails open. ──────────────────────────────────────
+     Identity is the browser's own long-lived device cookie, minted here
+     on first sight. It used to be a hash of IP plus user agent, which
+     gave the same phone a new identity every time its mobile IP rotated
+     and would have locked out paying members within days. */
+  let deviceId = session.deviceFrom(req.headers.cookie);
+  let freshDevice = false;
+  if (!deviceId) { deviceId = session.newDeviceId(); freshDevice = true; }
+
+  const dev = await kv.touchDevice(idHash, deviceId, WINDOW);
 
   if (dev.ok && !dev.known && dev.count > MAX_DEVICES) {
     /* Already counted by SADD, so take it back out: a refused device must
        not permanently consume one of the member's slots. */
-    await kv.cmd('SREM', `dev:${idHash}`, deviceHash);
+    await kv.cmd('SREM', `dev:${idHash}`, deviceId);
     return res.status(429).json({
       ok: false,
       error: `This membership is already signed in on ${MAX_DEVICES} devices. ` +
-             `Sign out on one of them, or contact support if that is not you.`,
+             `Sign out on one of them, or message support and we will clear the old ones.`,
     });
   }
 
-  const token = session.sign(idHash);
-  res.setHeader('Set-Cookie', session.cookie(token));
+  /* The IP is kept against the device as an abuse signal only, hashed,
+     and never as the thing that decides identity. */
+  await kv.cmd('SETEX', `devip:${deviceId}`, String(WINDOW), session.hashIp(ip));
+
+  const cookies = [session.cookie(session.sign(idHash))];
+  if (freshDevice) cookies.push(session.deviceCookie(deviceId));
+  res.setHeader('Set-Cookie', cookies);
+
   return res.status(200).json({ ok: true, devices: dev.ok ? dev.count : null });
 };

@@ -27,8 +27,26 @@ const BUILD = 'members:emails:building';
 const TTL = 7 * 86400;          // a week: far longer than the 1h refresh,
                                 // so a few failed runs cannot expire it
 
+/* Anybody who found this URL could trigger a full Whop rebuild. It
+   leaks nothing, but it hammers their API, so it takes a secret.
+
+   DELIBERATELY FAILS OPEN WHILE CRON_SECRET IS UNSET, so the first
+   manual run during setup works from a browser with no extra step. Set
+   CRON_SECRET in Vercel afterwards and it locks: Vercel's scheduler
+   sends it as a bearer token, and you can still call it by hand with
+   ?key= on the end. */
+function authorised(req) {
+  const want = process.env.CRON_SECRET;
+  if (!want) return true;
+  const bearer = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+  let key = '';
+  try { key = new URL(req.url, 'https://x').searchParams.get('key') || ''; } catch (e) {}
+  return bearer === want || key === want;
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
+  if (!authorised(req)) return res.status(401).json({ ok: false, error: 'unauthorised' });
 
   if (!kv.configured())     return res.status(500).json({ ok: false, error: 'KV not configured' });
   if (!session.configured()) return res.status(500).json({ ok: false, error: 'SESSION_SECRET not set' });
