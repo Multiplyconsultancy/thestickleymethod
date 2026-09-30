@@ -43,3 +43,8 @@ transcription/
 # Nightfall paid course content. Videos and transcripts, never in a public repo.
 nightfall lecture videos/
 transcription-nightfall/
+
+# Local working material: source video, transcripts, screenshots, notes.
+# Ignored BEFORE anything is moved in, so paid Nightfall content and the
+# baby-ai env template can never be staged by a stray `git add -A`.
+_local/
