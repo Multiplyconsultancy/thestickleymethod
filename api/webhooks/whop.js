@@ -23,6 +23,7 @@
 const { createHmac, timingSafeEqual } = require('node:crypto')
 const { findContact, ghl, tagsAfterEvent, applyPlacement, setPhoneIfBlank } = require('../../lib/syncPerson')
 const { locationTags } = require('../../lib/base44')
+const { isProjectStickley } = require('../../lib/whopMembers')
 
 /** Raw body, needed because a signature is computed over exact bytes. */
 function rawBody(req) {
@@ -95,6 +96,14 @@ module.exports = async function handler(req, res) {
      card then moves immediately, because a setter looking at a board
      needs it right now rather than within the hour. */
   const title = String(data?.product?.title || data?.product_title || '')
+  /* PROJECT STICKLEY is the member platform, not The Stickley Method,
+     and /stickley/ below would call it TSM. Acknowledged and left
+     alone: see isProjectStickley in lib/whopMembers.js. */
+  const productId = data?.product?.id || (typeof data?.product === 'string' ? data.product : '') || data?.product_id
+                 || data?.membership?.product?.id || ''
+  if (isProjectStickley(title, productId)) {
+    return res.status(200).json({ ok: true, action, skipped: 'project_stickley' })
+  }
   const isTsm = /stickley/i.test(title)
   const isBabyAi = /baby\s*ai/i.test(title)
   /* Nightfall was not detected here at all, so a $97 buyer got
