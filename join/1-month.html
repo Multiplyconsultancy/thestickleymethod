@@ -54,17 +54,18 @@
       <div class="checkout-embed">
         <!-- ▼▼▼ 1-MONTH CHECKOUT EMBED ▼▼▼ -->
 
-        <div
-          data-whop-checkout-plan-id="plan_zSV2Aey6NUe23"
-          data-whop-checkout-theme="light"
-          data-whop-checkout-theme-accent-color="#3358d4"
-          data-whop-checkout-theme-button-text="Join"
-          data-whop-checkout-setup-future-usage="off_session"
-          data-whop-checkout-hide-tos="true"
-          data-whop-checkout-on-complete="tsmCheckoutComplete"
-          data-whop-checkout-skip-redirect="true"
-        ></div>
-        <script async src="https://js.whop.com/static/checkout/loader.js"></script>
+        <div id="whop-checkout"></div>
+        <script src="https://cdn.whop.com/elements/amber/elements.js" data-whop-elements></script>
+        <script type="module">
+          const checkout = window.WhopElements().checkout.create({
+            plan: "plan_zSV2Aey6NUe23",
+            /* Hands the receipt to the upsell funnel, same as the old embed's
+               data-whop-checkout-on-complete. */
+            onComplete: function (a, b) { window.tsmCheckoutComplete(a, b); },
+          });
+
+          checkout.create("checkout").mount("#whop-checkout");
+        </script>
 
         <!-- ▲▲▲ END 1-MONTH CHECKOUT EMBED ▲▲▲ -->
       </div>
