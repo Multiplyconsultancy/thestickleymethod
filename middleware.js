@@ -2,7 +2,7 @@
    GEO GATE for the Base44 funnel (Vercel Edge Middleware).
 
    The partnership only pays on activations from the countries below, so
-   visitors anywhere else are redirected to LOKD (joinlokd.com/subscribe)
+   visitors anywhere else are redirected to an unavailable page
    before the funnel ever renders. Runs at the edge: no flash of the
    wrong page, works with JavaScript off.
 
@@ -27,8 +27,6 @@ const ELIGIBLE = new Set([
   'SG', 'TW', 'HK', 'MO', 'AE', 'QA', 'IL', 'KW', 'SA',
   'OM', 'BH',
 ]);
-
-const LOKD_DIRECT = 'https://www.joinlokd.com/subscribe';
 
 export const config = {
   matcher: [
@@ -62,17 +60,12 @@ export default function middleware(request) {
   if (!country || ELIGIBLE.has(country.toUpperCase())) {
     return; // eligible or unknown: serve the funnel
   }
-  /* Anybody outside the partnership's countries goes straight to LOKD
-     direct, the $49 page on joinlokd.com (Luca, 2026-10-28: they should be
-     sent on to LOKD, as joinlokd.com's own funnel has done since
-     2026-10-18). The two unavailable pages stay up but nothing sends
-     people there any more. no-store, so a cached 302 can never send an
-     eligible visitor away. */
-  return new Response(null, {
-    status: 302,
-    headers: {
-      location: LOKD_DIRECT,
-      'cache-control': 'no-store, max-age=0, must-revalidate',
-    },
-  });
+  /* The member funnel gets its own ineligible page. The public one signs off
+     by offering them The Stickley Method, which everybody landing here from
+     /member already pays for. */
+  url.pathname = url.pathname.startsWith('/member/')
+    ? '/member/free-course-unavailable'
+    : '/free-course-unavailable';
+  url.search = '';
+  return Response.redirect(url, 302);
 }
